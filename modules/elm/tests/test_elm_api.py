@@ -9,9 +9,24 @@ class ElmAPITestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.leave_type = LeaveType.objects.create(name='Sick Leave')
-        self.leave_request = LeaveRequest.objects.create(user=self.user, leave_type=self.leave_type, start_date='2023-01-01', end_date='2023-01-05')
-        self.leave_balance = LeaveBalance.objects.create(user=self.user, leave_type=self.leave_type, balance=10)
-        self.substitute_response = SubstituteResponse.objects.create(leave_request=self.leave_request, substitute_user=self.user, response_date='2023-01-01')
+        self.leave_request = LeaveRequest.objects.create(
+            user=self.user,
+            leave_type=self.leave_type,
+            start_date='2023-01-01',
+            end_date='2023-01-05',
+            reason='Sick'
+        )
+        self.leave_balance = LeaveBalance.objects.create(
+            user=self.user,
+            leave_type=self.leave_type,
+            balance=10
+        )
+        self.substitute_response = SubstituteResponse.objects.create(
+            leave_request=self.leave_request,
+            substitute_user=self.user,
+            response_date='2023-01-01',
+            response='Available'
+        )
 
     def test_get_leave_types(self):
         url = reverse('leave-type-list')
@@ -26,7 +41,8 @@ class ElmAPITestCase(APITestCase):
         data = {
             'leave_type': self.leave_type.id,
             'start_date': '2023-02-01',
-            'end_date': '2023-02-05'
+            'end_date': '2023-02-05',
+            'reason': 'Sick'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -48,7 +64,8 @@ class ElmAPITestCase(APITestCase):
         data = {
             'leave_type': self.leave_request.leave_type.id,
             'start_date': '2023-03-01',
-            'end_date': '2023-03-05'
+            'end_date': '2023-03-05',
+            'reason': 'Sick'
         }
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -76,7 +93,8 @@ class ElmAPITestCase(APITestCase):
         data = {
             'leave_request': self.leave_request.id,
             'substitute_user': self.user.id,
-            'response_date': '2023-04-01'
+            'response_date': '2023-04-01',
+            'response': 'Available'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
