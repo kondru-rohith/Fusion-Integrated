@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from modules.elm.models import LeaveType, LeaveRequest, LeaveBalance, SubstituteResponse
-from modules.elm.serializers import LeaveTypeSerializer, LeaveRequestSerializer, LeaveBalanceSerializer, SubstituteResponseSerializer
+from modules.elm.api.serializers import LeaveTypeSerializer, LeaveRequestSerializer, LeaveBalanceSerializer, SubstituteResponseSerializer
 from django.contrib.auth.models import User
 
 @pytest.fixture
