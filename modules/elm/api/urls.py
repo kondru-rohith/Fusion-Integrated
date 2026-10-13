@@ -3,12 +3,10 @@ from .views import (
     LeaveTypeListView,
     LeaveRequestListView,
     LeaveRequestDetailView,
-    LeaveRequestCreateView,
     LeaveRequestUpdateView,
     LeaveRequestDeleteView,
     LeaveBalanceListView,
     SubstituteResponseListView,
-    SubstituteResponseCreateView,
 )
 
 urlpatterns = [
@@ -19,5 +17,4 @@ urlpatterns = [
     path("leave-requests/<int:pk>/delete/", LeaveRequestDeleteView.as_view(), name="leave-request-delete"),
     path("leave-balances/", LeaveBalanceListView.as_view(), name="leave-balance-list"),
     path("substitute-responses/", SubstituteResponseListView.as_view(), name="substitute-response-list"),
-    path("substitute-responses/", SubstituteResponseCreateView.as_view(), name="substitute-response-create"),
 ]
