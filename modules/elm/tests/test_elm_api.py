@@ -24,7 +24,6 @@ class ElmAPITestCase(APITestCase):
         self.substitute_response = SubstituteResponse.objects.create(
             leave_request=self.leave_request,
             substitute_user=self.user,
-            response_date='2023-01-01',
             response='Available'
         )
 
@@ -93,12 +92,11 @@ class ElmAPITestCase(APITestCase):
         data = {
             'leave_request': self.leave_request.id,
             'substitute_user': self.user.id,
-            'response_date': '2023-04-01',
             'response': 'Available'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['response_date'], '2023-04-01')
+        self.assertEqual(response.data['response'], 'Available')
 
     def test_get_substitute_responses(self):
         self.client.force_authenticate(user=self.user)
@@ -106,4 +104,17 @@ class ElmAPITestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['response_date'], '2023-01-01')
+        self.assertEqual(response.data[0]['response'], 'Available')
+
+    def test_unauthenticated_access(self):
+        url = reverse('leave-request-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_ownership_isolation(self):
+        another_user = User.objects.create_user(username='anotheruser', password='anotherpassword')
+        self.client.force_authenticate(user=another_user)
+        url = reverse('leave-request-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
