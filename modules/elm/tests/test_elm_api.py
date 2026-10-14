@@ -10,12 +10,13 @@ class ElmAPITestCase(APITestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.leave_type = LeaveType.objects.create(name='Sick Leave')
         self.leave_request = LeaveRequest.objects.create(
-            user=self.user,
             leave_type=self.leave_type,
             start_date='2023-01-01',
             end_date='2023-01-05',
             reason='Sick'
         )
+        self.leave_request.user = self.user
+        self.leave_request.save()
         self.leave_balance = LeaveBalance.objects.create(
             user=self.user,
             leave_type=self.leave_type,
