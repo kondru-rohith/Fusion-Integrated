@@ -23,4 +23,4 @@ class SubstituteResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubstituteResponse
-        fields = ['id', 'leave_request', 'substitute_user_id', 'response_date', 'status']
+        fields = ['id', 'leave_request', 'substitute_user_id', 'response']
