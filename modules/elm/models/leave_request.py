@@ -1,6 +1,8 @@
 from django.db import models
+
 from core.db.mixins import TimeStampedModel, UserScopedModel
 from modules.elm.models.leave_type import LeaveType
+
 
 class LeaveRequest(TimeStampedModel, UserScopedModel):
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
@@ -15,3 +17,7 @@ class LeaveRequest(TimeStampedModel, UserScopedModel):
 
     def __str__(self):
         return f"{self.user_id} - {self.leave_type.name} ({self.start_date} to {self.end_date})"
+
+    def clean(self):
+        if self.end_date < self.start_date:
+            raise ValueError("End date cannot be before start date.")

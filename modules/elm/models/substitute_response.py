@@ -1,6 +1,8 @@
 from django.db import models
+
 from core.db.mixins import TimeStampedModel
 from modules.elm.models.leave_request import LeaveRequest
+
 
 class SubstituteResponse(TimeStampedModel):
     leave_request = models.ForeignKey(LeaveRequest, on_delete=models.CASCADE)
