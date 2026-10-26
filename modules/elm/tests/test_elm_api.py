@@ -24,7 +24,7 @@ class ElmAPITestCase(APITestCase):
         self.substitute_response = SubstituteResponse.objects.create(
             leave_request=self.leave_request,
             substitute_user_id=self.user.id,
-            response='Available'
+            response='accepted'
         )
 
     def test_get_leave_types(self):
@@ -32,7 +32,7 @@ class ElmAPITestCase(APITestCase):
         url = reverse('leave-type-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        leave_type_names = [leave_type['name'] for leave_type in response.data]
+        leave_type_names = [item['name'] for item in response.data['results']]
         self.assertIn(self.leave_type.name, leave_type_names)
 
     def test_create_leave_request(self):
@@ -43,7 +43,7 @@ class ElmAPITestCase(APITestCase):
             'start_date': '2023-02-01',
             'end_date': '2023-02-05',
             'reason': 'Sick',
-            'user': self.user.id  # Ensure user_id is set
+            'user_id': self.user.id  # Ensure user_id is set
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -55,9 +55,9 @@ class ElmAPITestCase(APITestCase):
         url = reverse('leave-request-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['start_date'], '2023-01-01')
-        self.assertEqual(response.data[0]['end_date'], '2023-01-05')
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['start_date'], '2023-01-01')
+        self.assertEqual(response.data['results'][0]['end_date'], '2023-01-05')
 
     def test_update_leave_request(self):
         self.client.force_authenticate(user=self.user)
@@ -67,7 +67,7 @@ class ElmAPITestCase(APITestCase):
             'start_date': '2023-03-01',
             'end_date': '2023-03-05',
             'reason': 'Sick',
-            'user': self.user.id  # Ensure user_id is set
+            'user_id': self.user.id  # Ensure user_id is set
         }
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -86,28 +86,28 @@ class ElmAPITestCase(APITestCase):
         url = reverse('leave-balance-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['balance'], 10)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['balance'], 10)
 
     def test_create_substitute_response(self):
         self.client.force_authenticate(user=self.user)
         url = reverse('substitute-response-list')
         data = {
             'leave_request': self.leave_request.id,
-            'substitute_user': self.user.id,
-            'response': 'Available'
+            'substitute_user_id': self.user.id,
+            'response': 'accepted'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['response'], 'Available')
+        self.assertEqual(response.data['response'], 'accepted')
 
     def test_get_substitute_responses(self):
         self.client.force_authenticate(user=self.user)
         url = reverse('substitute-response-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['response'], 'Available')
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['response'], 'accepted')
 
     def test_unauthenticated_access(self):
         url = reverse('leave-request-list')
@@ -120,4 +120,4 @@ class ElmAPITestCase(APITestCase):
         url = reverse('leave-request-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
+        self.assertEqual(len(response.data['results']), 0)
