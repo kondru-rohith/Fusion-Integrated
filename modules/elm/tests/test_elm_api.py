@@ -1,9 +1,10 @@
-from django.test import TestCase
-from rest_framework.test import APITestCase
-from rest_framework import status
-from modules.elm.models import LeaveType, LeaveRequest, LeaveBalance, SubstituteResponse
 from django.contrib.auth.models import User
 from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from modules.elm.models import LeaveBalance, LeaveRequest, LeaveType, SubstituteResponse
+
 
 class ElmAPITestCase(APITestCase):
     def setUp(self):

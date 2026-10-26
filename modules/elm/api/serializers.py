@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from modules.elm.models import LeaveType, LeaveRequest, LeaveBalance, SubstituteResponse
+
+from modules.elm.models import LeaveBalance, LeaveRequest, LeaveType, SubstituteResponse
+
 
 class LeaveTypeSerializer(serializers.ModelSerializer):
     class Meta:
