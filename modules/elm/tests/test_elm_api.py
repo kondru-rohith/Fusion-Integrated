@@ -14,16 +14,16 @@ class ElmAPITestCase(APITestCase):
             start_date='2023-01-01',
             end_date='2023-01-05',
             reason='Sick',
-            user=self.user  # Ensure user_id is set
+            user_id=self.user.id
         )
         self.leave_balance = LeaveBalance.objects.create(
-            user=self.user,
+            user_id=self.user.id,
             leave_type=self.leave_type,
             balance=10
         )
         self.substitute_response = SubstituteResponse.objects.create(
             leave_request=self.leave_request,
-            substitute_user=self.user,
+            substitute_user_id=self.user.id,
             response='Available'
         )
 
