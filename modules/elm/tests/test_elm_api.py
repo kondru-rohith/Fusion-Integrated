@@ -28,6 +28,7 @@ class ElmAPITestCase(APITestCase):
         )
 
     def test_get_leave_types(self):
+        self.client.force_authenticate(user=self.user)
         url = reverse('leave-type-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
