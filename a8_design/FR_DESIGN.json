@@ -1,0 +1,470 @@
+[
+    {
+        "test_id": "TC_SPACS_001",
+        "source_id": "AFR-SPACS-001",
+        "purpose": "Verify authenticated users can browse published catalogue entries and unpublished entries are hidden.",
+        "preconditions": "User is authenticated. Catalogue contains both published and unpublished entries.",
+        "action_or_input": "User requests to browse the scholarship and award catalogue.",
+        "expected_result": "System displays only the currently published catalogue entries.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_002",
+        "source_id": "AFR-SPACS-002",
+        "purpose": "Verify system displays all required details for a published catalogue entry.",
+        "preconditions": "A scholarship catalogue entry is published with description, eligibility, evidence, dates, and renewal info.",
+        "action_or_input": "User views the published catalogue entry details.",
+        "expected_result": "System displays the description, eligibility criteria, required evidence, application method, dates, and renewal information.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_003",
+        "source_id": "AFR-SPACS-003",
+        "purpose": "Verify SPACS Convener can create a new draft catalogue entry.",
+        "preconditions": "User is logged in as SPACS Convener.",
+        "action_or_input": "Convener initiates creation of a new scholarship catalogue entry.",
+        "expected_result": "System creates a new draft catalogue entry.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_004",
+        "source_id": "AFR-SPACS-004",
+        "purpose": "Verify Convener can modify a draft without altering historical versions used by existing applications.",
+        "preconditions": "A published catalogue version exists and is linked to an existing application. A new draft version is created.",
+        "action_or_input": "Convener modifies the draft catalogue version.",
+        "expected_result": "The draft is updated, but the historical version linked to the existing application remains unaltered.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_005",
+        "source_id": "AFR-SPACS-005",
+        "purpose": "Verify system blocks publication of a catalogue version if policy-approval reference or effective dates are missing.",
+        "preconditions": "User is SPACS Convener. A draft catalogue entry is missing the policy-approval reference or effective dates.",
+        "action_or_input": "Convener attempts to publish/activate the draft catalogue version.",
+        "expected_result": "System blocks the publication and displays an error indicating missing policy approval or dates.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_006",
+        "source_id": "AFR-SPACS-006",
+        "purpose": "Verify Convener can retire a catalogue entry prospectively while preserving historical applications.",
+        "preconditions": "A published catalogue entry exists with historical applications governed by it.",
+        "action_or_input": "Convener retires/deactivates the catalogue entry.",
+        "expected_result": "The entry is retired prospectively. Historical applications and policy versions remain preserved and accessible.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_007",
+        "source_id": "AFR-SPACS-007",
+        "purpose": "Verify system preserves an auditable version history of catalogue criteria and publication status.",
+        "preconditions": "A catalogue entry has undergone multiple modifications and publications over time.",
+        "action_or_input": "Authorized user requests the version history of the catalogue entry.",
+        "expected_result": "System displays the complete auditable version history including criteria, rules, dates, publication status, and effective periods.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_008",
+        "source_id": "AFR-SPACS-008",
+        "purpose": "Verify system blocks a student from starting an application if the scheme's application window is closed.",
+        "preconditions": "A scholarship scheme is published but its application window is currently closed.",
+        "action_or_input": "Student attempts to start a new application for the closed scheme.",
+        "expected_result": "System blocks the application initiation and indicates the window is closed.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_009",
+        "source_id": "AFR-SPACS-009",
+        "purpose": "Verify system blocks submission if machine-checkable eligibility criteria are not satisfied.",
+        "preconditions": "Student has an in-progress application. A mandatory machine-checkable eligibility criterion is not met.",
+        "action_or_input": "Student attempts to submit the application.",
+        "expected_result": "System blocks the submission and indicates the unmet eligibility criterion.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_010",
+        "source_id": "AFR-SPACS-010",
+        "purpose": "Verify system prevents duplicate active/submitted applications for the same student, scholarship, and cycle.",
+        "preconditions": "Student already has an active or submitted application for a specific scholarship and academic cycle.",
+        "action_or_input": "Student attempts to create another application for the same scholarship and cycle.",
+        "expected_result": "System blocks the creation of the duplicate application.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_011",
+        "source_id": "AFR-SPACS-011",
+        "purpose": "Verify student can enter all application data required by the selected scholarship version.",
+        "preconditions": "Student has started an application for a published scholarship.",
+        "action_or_input": "Student enters data into all required fields defined by the scholarship version.",
+        "expected_result": "System accepts and saves the entered application data.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_012",
+        "source_id": "AFR-SPACS-012",
+        "purpose": "Verify student can upload supporting documents required by the scholarship.",
+        "preconditions": "Student is in an editable application state.",
+        "action_or_input": "Student uploads a valid supporting document.",
+        "expected_result": "System accepts the upload and associates the document with the application.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_013",
+        "source_id": "AFR-SPACS-013",
+        "purpose": "Verify system offers previously uploaded documents for reuse only when they are still valid and satisfy requirements.",
+        "preconditions": "Student has a previously uploaded document that is expired or does not satisfy the current scheme's requirement.",
+        "action_or_input": "Student views the document reuse options for the current application.",
+        "expected_result": "System does not offer the expired/non-compliant document for reuse.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_014",
+        "source_id": "AFR-SPACS-014",
+        "purpose": "Verify system allows explicit draft saving and preserves input on recoverable timeout/error.",
+        "preconditions": "Student is entering application data.",
+        "action_or_input": "Student explicitly saves the draft, then a simulated recoverable timeout occurs.",
+        "expected_result": "System preserves the recoverable application input and allows the student to resume.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_015",
+        "source_id": "AFR-SPACS-015",
+        "purpose": "Verify system blocks submission if mandatory fields or required documents are missing.",
+        "preconditions": "Student has an in-progress application with missing mandatory fields or documents.",
+        "action_or_input": "Student attempts to submit the application.",
+        "expected_result": "System blocks submission and prompts for the missing mandatory fields or documents.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_016",
+        "source_id": "AFR-SPACS-016",
+        "purpose": "Verify system assigns unique ID, timestamp, and policy version on successful submission.",
+        "preconditions": "Student has completed a valid application ready for submission.",
+        "action_or_input": "Student submits the application.",
+        "expected_result": "System assigns a unique application identifier, records the submission timestamp, and binds it to the applicable catalogue/policy version.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_017",
+        "source_id": "AFR-SPACS-017",
+        "purpose": "Verify system changes state to Submitted and routes verification task to SPACS Assistant on submission.",
+        "preconditions": "Application is successfully submitted.",
+        "action_or_input": "System processes the successful submission.",
+        "expected_result": "Application state changes to Submitted and a verification task is created and routed to the SPACS Assistant role.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_018",
+        "source_id": "AFR-SPACS-018",
+        "purpose": "Verify system notifies student and SPACS Assistant upon successful submission.",
+        "preconditions": "Application is successfully submitted.",
+        "action_or_input": "System triggers submission notifications.",
+        "expected_result": "Student receives a successful submission notification, and the responsible SPACS Assistant receives a notification of a new application requiring verification.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_019",
+        "source_id": "AFR-SPACS-019",
+        "purpose": "Verify authorized SPACS Assistant can access assigned applications and evidence.",
+        "preconditions": "An application is routed to the SPACS Assistant for verification.",
+        "action_or_input": "SPACS Assistant attempts to access the assigned application and its supporting evidence.",
+        "expected_result": "System grants access to the application details and uploaded evidence.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_020",
+        "source_id": "AFR-SPACS-020",
+        "purpose": "Verify SPACS Assistant can record verification findings without granting final sanction authority.",
+        "preconditions": "SPACS Assistant is reviewing an assigned application.",
+        "action_or_input": "Assistant records completeness and eligibility findings.",
+        "expected_result": "System saves the verification findings. The Assistant interface does not provide options for final scholarship approval/rejection.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_021",
+        "source_id": "AFR-SPACS-021",
+        "purpose": "Verify SPACS Assistant can return an application to the student for correction with a recorded reason.",
+        "preconditions": "SPACS Assistant identifies missing or invalid evidence during verification.",
+        "action_or_input": "Assistant returns the application to the student and provides a correction reason.",
+        "expected_result": "System updates the application state to Correction Required, notifies the student, and records the reason.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_022",
+        "source_id": "AFR-SPACS-022",
+        "purpose": "Verify student can modify and resubmit an application in Correction Required state.",
+        "preconditions": "Application is in Correction Required state.",
+        "action_or_input": "Student modifies the required information and resubmits the application.",
+        "expected_result": "System accepts the modifications and resubmission, updating the application state accordingly.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_023",
+        "source_id": "AFR-SPACS-023",
+        "purpose": "Verify system revalidates a corrected resubmission and invalidates prior verification if applicable.",
+        "preconditions": "Student resubmits an application after correction, changing data that affects prior verification.",
+        "action_or_input": "System processes the resubmission.",
+        "expected_result": "System revalidates the changed application and clears/invalidates any prior verification decisions that are no longer applicable.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_024",
+        "source_id": "AFR-SPACS-024",
+        "purpose": "Verify SPACS Assistant can mark an application Verified and route it to the SPACS Convener.",
+        "preconditions": "SPACS Assistant has completed verification and all requirements are satisfied.",
+        "action_or_input": "Assistant marks the application as Verified.",
+        "expected_result": "System updates the application status to Verified and routes it to the SPACS Convener for decision.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_025",
+        "source_id": "AFR-SPACS-025",
+        "purpose": "Verify SPACS Assistant can record an unresolved verification concern and route it appropriately.",
+        "preconditions": "SPACS Assistant identifies an unresolved verification concern (e.g., suspected ineligibility).",
+        "action_or_input": "Assistant records the concern and routes it according to the scheme workflow.",
+        "expected_result": "System records the concern and routes the application to the SPACS Convener for final decision or returns it for correction as configured.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_026",
+        "source_id": "AFR-SPACS-026",
+        "purpose": "Verify system issues reminders/escalations when verification or decision tasks exceed SLA thresholds.",
+        "preconditions": "A verification or decision task has been pending beyond its configured SLA threshold.",
+        "action_or_input": "System SLA monitoring job executes.",
+        "expected_result": "System issues configured reminder or escalation notifications to the responsible role.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_027",
+        "source_id": "AFR-SPACS-027",
+        "purpose": "Verify SPACS Convener can review applications routed for decision with verification and policy context.",
+        "preconditions": "An application is routed to the SPACS Convener for decision.",
+        "action_or_input": "SPACS Convener opens the application for review.",
+        "expected_result": "System displays the application data, verification findings, and the applicable policy context.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_028",
+        "source_id": "AFR-SPACS-028",
+        "purpose": "Verify SPACS Convener can approve, reject, or return a scholarship application for correction.",
+        "preconditions": "SPACS Convener is reviewing a verified application.",
+        "action_or_input": "Convener selects an outcome (approve, reject, or return for correction).",
+        "expected_result": "System records the selected outcome and transitions the application to the corresponding state.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_029",
+        "source_id": "AFR-SPACS-029",
+        "purpose": "Verify system records decision outcome, actor, timestamp, policy version, and reason.",
+        "preconditions": "SPACS Convener makes a decision on an application.",
+        "action_or_input": "System processes the decision action.",
+        "expected_result": "System persists the decision outcome, decision actor, timestamp, applicable policy version, and decision reason.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_030",
+        "source_id": "AFR-SPACS-030",
+        "purpose": "Verify system updates application state and notifies student of the decision outcome.",
+        "preconditions": "A scholarship decision has been recorded.",
+        "action_or_input": "System finalizes the decision workflow.",
+        "expected_result": "Application state is updated to the resulting state (e.g., Approved, Rejected), and the student is notified of the outcome.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_031",
+        "source_id": "AFR-SPACS-031",
+        "purpose": "Verify system blocks student from modifying an application in a non-editable lifecycle state.",
+        "preconditions": "Application is in a final or non-editable state (e.g., Approved or Rejected).",
+        "action_or_input": "Student attempts to modify the application.",
+        "expected_result": "System blocks the modification and indicates the application is not in an editable state.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_032",
+        "source_id": "AFR-SPACS-032",
+        "purpose": "Verify system revalidates and reroutes/reverifies an application after a permitted modification that invalidates prior processing.",
+        "preconditions": "Student modifies an application in an editable state, changing data that affects eligibility or assignment.",
+        "action_or_input": "System saves the modification.",
+        "expected_result": "System revalidates the application and reroutes/reverifies it as required by the scheme workflow.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_033",
+        "source_id": "AFR-SPACS-033",
+        "purpose": "Verify system blocks student from withdrawing an application after a final decision is made.",
+        "preconditions": "Application has reached a final decision state (e.g., Approved).",
+        "action_or_input": "Student attempts to withdraw the application.",
+        "expected_result": "System blocks the withdrawal and indicates it is no longer withdrawable.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_034",
+        "source_id": "AFR-SPACS-034",
+        "purpose": "Verify system records withdrawal, closes tasks, sets state to Withdrawn, and notifies parties.",
+        "preconditions": "Application is in a withdrawable state before final decision.",
+        "action_or_input": "Student withdraws the application.",
+        "expected_result": "System records the withdrawal, closes pending tasks, sets state to Withdrawn, retains audit history, and notifies relevant parties.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_035",
+        "source_id": "AFR-SPACS-035",
+        "purpose": "Verify student can view current state and relevant status history of their own applications.",
+        "preconditions": "Student has multiple applications with various status changes.",
+        "action_or_input": "Student views their scholarship dashboard.",
+        "expected_result": "System displays the current state and relevant status history for each of the student's applications.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_036",
+        "source_id": "AFR-SPACS-036",
+        "purpose": "Verify staff export is restricted to authorized roles and denied for unauthorized staff.",
+        "preconditions": "User is logged in as a staff member without export authorization.",
+        "action_or_input": "Staff member attempts to export application data.",
+        "expected_result": "System denies the export request and restricts access to authorized roles only.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_037",
+        "source_id": "AFR-SPACS-037",
+        "purpose": "Verify system identifies an awarded scholarship as renewal-eligible only when policy and window permit.",
+        "preconditions": "A scholarship is awarded, but the renewal window is currently closed or policy does not permit renewal.",
+        "action_or_input": "System evaluates the awarded scholarship for renewal eligibility.",
+        "expected_result": "System does not identify the scholarship as renewal-eligible.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_038",
+        "source_id": "AFR-SPACS-038",
+        "purpose": "Verify student can start a renewal application with prefilled reusable data and identified refreshed evidence.",
+        "preconditions": "Scholarship is renewal-eligible and within the renewal window.",
+        "action_or_input": "Student initiates the renewal application.",
+        "expected_result": "System prefills reusable prior data and clearly identifies information/evidence that must be refreshed.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_039",
+        "source_id": "AFR-SPACS-039",
+        "purpose": "Verify system validates renewal-specific eligibility and updated evidence according to active policy.",
+        "preconditions": "Student submits a renewal application with invalid or missing updated evidence.",
+        "action_or_input": "Student attempts to submit the renewal application.",
+        "expected_result": "System blocks submission and indicates the renewal-specific eligibility or evidence validation failure.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_040",
+        "source_id": "AFR-SPACS-040",
+        "purpose": "Verify system routes a submitted renewal through verification and fresh decision rather than auto-approving.",
+        "preconditions": "Student successfully submits a valid renewal application.",
+        "action_or_input": "System processes the renewal submission.",
+        "expected_result": "System routes the renewal through the standard verification and fresh scholarship decision workflow; it is not automatically approved.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_041",
+        "source_id": "AFR-SPACS-041",
+        "purpose": "Verify system sends configured renewal reminders to eligible students before the deadline.",
+        "preconditions": "A student is eligible for renewal and the configured reminder date is reached.",
+        "action_or_input": "System renewal reminder job executes.",
+        "expected_result": "System sends configured renewal reminders to the eligible student.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_042",
+        "source_id": "AFR-SPACS-042",
+        "purpose": "Verify system supports the configured candidate-source method for an activated award scheme.",
+        "preconditions": "An award scheme is activated with a specific candidate-source method (e.g., system-generated, nomination).",
+        "action_or_input": "System initializes the award cycle.",
+        "expected_result": "System obtains candidate records using the configured candidate-source method.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_043",
+        "source_id": "AFR-SPACS-043",
+        "purpose": "Verify SPACS Convener can prepare and finalize the candidate pool using policy and authoritative data.",
+        "preconditions": "Award cycle is active and candidate records are available.",
+        "action_or_input": "SPACS Convener prepares and finalizes the candidate pool.",
+        "expected_result": "System allows the Convener to finalize the pool based on the applicable policy version and authoritative data.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_044",
+        "source_id": "AFR-SPACS-044",
+        "purpose": "Verify authorized Award Evaluation Committee members can access candidate info and record evaluations.",
+        "preconditions": "Committee members are assigned to an award cycle.",
+        "action_or_input": "Committee member accesses candidate information and records shortlist/evaluation recommendations.",
+        "expected_result": "System grants access and saves the evaluation/recommendation information required by the award policy.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_045",
+        "source_id": "AFR-SPACS-045",
+        "purpose": "Verify system records final award approval/decision outcome and approving authority/reference.",
+        "preconditions": "Committee has made a recommendation/decision.",
+        "action_or_input": "Authorized authority records the final award approval outcome and reference.",
+        "expected_result": "System records the final award decision outcome and the approving authority/reference according to the policy.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_046",
+        "source_id": "AFR-SPACS-046",
+        "purpose": "Verify system blocks publication of award results before the required final approval is recorded.",
+        "preconditions": "Award evaluation is complete, but final approval outcome is not yet recorded.",
+        "action_or_input": "Authorized user attempts to publish/announce the award results.",
+        "expected_result": "System blocks the publication and indicates that final approval must be recorded first.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_047",
+        "source_id": "AFR-SPACS-047",
+        "purpose": "Verify system preserves candidate list, evaluation records, recommendations, and publication history.",
+        "preconditions": "An award cycle has completed evaluation, approval, and publication.",
+        "action_or_input": "Authorized user requests the award cycle history.",
+        "expected_result": "System displays the preserved candidate list, evaluation records, recommendations, approval references, and publication history.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_048",
+        "source_id": "AFR-SPACS-048",
+        "purpose": "Verify system sends configured email and in-dashboard notifications for significant lifecycle events.",
+        "preconditions": "Notifications are configured for a significant lifecycle event (e.g., submission, decision).",
+        "action_or_input": "The lifecycle event occurs.",
+        "expected_result": "System sends the configured email and in-dashboard notifications to the affected student and/or authorized role.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_049",
+        "source_id": "AFR-SPACS-049",
+        "purpose": "Verify system creates time-stamped audit records for significant SPACS actions.",
+        "preconditions": "A significant action (e.g., submission, verification, decision) occurs.",
+        "action_or_input": "System processes the significant action.",
+        "expected_result": "System creates a time-stamped audit record for the action.",
+        "test_type": "Functional"
+    },
+    {
+        "test_id": "TC_SPACS_050",
+        "source_id": "AFR-SPACS-050",
+        "purpose": "Verify system protects audit records from ordinary modification and restricts access to authorized personnel.",
+        "preconditions": "User is logged in as an unauthorized staff member.",
+        "action_or_input": "User attempts to view or modify the audit log.",
+        "expected_result": "System denies access to the audit log and prevents modification.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_051",
+        "source_id": "AFR-SPACS-051",
+        "purpose": "Verify system enforces role- and ownership-based access to protected functions.",
+        "preconditions": "User is logged in with a role that lacks ownership or specific authorization for a protected function (e.g., verifying another's application).",
+        "action_or_input": "User attempts to execute the protected function.",
+        "expected_result": "System denies access and enforces the role/ownership constraint.",
+        "test_type": "Negative"
+    },
+    {
+        "test_id": "TC_SPACS_052",
+        "source_id": "AFR-SPACS-052",
+        "purpose": "Verify system routes uncompleted tasks to the new role holder on reassignment while preserving historical actor identity.",
+        "preconditions": "A SPACS role holder has uncompleted tasks. The role assignment is changed to a new user.",
+        "action_or_input": "System processes the role reassignment.",
+        "expected_result": "System routes the uncompleted tasks to the newly assigned role holder. Historical audit records retain the original actor's identity for completed actions.",
+        "test_type": "Functional"
+    }
+]

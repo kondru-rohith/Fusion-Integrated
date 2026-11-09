@@ -1,0 +1,17 @@
+ssssssssss..s.ssss..s.s..ss.ss.s.s.sssssssssssssss.s                     [100%]
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.15-final-0 _______________
+
+Name                           Stmts   Miss Branch BrPart  Cover
+----------------------------------------------------------------
+modules/spacs/__init__.py          0      0      0      0   100%
+modules/spacs/apps.py              5      0      0      0   100%
+modules/spacs/models.py           54      2      0      0    96%
+modules/spacs/permissions.py     151     48     68     13    61%
+modules/spacs/serializers.py      24      1      4      1    93%
+modules/spacs/urls.py              6      0      0      0   100%
+modules/spacs/views.py           121     22     34     10    77%
+----------------------------------------------------------------
+TOTAL                            361     73    106     24    73%
+Coverage XML written to file a8_results/fr/coverage.xml
+13 passed, 39 skipped in 1.58s

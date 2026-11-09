@@ -1,0 +1,200 @@
+[
+  {
+    "test_id": "TC-SPACS-001",
+    "source_id": "BW-SPACS-01",
+    "purpose": "Verify successful new scholarship application flow from Draft to Verified/Routed.",
+    "preconditions": "Student is authenticated; scholarship is published and open; student meets eligibility pre-checks.",
+    "action_or_input": "Student submits application with required data and documents. SPACS Assistant opens the assigned task and verifies the application.",
+    "expected_result": "Application state transitions: Draft -> Submitted -> Under Verification -> Verified/Routed for Decision.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-002",
+    "source_id": "BW-SPACS-02",
+    "purpose": "Verify correction request and successful resubmission flow.",
+    "preconditions": "Application is in 'Under Verification' state.",
+    "action_or_input": "SPACS Assistant requests correction/additional information. Student modifies and resubmits. Assistant reverifies.",
+    "expected_result": "State transitions: Under Verification -> Correction Required -> Resubmitted -> Verified/Routed for Decision.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-003",
+    "source_id": "BW-SPACS-03",
+    "purpose": "Verify scholarship approval path.",
+    "preconditions": "Application is in 'Verified/Routed for Decision' state.",
+    "action_or_input": "SPACS Convener opens the decision task and approves the application.",
+    "expected_result": "State transitions: Verified/Routed for Decision -> Under Convener Review -> Approved.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-004",
+    "source_id": "BW-SPACS-04",
+    "purpose": "Verify scholarship rejection path from Verification Concern.",
+    "preconditions": "Application is in 'Verification Concern' state.",
+    "action_or_input": "SPACS Convener opens the decision task and rejects the application.",
+    "expected_result": "State transitions: Verification Concern -> Under Convener Review -> Rejected.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-005",
+    "source_id": "BW-SPACS-05",
+    "purpose": "Verify student can withdraw application from Submitted state.",
+    "preconditions": "Application is in 'Submitted' state; no final decision has been made.",
+    "action_or_input": "Student requests withdrawal of the application.",
+    "expected_result": "Application state changes to 'Withdrawn'; pending tasks are closed; action is logged.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-006",
+    "source_id": "BW-SPACS-05",
+    "purpose": "Verify student can withdraw application from Under Verification state.",
+    "preconditions": "Application is in 'Under Verification' state and not locked by policy.",
+    "action_or_input": "Student requests withdrawal of the application.",
+    "expected_result": "Application state changes to 'Withdrawn'.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-007",
+    "source_id": "BW-SPACS-05",
+    "purpose": "Verify student can withdraw application from Correction Required state.",
+    "preconditions": "Application is in 'Correction Required' state.",
+    "action_or_input": "Student requests withdrawal of the application.",
+    "expected_result": "Application state changes to 'Withdrawn'.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-008",
+    "source_id": "BW-SPACS-05",
+    "purpose": "Verify withdrawal from Verified/Routed is allowed only if Convener review hasn't begun and scheme permits.",
+    "preconditions": "Application is in 'Verified/Routed for Decision'; Convener has not opened the task; scheme marks state as withdrawable.",
+    "action_or_input": "Student requests withdrawal of the application.",
+    "expected_result": "Application state changes to 'Withdrawn'.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-009",
+    "source_id": "BW-SPACS-06",
+    "purpose": "Verify renewal submission and successful verification.",
+    "preconditions": "Scholarship is renewable; renewal window is open; student is eligible.",
+    "action_or_input": "Student submits renewal application. SPACS Assistant opens and verifies the renewal.",
+    "expected_result": "State transitions: Awarded/Renewal Eligible -> Renewal Submitted -> Renewal Under Verification -> Renewal Verified/Routed.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-010",
+    "source_id": "BW-SPACS-07",
+    "purpose": "Verify renewal approval path.",
+    "preconditions": "Renewal application is in 'Renewal Verified/Routed' state.",
+    "action_or_input": "SPACS Convener opens the renewal decision and approves.",
+    "expected_result": "State transitions: Renewal Verified/Routed -> Renewal Under Decision -> Renewed/Approved.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-011",
+    "source_id": "BW-SPACS-10",
+    "purpose": "Verify renewal rejection path.",
+    "preconditions": "Renewal application is in 'Renewal Verified/Routed' state.",
+    "action_or_input": "SPACS Convener opens the renewal decision and rejects.",
+    "expected_result": "State transitions: Renewal Verified/Routed -> Renewal Under Decision -> Renewal Rejected.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-012",
+    "source_id": "BW-SPACS-08",
+    "purpose": "Verify award cycle candidate pool preparation and committee evaluation.",
+    "preconditions": "Award cycle is open.",
+    "action_or_input": "SPACS Convener prepares the candidate pool. Award Evaluation Committee begins evaluation and records the result.",
+    "expected_result": "State transitions: Award Cycle Open -> Candidate Pool Prepared -> Under Committee Evaluation -> Committee Result Recorded.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-013",
+    "source_id": "BW-SPACS-09",
+    "purpose": "Verify award finalization and publication when approval is already available.",
+    "preconditions": "Committee result is recorded; required institutional approval evidence is already available.",
+    "action_or_input": "SPACS Convener records the final outcome and publishes the results.",
+    "expected_result": "State transitions: Committee Result Recorded -> Ready for Publication -> Published.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-014",
+    "source_id": "BW-SPACS-11",
+    "purpose": "Verify award finalization when institutional approval is pending.",
+    "preconditions": "Committee result is recorded; required institutional approval evidence is not yet available.",
+    "action_or_input": "SPACS Convener attempts to record outcome (transitions to Awaiting). Later, Convener records the approval evidence and publishes.",
+    "expected_result": "State transitions: Committee Result Recorded -> Awaiting Institutional Approval -> Ready for Publication -> Published.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-015",
+    "source_id": "CW-SPACS-01",
+    "purpose": "Verify Convener can return a verified application for correction.",
+    "preconditions": "Application is in 'Under Convener Review' state.",
+    "action_or_input": "SPACS Convener returns the application for correction.",
+    "expected_result": "State transitions to 'Correction Required'.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-016",
+    "source_id": "CW-SPACS-01",
+    "purpose": "Verify Assistant can route an unresolved verification concern to Convener.",
+    "preconditions": "Application is in 'Under Verification' state; Assistant finds an unresolved concern (e.g., suspected ineligibility).",
+    "action_or_input": "SPACS Assistant records the verification concern.",
+    "expected_result": "State transitions to 'Verification Concern/Routed'.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-017",
+    "source_id": "CW-SPACS-02",
+    "purpose": "Verify renewal correction request and resubmission flow.",
+    "preconditions": "Renewal application is in 'Renewal Under Verification' state.",
+    "action_or_input": "SPACS Assistant requests correction. Student resubmits the renewal. Assistant reverifies.",
+    "expected_result": "State transitions: Renewal Under Verification -> Correction Required -> Renewal Resubmitted -> Renewal Verified/Routed.",
+    "test_type": "Functional / Workflow"
+  },
+  {
+    "test_id": "TC-SPACS-018",
+    "source_id": "PS-Section-4",
+    "purpose": "Verify system prevents duplicate active/submitted applications for the same student, scholarship, and cycle.",
+    "preconditions": "Student has an active or submitted application for a specific scholarship in the current academic cycle.",
+    "action_or_input": "Student attempts to start another application for the same scholarship and cycle.",
+    "expected_result": "System prevents the action and displays a validation error.",
+    "test_type": "Functional / Validation"
+  },
+  {
+    "test_id": "TC-SPACS-019",
+    "source_id": "PS-Section-4",
+    "purpose": "Verify previously uploaded documents can only be reused if still valid and acceptable for the selected scheme.",
+    "preconditions": "Student has a previously uploaded document that is expired or not acceptable for the selected scheme.",
+    "action_or_input": "Student attempts to reuse the invalid/expired document for a new application.",
+    "expected_result": "System rejects the document reuse and requires a new upload.",
+    "test_type": "Functional / Validation"
+  },
+  {
+    "test_id": "TC-SPACS-020",
+    "source_id": "PS-Section-4",
+    "purpose": "Verify draft applications are preserved on recoverable timeout or system error.",
+    "preconditions": "Student is actively filling out an application draft.",
+    "action_or_input": "A recoverable timeout or system error occurs during the session.",
+    "expected_result": "System preserves the draft data so it can be recovered upon the student's next login.",
+    "test_type": "Functional / Reliability"
+  },
+  {
+    "test_id": "TC-SPACS-021",
+    "source_id": "PS-Section-9",
+    "purpose": "Verify significant actions are time-stamped and audit logged.",
+    "preconditions": "User is authenticated and performs a significant action (e.g., submission, decision, catalogue publication).",
+    "action_or_input": "The significant action is executed in the system.",
+    "expected_result": "System creates an audit log entry with timestamp, actor, and action details. The log is protected from ordinary modification.",
+    "test_type": "Functional / Audit"
+  },
+  {
+    "test_id": "TC-SPACS-022",
+    "source_id": "PS-Section-9",
+    "purpose": "Verify uncompleted tasks are routed according to currently configured role assignment when a role holder changes.",
+    "preconditions": "A task is assigned to Role A, currently held by User X. User Y is subsequently assigned to Role A.",
+    "action_or_input": "Role holder changes from User X to User Y.",
+    "expected_result": "Uncompleted tasks for Role A are now accessible and routed to User Y without altering previously recorded actor/audit history.",
+    "test_type": "Functional / Workflow"
+  }
+]
