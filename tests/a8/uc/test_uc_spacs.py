@@ -2,6 +2,7 @@
 
 Generated strictly according to UC_DESIGN.json test cases: TC-SPACS-001-M through TC-SPACS-026-E1.
 """
+
 import pytest
 from rest_framework.test import APIClient
 
@@ -48,9 +49,7 @@ def _make_student_client(stub_iam, user_id=1001, permissions=None):
 
 def _make_assistant_client(stub_iam, user_id=2001, permissions=None):
     if permissions is None:
-        permissions = (
-            P_APPLICATION_REVIEW,
-        )
+        permissions = (P_APPLICATION_REVIEW,)
     stub_iam(
         make_session(
             user_id=user_id,
@@ -90,6 +89,7 @@ def _make_convener_client(stub_iam, user_id=3001, permissions=None):
 # ---------------------------------------------------------------------------
 # Test Cases from UC_DESIGN.json
 # ---------------------------------------------------------------------------
+
 
 def test_tc_spacs_001_m_uc_spacs_001_main_flow():
     """
@@ -136,16 +136,23 @@ def test_tc_spacs_001_a2_uc_spacs_001_alt_a2():
     )
 
 
-def test_tc_spacs_001_a3_uc_spacs_001_alt_a3():
+def test_tc_spacs_001_a3_uc_spacs_001_alt_a3(stub_iam):
     """
     test_id: TC-SPACS-001-A3
     source_id: UC-SPACS-001 Alt A3
     purpose: Verify blocking submission when eligibility or completeness validation fails.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Submission eligibility and completeness validation are not "
-        "implemented in A8_BASE."
+    client = _make_student_client(stub_iam, user_id=1001)
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_MERIT_UC",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_DRAFT,
+        documents_list=[],
     )
+    resp = client.post(f"/api/v1/spacs/applications/{app.application_id}/submit/")
+    assert resp.status_code == 400
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_DRAFT
 
 
 def test_tc_spacs_001_e1_uc_spacs_001_exc_e1(stub_iam):
@@ -206,16 +213,29 @@ def test_tc_spacs_002_m_uc_spacs_002_main_flow(stub_iam):
     assert conv_get.json()["verification_status"] == ScholarshipApplication.VERIFICATION_VERIFIED
 
 
-def test_tc_spacs_002_a1_uc_spacs_002_alt_a1():
+def test_tc_spacs_002_a1_uc_spacs_002_alt_a1(stub_iam):
     """
     test_id: TC-SPACS-002-A1
     source_id: UC-SPACS-002 Alt A1
     purpose: Verify requesting correction from the student.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Requesting correction by SPACS Assistant and notification "
-        "are not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_CORRECTION_UC",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        assigned_assistant_user_id=2001,
+        documents_list=["doc1"],
     )
+    asst_client = _make_assistant_client(stub_iam, user_id=2001)
+    resp = asst_client.post(
+        f"/api/v1/spacs/applications/{app.application_id}/return_for_correction/",
+        {"decision_note": "Please upload income proof certificate."},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_CORRECTION_REQUIRED
+    assert app.decision_note == "Please upload income proof certificate."
 
 
 def test_tc_spacs_002_a2_uc_spacs_002_alt_a2(stub_iam):
@@ -352,16 +372,23 @@ def test_tc_spacs_003_e1_uc_spacs_003_exc_e1(stub_iam):
     assert resp.status_code == 403
 
 
-def test_tc_spacs_004_m_uc_spacs_004_main_flow():
+def test_tc_spacs_004_m_uc_spacs_004_main_flow(stub_iam):
     """
     test_id: TC-SPACS-004-M
     source_id: UC-SPACS-004 Main Flow
     purpose: Verify successful withdrawal of a pending application.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Task closing, audit logging, and withdrawal notification "
-        "dispatch are not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_WITHDRAW_UC",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_SUBMITTED,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+    assert resp.status_code in (200, 204)
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_WITHDRAWN
 
 
 def test_tc_spacs_004_a1_uc_spacs_004_alt_a1(stub_iam):
@@ -409,27 +436,52 @@ def test_tc_spacs_004_e1_uc_spacs_004_exc_e1(stub_iam):
     assert resp.status_code == 403
 
 
-def test_tc_spacs_006_m_uc_spacs_006_main_flow():
+def test_tc_spacs_006_m_uc_spacs_006_main_flow(stub_iam):
     """
     test_id: TC-SPACS-006-M
     source_id: UC-SPACS-006 Main Flow
     purpose: Verify making a final scholarship decision (Approve/Reject).
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Policy version recording and student decision notification "
-        "are not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_DECIDE_UC",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        documents_list=["doc1"],
     )
+    conv_client = _make_convener_client(stub_iam, user_id=3001)
+    resp = conv_client.post(
+        f"/api/v1/spacs/applications/{app.application_id}/approve/",
+        {"decision_note": "Application approved by Convener."},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_APPROVED
+    assert app.decision_note == "Application approved by Convener."
 
 
-def test_tc_spacs_006_a1_uc_spacs_006_alt_a1():
+def test_tc_spacs_006_a1_uc_spacs_006_alt_a1(stub_iam):
     """
     test_id: TC-SPACS-006-A1
     source_id: UC-SPACS-006 Alt A1
     purpose: Verify returning an application for correction by the Convener.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Student correction notification dispatch is not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_DECIDE_UC",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        documents_list=["doc1"],
     )
+    conv_client = _make_convener_client(stub_iam, user_id=3001)
+    resp = conv_client.post(
+        f"/api/v1/spacs/applications/{app.application_id}/return_for_correction/",
+        {"decision_note": "Return for document correction by Convener."},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_CORRECTION_REQUIRED
+    assert app.decision_note == "Return for document correction by Convener."
 
 
 def test_tc_spacs_006_e1_uc_spacs_006_exc_e1(stub_iam):
@@ -470,9 +522,7 @@ def test_tc_spacs_007_a1_uc_spacs_007_alt_a1():
     source_id: UC-SPACS-007 Alt A1
     purpose: Verify export by authorized staff.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Application export endpoint is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Application export endpoint is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_007_e1_uc_spacs_007_exc_e1():
@@ -481,9 +531,7 @@ def test_tc_spacs_007_e1_uc_spacs_007_exc_e1():
     source_id: UC-SPACS-007 Exc E1
     purpose: Verify denial of export when access check fails.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Application export endpoint is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Application export endpoint is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_008_m_uc_spacs_008_main_flow(stub_iam):
@@ -565,9 +613,7 @@ def test_tc_spacs_011_a1_uc_spacs_011_alt_a1():
         "historical version in place."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Catalogue versioning interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Catalogue versioning interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_012_m_uc_spacs_012_main_flow():
@@ -576,9 +622,7 @@ def test_tc_spacs_012_m_uc_spacs_012_main_flow():
     source_id: UC-SPACS-012 Main Flow
     purpose: Verify successful retirement/deactivation of a catalogue entry.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Catalogue retirement interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Catalogue retirement interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_014_m_uc_spacs_014_main_flow():
@@ -587,9 +631,7 @@ def test_tc_spacs_014_m_uc_spacs_014_main_flow():
     source_id: UC-SPACS-014 Main Flow
     purpose: Verify browsing of published scholarship/award catalogue.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Catalogue browsing interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Catalogue browsing interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_015_m_uc_spacs_015_main_flow():
@@ -701,9 +743,7 @@ def test_tc_spacs_019_a1_uc_spacs_019_alt_a1():
     source_id: UC-SPACS-019 Alt A1
     purpose: Verify blocking publication when required approval is missing.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award approval validation interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award approval validation interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_020_m_uc_spacs_020_main_flow():
@@ -712,9 +752,7 @@ def test_tc_spacs_020_m_uc_spacs_020_main_flow():
     source_id: UC-SPACS-020 Main Flow
     purpose: Verify successful publication of approved award results.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award results publication interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award results publication interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_020_e1_uc_spacs_020_exc_e1():
@@ -735,9 +773,7 @@ def test_tc_spacs_021_m_uc_spacs_021_main_flow():
     source_id: UC-SPACS-021 Main Flow
     purpose: Verify successful viewing of SPACS audit trail.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: SPACS audit trail viewing interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: SPACS audit trail viewing interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_021_e1_uc_spacs_021_exc_e1():
@@ -812,9 +848,7 @@ def test_tc_spacs_024_e1_uc_spacs_024_exc_e1():
     source_id: UC-SPACS-024 Exc E1
     purpose: Verify handling of notification delivery failure.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: SLA notification delivery handling is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: SLA notification delivery handling is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_025_m_uc_spacs_025_main_flow():
@@ -856,9 +890,7 @@ def test_tc_spacs_025_e1_uc_spacs_025_exc_e1():
     source_id: UC-SPACS-025 Exc E1
     purpose: Verify handling of renewal reminder delivery failure.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Renewal reminder delivery handling is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Renewal reminder delivery handling is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_026_m_uc_spacs_026_main_flow():

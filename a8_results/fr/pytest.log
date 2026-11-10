@@ -1,17 +1,175 @@
-ssssssssss..s.ssss..s.s..ss.ss.s.s.sssssssssssssss.s                     [100%]
+sssssssssF..s.Fsss..F.F..ss.ss.s.F.sssssssssssssss.s                     [100%]
+=================================== FAILURES ===================================
+_______________________ test_tc_spacs_010_afr_spacs_010 ________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x109983560>
+
+    def test_tc_spacs_010_afr_spacs_010(stub_iam):
+        """
+        test_id: TC_SPACS_010
+        source_id: AFR-SPACS-010
+        purpose: Verify system prevents duplicate active/submitted applications for the same
+            student, scholarship, and cycle.
+        """
+        ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_MERIT_2026",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_SUBMITTED,
+            documents_list=["doc1"],
+        )
+        client = _make_student_client(stub_iam, user_id=1001)
+        resp = client.post(
+            "/api/v1/spacs/applications/",
+            {
+                "scheme_id": "SCHEME_MERIT_2026",
+                "student_id": 1001,
+                "status": "draft",
+                "documents_list": ["doc2"],
+            },
+            format="json",
+        )
+>       assert resp.status_code == 400
+E       assert 201 == 400
+E        +  where 201 = <Response status_code=201, "application/json">.status_code
+
+tests/a8/fr/test_fr_spacs.py:224: AssertionError
+_______________________ test_tc_spacs_015_afr_spacs_015 ________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x109679300>
+
+    def test_tc_spacs_015_afr_spacs_015(stub_iam):
+        """
+        test_id: TC_SPACS_015
+        source_id: AFR-SPACS-015
+        purpose: Verify system blocks submission if mandatory fields or required documents are missing.
+        """
+        client = _make_student_client(stub_iam, user_id=1001)
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_MERIT_2026",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_DRAFT,
+            documents_list=[],
+        )
+        resp = client.post(f"/api/v1/spacs/applications/{app.application_id}/submit/")
+>       assert resp.status_code == 400
+E       assert 200 == 400
+E        +  where 200 = <Response status_code=200, "application/json">.status_code
+
+tests/a8/fr/test_fr_spacs.py:341: AssertionError
+_______________________ test_tc_spacs_021_afr_spacs_021 ________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x109679120>
+
+    def test_tc_spacs_021_afr_spacs_021(stub_iam):
+        """
+        test_id: TC_SPACS_021
+        source_id: AFR-SPACS-021
+        purpose: Verify SPACS Assistant can return an application to the student for correction
+            with a recorded reason.
+        """
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_MERIT_2026",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+            assigned_assistant_user_id=2001,
+            documents_list=["doc1"],
+        )
+        asst_client = _make_assistant_client(stub_iam, user_id=2001)
+        resp = asst_client.post(
+            f"/api/v1/spacs/applications/{app.application_id}/return_for_correction/",
+            {"decision_note": "Please re-upload proof with readable date."},
+            format="json",
+        )
+>       assert resp.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response status_code=403, "application/json">.status_code
+
+tests/a8/fr/test_fr_spacs.py:475: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-11-10 12:49:49 WARNING django.request Forbidden: /api/v1/spacs/applications/6a02775f-ed58-459b-8b2c-249183334b47/return_for_correction/
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/6a02775f-ed58-459b-8b2c-249183334b47/return_for_correction/
+_______________________ test_tc_spacs_023_afr_spacs_023 ________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x109679940>
+
+    def test_tc_spacs_023_afr_spacs_023(stub_iam):
+        """
+        test_id: TC_SPACS_023
+        source_id: AFR-SPACS-023
+        purpose: Verify system revalidates a corrected resubmission and invalidates prior
+            verification if applicable.
+        """
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_MERIT_2026",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_CORRECTION_REQUIRED,
+            verification_status=ScholarshipApplication.VERIFICATION_ISSUES_FOUND,
+            verification_findings={"error": "blurry scan"},
+            documents_list=["doc_old"],
+        )
+        client = _make_student_client(stub_iam, user_id=1001)
+        resp = client.patch(
+            f"/api/v1/spacs/applications/{app.application_id}/",
+            {"documents_list": ["doc_corrected"], "status": "submitted"},
+            format="json",
+        )
+        assert resp.status_code == 200
+        app.refresh_from_db()
+>       assert app.verification_status == ScholarshipApplication.VERIFICATION_PENDING
+E       AssertionError: assert 'issues_found' == 'pending'
+E         
+E         - pending
+E         + issues_found
+
+tests/a8/fr/test_fr_spacs.py:532: AssertionError
+_______________________ test_tc_spacs_034_afr_spacs_034 ________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x10972c220>
+
+    def test_tc_spacs_034_afr_spacs_034(stub_iam):
+        """
+        test_id: TC_SPACS_034
+        source_id: AFR-SPACS-034
+        purpose: Verify system records withdrawal, closes tasks, sets state to Withdrawn, retains
+            audit history, and notifies parties.
+        """
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_MERIT_2026",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+            documents_list=["doc1"],
+        )
+        client = _make_student_client(stub_iam, user_id=1001)
+        resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+>       assert resp.status_code in (200, 204)
+E       assert 403 in (200, 204)
+E        +  where 403 = <Response status_code=403, "application/json">.status_code
+
+tests/a8/fr/test_fr_spacs.py:805: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-11-10 12:49:49 WARNING django.request Forbidden: /api/v1/spacs/applications/b61cb44f-d01e-4bf8-98ed-463df1776905/
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/b61cb44f-d01e-4bf8-98ed-463df1776905/
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.12.15-final-0 _______________
 
-Name                           Stmts   Miss Branch BrPart  Cover
-----------------------------------------------------------------
+Name                           Stmts   Miss Branch BrPart  Cover   Missing
+--------------------------------------------------------------------------
 modules/spacs/__init__.py          0      0      0      0   100%
 modules/spacs/apps.py              5      0      0      0   100%
-modules/spacs/models.py           54      2      0      0    96%
-modules/spacs/permissions.py     151     48     68     13    61%
-modules/spacs/serializers.py      24      1      4      1    93%
+modules/spacs/models.py           54      1      0      0    98%   118
+modules/spacs/permissions.py     151     46     68     11    63%   76, 91, 96, 111, 114, 124, 128-131, 147-152, 178-181, 199-208, 227-228, 245, 255-266, 269-288, 291-294
+modules/spacs/serializers.py      24      1      4      1    93%   58
 modules/spacs/urls.py              6      0      0      0   100%
-modules/spacs/views.py           121     22     34     10    77%
-----------------------------------------------------------------
-TOTAL                            361     73    106     24    73%
+modules/spacs/views.py           121     15     34     11    82%   55, 64, 101, 113, 117, 122, 134, 144, 165, 170, 178, 219-222
+--------------------------------------------------------------------------
+TOTAL                            361     63    106     23    76%
 Coverage XML written to file a8_results/fr/coverage.xml
-13 passed, 39 skipped in 1.58s
+=========================== short test summary info ============================
+FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_010_afr_spacs_010 - assert...
+FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_015_afr_spacs_015 - assert...
+FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_021_afr_spacs_021 - assert...
+FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_023_afr_spacs_023 - Assert...
+FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_034_afr_spacs_034 - assert...
+5 failed, 13 passed, 34 skipped in 1.60s

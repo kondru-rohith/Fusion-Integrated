@@ -110,8 +110,7 @@ def test_tc_spacs_002_afr_spacs_002():
     purpose: Verify system displays all required details for a published catalogue entry.
     """
     pytest.skip(
-        "NOT_AUTOMATED: Catalogue entry detail interface and models are not "
-        "implemented in A8_BASE."
+        "NOT_AUTOMATED: Catalogue entry detail interface and models are not implemented in A8_BASE."
     )
 
 
@@ -169,10 +168,7 @@ def test_tc_spacs_007_afr_spacs_007():
     purpose: Verify system preserves an auditable version history of catalogue criteria and
         publication status.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Catalogue version history interface is not implemented in "
-        "A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Catalogue version history interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_008_afr_spacs_008():
@@ -201,17 +197,31 @@ def test_tc_spacs_009_afr_spacs_009():
     )
 
 
-def test_tc_spacs_010_afr_spacs_010():
+def test_tc_spacs_010_afr_spacs_010(stub_iam):
     """
     test_id: TC_SPACS_010
     source_id: AFR-SPACS-010
     purpose: Verify system prevents duplicate active/submitted applications for the same
         student, scholarship, and cycle.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Duplicate application validation across academic cycles is "
-        "not implemented in A8_BASE."
+    ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_MERIT_2026",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_SUBMITTED,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.post(
+        "/api/v1/spacs/applications/",
+        {
+            "scheme_id": "SCHEME_MERIT_2026",
+            "student_id": 1001,
+            "status": "draft",
+            "documents_list": ["doc2"],
+        },
+        format="json",
+    )
+    assert resp.status_code == 400
 
 
 def test_tc_spacs_011_afr_spacs_011(stub_iam):
@@ -314,16 +324,23 @@ def test_tc_spacs_014_afr_spacs_014(stub_iam):
     assert data["status"] == ScholarshipApplication.STATUS_DRAFT
 
 
-def test_tc_spacs_015_afr_spacs_015():
+def test_tc_spacs_015_afr_spacs_015(stub_iam):
     """
     test_id: TC_SPACS_015
     source_id: AFR-SPACS-015
     purpose: Verify system blocks submission if mandatory fields or required documents are missing.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Mandatory field and required document submission validation "
-        "is not implemented in A8_BASE."
+    client = _make_student_client(stub_iam, user_id=1001)
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_MERIT_2026",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_DRAFT,
+        documents_list=[],
     )
+    resp = client.post(f"/api/v1/spacs/applications/{app.application_id}/submit/")
+    assert resp.status_code == 400
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_DRAFT
 
 
 def test_tc_spacs_016_afr_spacs_016():
@@ -435,17 +452,30 @@ def test_tc_spacs_020_afr_spacs_020(stub_iam):
     assert reject_resp.status_code == 403
 
 
-def test_tc_spacs_021_afr_spacs_021():
+def test_tc_spacs_021_afr_spacs_021(stub_iam):
     """
     test_id: TC_SPACS_021
     source_id: AFR-SPACS-021
     purpose: Verify SPACS Assistant can return an application to the student for correction
         with a recorded reason.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Returning application for correction by SPACS Assistant and "
-        "notification are not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_MERIT_2026",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        assigned_assistant_user_id=2001,
+        documents_list=["doc1"],
     )
+    asst_client = _make_assistant_client(stub_iam, user_id=2001)
+    resp = asst_client.post(
+        f"/api/v1/spacs/applications/{app.application_id}/return_for_correction/",
+        {"decision_note": "Please re-upload proof with readable date."},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_CORRECTION_REQUIRED
+    assert app.decision_note == "Please re-upload proof with readable date."
 
 
 def test_tc_spacs_022_afr_spacs_022(stub_iam):
@@ -476,17 +506,30 @@ def test_tc_spacs_022_afr_spacs_022(stub_iam):
     assert app.status == ScholarshipApplication.STATUS_SUBMITTED
 
 
-def test_tc_spacs_023_afr_spacs_023():
+def test_tc_spacs_023_afr_spacs_023(stub_iam):
     """
     test_id: TC_SPACS_023
     source_id: AFR-SPACS-023
     purpose: Verify system revalidates a corrected resubmission and invalidates prior
         verification if applicable.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Automatic revalidation and verification invalidation on "
-        "resubmission is not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_MERIT_2026",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_CORRECTION_REQUIRED,
+        verification_status=ScholarshipApplication.VERIFICATION_ISSUES_FOUND,
+        verification_findings={"error": "blurry scan"},
+        documents_list=["doc_old"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.patch(
+        f"/api/v1/spacs/applications/{app.application_id}/",
+        {"documents_list": ["doc_corrected"], "status": "submitted"},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.verification_status == ScholarshipApplication.VERIFICATION_PENDING
 
 
 def test_tc_spacs_024_afr_spacs_024(stub_iam):
@@ -565,8 +608,7 @@ def test_tc_spacs_026_afr_spacs_026():
         exceed SLA thresholds.
     """
     pytest.skip(
-        "NOT_AUTOMATED: SLA monitoring job and threshold escalation are not "
-        "implemented in A8_BASE."
+        "NOT_AUTOMATED: SLA monitoring job and threshold escalation are not implemented in A8_BASE."
     )
 
 
@@ -745,17 +787,24 @@ def test_tc_spacs_033_afr_spacs_033(stub_iam):
     assert app.status == ScholarshipApplication.STATUS_APPROVED
 
 
-def test_tc_spacs_034_afr_spacs_034():
+def test_tc_spacs_034_afr_spacs_034(stub_iam):
     """
     test_id: TC_SPACS_034
     source_id: AFR-SPACS-034
     purpose: Verify system records withdrawal, closes tasks, sets state to Withdrawn, retains
         audit history, and notifies parties.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Task closing, audit logging, and party notification upon "
-        "withdrawal are not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_MERIT_2026",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+    assert resp.status_code in (200, 204)
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_WITHDRAWN
 
 
 def test_tc_spacs_035_afr_spacs_035(stub_iam):
@@ -920,10 +969,7 @@ def test_tc_spacs_046_afr_spacs_046():
     purpose: Verify system blocks publication of award results before the required final
         approval is recorded.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award results publication interface is not implemented in "
-        "A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award results publication interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_047_afr_spacs_047():

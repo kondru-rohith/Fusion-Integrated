@@ -1,17 +1,145 @@
-.s..ss.sssssss..sss.ss                                                   [100%]
+.F..FF.sssssss..sFs.ss                                                   [100%]
+=================================== FAILURES ===================================
+________________________ test_tc_spacs_002_bw_spacs_02 _________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x10a60d120>
+
+    def test_tc_spacs_002_bw_spacs_02(stub_iam):
+        """
+        test_id: TC-SPACS-002
+        source_id: BW-SPACS-02
+        purpose: Verify correction request and successful resubmission flow.
+        """
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_CORRECTION_WF",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+            assigned_assistant_user_id=2001,
+            documents_list=["doc1"],
+        )
+        asst_client = _make_assistant_client(stub_iam, user_id=2001)
+        resp = asst_client.post(
+            f"/api/v1/spacs/applications/{app.application_id}/return_for_correction/",
+            {"decision_note": "Please upload valid documents."},
+            format="json",
+        )
+>       assert resp.status_code == 200
+E       assert 403 == 200
+E        +  where 403 = <Response status_code=403, "application/json">.status_code
+
+tests/a8/wf/test_wf_spacs.py:159: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-11-10 12:50:41 WARNING django.request Forbidden: /api/v1/spacs/applications/e5661b98-fa53-4999-831e-802d87895fd1/return_for_correction/
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/e5661b98-fa53-4999-831e-802d87895fd1/return_for_correction/
+________________________ test_tc_spacs_005_bw_spacs_05 _________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x10a60d300>
+
+    def test_tc_spacs_005_bw_spacs_05(stub_iam):
+        """
+        test_id: TC-SPACS-005
+        source_id: BW-SPACS-05
+        purpose: Verify student can withdraw application from Submitted state.
+        """
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_WITHDRAW_WF",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_SUBMITTED,
+            documents_list=["doc1"],
+        )
+        client = _make_student_client(stub_iam, user_id=1001)
+        resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+>       assert resp.status_code in (200, 204)
+E       assert 403 in (200, 204)
+E        +  where 403 = <Response status_code=403, "application/json">.status_code
+
+tests/a8/wf/test_wf_spacs.py:227: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-11-10 12:50:41 WARNING django.request Forbidden: /api/v1/spacs/applications/31146534-2ba5-494a-9db0-d951a8de44c1/
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/31146534-2ba5-494a-9db0-d951a8de44c1/
+________________________ test_tc_spacs_006_bw_spacs_05 _________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x10a6968e0>
+
+    def test_tc_spacs_006_bw_spacs_05(stub_iam):
+        """
+        test_id: TC-SPACS-006
+        source_id: BW-SPACS-05
+        purpose: Verify student can withdraw application from Under Verification state.
+        """
+        app = ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_WITHDRAW_WF_UV",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+            documents_list=["doc1"],
+        )
+        client = _make_student_client(stub_iam, user_id=1001)
+        resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+>       assert resp.status_code in (200, 204)
+E       assert 403 in (200, 204)
+E        +  where 403 = <Response status_code=403, "application/json">.status_code
+
+tests/a8/wf/test_wf_spacs.py:246: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-11-10 12:50:41 WARNING django.request Forbidden: /api/v1/spacs/applications/8ad75f1b-bf40-443c-801d-09b83353d8b8/
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/8ad75f1b-bf40-443c-801d-09b83353d8b8/
+________________________ test_tc_spacs_018_ps_section_4 ________________________
+
+stub_iam = <function stub_iam.<locals>._install at 0x10a6959e0>
+
+    def test_tc_spacs_018_ps_section_4(stub_iam):
+        """
+        test_id: TC-SPACS-018
+        source_id: PS-Section-4
+        purpose: (
+            "Verify system prevents duplicate active/submitted applications for the "
+            "same student, scholarship, and cycle."
+        )
+        """
+        ScholarshipApplication.objects.create(
+            scheme_id="SCHEME_DUP_WF",
+            student_id=1001,
+            status=ScholarshipApplication.STATUS_SUBMITTED,
+            documents_list=["doc1"],
+        )
+        client = _make_student_client(stub_iam, user_id=1001)
+        resp = client.post(
+            "/api/v1/spacs/applications/",
+            {
+                "scheme_id": "SCHEME_DUP_WF",
+                "student_id": 1001,
+                "status": "draft",
+                "documents_list": ["doc2"],
+            },
+            format="json",
+        )
+>       assert resp.status_code == 400
+E       assert 201 == 400
+E        +  where 201 = <Response status_code=201, "application/json">.status_code
+
+tests/a8/wf/test_wf_spacs.py:438: AssertionError
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.12.15-final-0 _______________
 
-Name                           Stmts   Miss Branch BrPart  Cover
-----------------------------------------------------------------
+Name                           Stmts   Miss Branch BrPart  Cover   Missing
+--------------------------------------------------------------------------
 modules/spacs/__init__.py          0      0      0      0   100%
 modules/spacs/apps.py              5      0      0      0   100%
-modules/spacs/models.py           54      2      0      0    96%
-modules/spacs/permissions.py     151     56     68     11    55%
-modules/spacs/serializers.py      24      1      4      1    93%
+modules/spacs/models.py           54      2      0      0    96%   78, 118
+modules/spacs/permissions.py     151     53     68     10    58%   76, 91, 96, 111, 114, 124, 128-131, 145-152, 163, 178-181, 199-208, 227-228, 243-266, 269-288, 291-294
+modules/spacs/serializers.py      24      1      4      1    93%   58
 modules/spacs/urls.py              6      0      0      0   100%
-modules/spacs/views.py           121     17     34     12    80%
-----------------------------------------------------------------
-TOTAL                            361     76    106     24    71%
+modules/spacs/views.py           121     17     34     12    80%   55, 64, 92, 101, 113, 117, 122, 134, 144, 165, 170, 178, 219-222, 225
+--------------------------------------------------------------------------
+TOTAL                            361     73    106     23    73%
 Coverage XML written to file a8_results/wf/coverage.xml
-7 passed, 15 skipped in 1.37s
+=========================== short test summary info ============================
+FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_002_bw_spacs_02 - assert 4...
+FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_005_bw_spacs_05 - assert 4...
+FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_006_bw_spacs_05 - assert 4...
+FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_018_ps_section_4 - assert ...
+4 failed, 7 passed, 11 skipped in 1.44s
+

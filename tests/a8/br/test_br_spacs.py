@@ -2,6 +2,7 @@
 
 Generated strictly according to BR_DESIGN.json test cases: TC-SPACS-001A through TC-SPACS-023.
 """
+
 import pytest
 from rest_framework.test import APIClient
 
@@ -48,9 +49,7 @@ def _make_student_client(stub_iam, user_id=1001, permissions=None):
 
 def _make_assistant_client(stub_iam, user_id=2001, permissions=None):
     if permissions is None:
-        permissions = (
-            P_APPLICATION_REVIEW,
-        )
+        permissions = (P_APPLICATION_REVIEW,)
     stub_iam(
         make_session(
             user_id=user_id,
@@ -91,6 +90,7 @@ def _make_convener_client(stub_iam, user_id=3001, permissions=None):
 # Test Cases from BR_DESIGN.json
 # ---------------------------------------------------------------------------
 
+
 def test_tc_spacs_001a_br_spacs_001_eligibility_satisfied(stub_iam):
     """
     test_id: TC-SPACS-001A
@@ -126,7 +126,7 @@ def test_tc_spacs_001b_br_spacs_001_eligibility_failed():
     )
 
 
-def test_tc_spacs_002a_br_spacs_002_duplicate_rejected():
+def test_tc_spacs_002a_br_spacs_002_duplicate_rejected(stub_iam):
     """
     test_id: TC-SPACS-002A
     source_id: BR-SPACS-002-duplicate-rejected
@@ -135,10 +135,24 @@ def test_tc_spacs_002a_br_spacs_002_duplicate_rejected():
         "scheme does not permit duplicates."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Duplicate application validation across academic cycles is "
-        "not implemented in A8_BASE."
+    ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_DUP_002",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_SUBMITTED,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.post(
+        "/api/v1/spacs/applications/",
+        {
+            "scheme_id": "SCHEME_DUP_002",
+            "student_id": 1001,
+            "status": "draft",
+            "documents_list": ["doc2"],
+        },
+        format="json",
+    )
+    assert resp.status_code == 400
 
 
 def test_tc_spacs_002b_br_spacs_002_duplicate_permitted():
@@ -195,15 +209,23 @@ def test_tc_spacs_004a_br_spacs_004_complete_submission(stub_iam):
     assert app.status == ScholarshipApplication.STATUS_SUBMITTED
 
 
-def test_tc_spacs_004b_br_spacs_004_incomplete_blocked():
+def test_tc_spacs_004b_br_spacs_004_incomplete_blocked(stub_iam):
     """
     test_id: TC-SPACS-004B
     source_id: BR-SPACS-004-incomplete-blocked
     purpose: Verify that an incomplete application is blocked from submission.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Incomplete application submission validation is not implemented in A8_BASE."
+    client = _make_student_client(stub_iam, user_id=1001)
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_INCOMPLETE_004",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_DRAFT,
+        documents_list=[],
     )
+    resp = client.post(f"/api/v1/spacs/applications/{app.application_id}/submit/")
+    assert resp.status_code == 400
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_DRAFT
 
 
 def test_tc_spacs_005a_br_spacs_005_authorized_review_access(stub_iam):
@@ -356,16 +378,23 @@ def test_tc_spacs_008_br_spacs_008_notification_on_status_change():
     )
 
 
-def test_tc_spacs_009a_br_spacs_009_withdrawal_before_decision():
+def test_tc_spacs_009a_br_spacs_009_withdrawal_before_decision(stub_iam):
     """
     test_id: TC-SPACS-009A
     source_id: BR-SPACS-009-withdrawal-before-decision
     purpose: Verify that a student can withdraw their application before a final decision.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Task closing, audit logging, and notification on withdrawal "
-        "are not implemented in A8_BASE."
+    client = _make_student_client(stub_iam, user_id=1001)
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_WITHDRAW_009A",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_SUBMITTED,
+        documents_list=["doc1"],
     )
+    resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+    assert resp.status_code in (200, 204)
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_WITHDRAWN
 
 
 def test_tc_spacs_009b_br_spacs_009_withdrawal_after_decision_denied(stub_iam):
@@ -448,7 +477,7 @@ def test_tc_spacs_010b_br_spacs_010_non_owner_modification_denied(stub_iam):
     assert resp.status_code in (403, 404)
 
 
-def test_tc_spacs_011_br_spacs_011_correction_invalidates_verification():
+def test_tc_spacs_011_br_spacs_011_correction_invalidates_verification(stub_iam):
     """
     test_id: TC-SPACS-011
     source_id: BR-SPACS-011-correction-invalidates-verification
@@ -457,10 +486,23 @@ def test_tc_spacs_011_br_spacs_011_correction_invalidates_verification():
         "information."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Automatic invalidation of previous verification upon resubmission "
-        "is not implemented in A8_BASE."
+    client = _make_student_client(stub_iam, user_id=1001)
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_RESUBMIT_011",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_CORRECTION_REQUIRED,
+        verification_status=ScholarshipApplication.VERIFICATION_ISSUES_FOUND,
+        verification_findings={"issue": "unclear income slip"},
+        documents_list=["doc_old"],
     )
+    resp = client.patch(
+        f"/api/v1/spacs/applications/{app.application_id}/",
+        {"documents_list": ["doc_corrected"], "status": "submitted"},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.verification_status == ScholarshipApplication.VERIFICATION_PENDING
 
 
 def test_tc_spacs_012a_br_spacs_012_student_export_own():
@@ -480,9 +522,7 @@ def test_tc_spacs_012b_br_spacs_012_student_export_other_denied():
     source_id: BR-SPACS-012-student-export-other-denied
     purpose: Verify that a student is denied export of another student's application.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Application export endpoint is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Application export endpoint is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_013_br_spacs_013_sla_escalation_triggered():
@@ -508,9 +548,7 @@ def test_tc_spacs_014_br_spacs_014_active_catalogue_version_used():
         "effective for the cycle."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Catalogue-policy version binding is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Catalogue-policy version binding is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_015_br_spacs_015_catalogue_publication_blocked():
@@ -570,9 +608,7 @@ def test_tc_spacs_017_br_spacs_017_renewal_fresh_decision():
     source_id: BR-SPACS-017-renewal-fresh-decision
     purpose: Verify that a renewal undergoes fresh verification and decision.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_018a_br_spacs_018_convener_final_approval(stub_iam):
@@ -630,9 +666,7 @@ def test_tc_spacs_019_br_spacs_019_award_evaluation_follows_policy():
         "defined by the active award policy."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award evaluation committee workflow is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award evaluation committee workflow is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_020_br_spacs_020_award_criteria_versioning():
@@ -644,9 +678,7 @@ def test_tc_spacs_020_br_spacs_020_award_criteria_versioning():
         "effective for the cycle."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award criteria versioning interface is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award criteria versioning interface is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_021_br_spacs_021_audit_records_protected():
@@ -686,6 +718,4 @@ def test_tc_spacs_023_br_spacs_023_award_candidate_source_configured():
         "by the active award policy."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award cycle candidate generation is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award cycle candidate generation is not implemented in A8_BASE.")

@@ -2,6 +2,7 @@
 
 Generated strictly according to WF_DESIGN.json test cases: TC-SPACS-001 through TC-SPACS-022.
 """
+
 import pytest
 from rest_framework.test import APIClient
 
@@ -48,9 +49,7 @@ def _make_student_client(stub_iam, user_id=1001, permissions=None):
 
 def _make_assistant_client(stub_iam, user_id=2001, permissions=None):
     if permissions is None:
-        permissions = (
-            P_APPLICATION_REVIEW,
-        )
+        permissions = (P_APPLICATION_REVIEW,)
     stub_iam(
         make_session(
             user_id=user_id,
@@ -90,6 +89,7 @@ def _make_convener_client(stub_iam, user_id=3001, permissions=None):
 # ---------------------------------------------------------------------------
 # Test Cases from WF_DESIGN.json
 # ---------------------------------------------------------------------------
+
 
 def test_tc_spacs_001_bw_spacs_01(stub_iam):
     """
@@ -137,16 +137,28 @@ def test_tc_spacs_001_bw_spacs_01(stub_iam):
     assert conv_resp.status_code == 200
 
 
-def test_tc_spacs_002_bw_spacs_02():
+def test_tc_spacs_002_bw_spacs_02(stub_iam):
     """
     test_id: TC-SPACS-002
     source_id: BW-SPACS-02
     purpose: Verify correction request and successful resubmission flow.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Correction request workflow by SPACS Assistant is not "
-        "implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_CORRECTION_WF",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        assigned_assistant_user_id=2001,
+        documents_list=["doc1"],
     )
+    asst_client = _make_assistant_client(stub_iam, user_id=2001)
+    resp = asst_client.post(
+        f"/api/v1/spacs/applications/{app.application_id}/return_for_correction/",
+        {"decision_note": "Please upload valid documents."},
+        format="json",
+    )
+    assert resp.status_code == 200
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_CORRECTION_REQUIRED
 
 
 def test_tc_spacs_003_bw_spacs_03(stub_iam):
@@ -198,28 +210,42 @@ def test_tc_spacs_004_bw_spacs_04(stub_iam):
     assert app.decided_by_user_id == 3001
 
 
-def test_tc_spacs_005_bw_spacs_05():
+def test_tc_spacs_005_bw_spacs_05(stub_iam):
     """
     test_id: TC-SPACS-005
     source_id: BW-SPACS-05
     purpose: Verify student can withdraw application from Submitted state.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Task closing, audit logging, and withdrawal notification "
-        "are not implemented in A8_BASE."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_WITHDRAW_WF",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_SUBMITTED,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+    assert resp.status_code in (200, 204)
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_WITHDRAWN
 
 
-def test_tc_spacs_006_bw_spacs_05():
+def test_tc_spacs_006_bw_spacs_05(stub_iam):
     """
     test_id: TC-SPACS-006
     source_id: BW-SPACS-05
     purpose: Verify student can withdraw application from Under Verification state.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Withdrawal from Under Verification state is not permitted "
-        "in A8_BASE permissions."
+    app = ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_WITHDRAW_WF_UV",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_UNDER_VERIFICATION,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.delete(f"/api/v1/spacs/applications/{app.application_id}/")
+    assert resp.status_code in (200, 204)
+    app.refresh_from_db()
+    assert app.status == ScholarshipApplication.STATUS_WITHDRAWN
 
 
 def test_tc_spacs_007_bw_spacs_05(stub_iam):
@@ -265,9 +291,7 @@ def test_tc_spacs_009_bw_spacs_06():
     source_id: BW-SPACS-06
     purpose: Verify renewal submission and successful verification.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_010_bw_spacs_07():
@@ -276,9 +300,7 @@ def test_tc_spacs_010_bw_spacs_07():
     source_id: BW-SPACS-07
     purpose: Verify renewal approval path.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_011_bw_spacs_10():
@@ -287,9 +309,7 @@ def test_tc_spacs_011_bw_spacs_10():
     source_id: BW-SPACS-10
     purpose: Verify renewal rejection path.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Scholarship renewal workflow is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_012_bw_spacs_08():
@@ -310,9 +330,7 @@ def test_tc_spacs_013_bw_spacs_09():
     source_id: BW-SPACS-09
     purpose: Verify award finalization and publication when approval is already available.
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Award publication workflow is not implemented in A8_BASE."
-    )
+    pytest.skip("NOT_AUTOMATED: Award publication workflow is not implemented in A8_BASE.")
 
 
 def test_tc_spacs_014_bw_spacs_11():
@@ -391,7 +409,7 @@ def test_tc_spacs_017_cw_spacs_02():
     )
 
 
-def test_tc_spacs_018_ps_section_4():
+def test_tc_spacs_018_ps_section_4(stub_iam):
     """
     test_id: TC-SPACS-018
     source_id: PS-Section-4
@@ -400,10 +418,24 @@ def test_tc_spacs_018_ps_section_4():
         "same student, scholarship, and cycle."
     )
     """
-    pytest.skip(
-        "NOT_AUTOMATED: Duplicate application prevention across academic cycles is "
-        "not implemented in A8_BASE."
+    ScholarshipApplication.objects.create(
+        scheme_id="SCHEME_DUP_WF",
+        student_id=1001,
+        status=ScholarshipApplication.STATUS_SUBMITTED,
+        documents_list=["doc1"],
     )
+    client = _make_student_client(stub_iam, user_id=1001)
+    resp = client.post(
+        "/api/v1/spacs/applications/",
+        {
+            "scheme_id": "SCHEME_DUP_WF",
+            "student_id": 1001,
+            "status": "draft",
+            "documents_list": ["doc2"],
+        },
+        format="json",
+    )
+    assert resp.status_code == 400
 
 
 def test_tc_spacs_019_ps_section_4():
