@@ -2,7 +2,7 @@ sssssssssF..s.Fsss..F.F..ss.ss.s.F.sssssssssssssss.s                     [100%]
 =================================== FAILURES ===================================
 _______________________ test_tc_spacs_010_afr_spacs_010 ________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x109983560>
+stub_iam = <function stub_iam.<locals>._install at 0x10e0d4900>
 
     def test_tc_spacs_010_afr_spacs_010(stub_iam):
         """
@@ -35,7 +35,7 @@ E        +  where 201 = <Response status_code=201, "application/json">.status_co
 tests/a8/fr/test_fr_spacs.py:224: AssertionError
 _______________________ test_tc_spacs_015_afr_spacs_015 ________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x109679300>
+stub_iam = <function stub_iam.<locals>._install at 0x10e574b80>
 
     def test_tc_spacs_015_afr_spacs_015(stub_iam):
         """
@@ -58,7 +58,7 @@ E        +  where 200 = <Response status_code=200, "application/json">.status_co
 tests/a8/fr/test_fr_spacs.py:341: AssertionError
 _______________________ test_tc_spacs_021_afr_spacs_021 ________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x109679120>
+stub_iam = <function stub_iam.<locals>._install at 0x10e5759e0>
 
     def test_tc_spacs_021_afr_spacs_021(stub_iam):
         """
@@ -86,12 +86,12 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/fr/test_fr_spacs.py:475: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:49:49 WARNING django.request Forbidden: /api/v1/spacs/applications/6a02775f-ed58-459b-8b2c-249183334b47/return_for_correction/
+2026-11-10 13:16:14 WARNING django.request Forbidden: /api/v1/spacs/applications/a8be3a66-8a18-47b6-97c0-9648bbc0b172/return_for_correction/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/6a02775f-ed58-459b-8b2c-249183334b47/return_for_correction/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/a8be3a66-8a18-47b6-97c0-9648bbc0b172/return_for_correction/
 _______________________ test_tc_spacs_023_afr_spacs_023 ________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x109679940>
+stub_iam = <function stub_iam.<locals>._install at 0x10e574ea0>
 
     def test_tc_spacs_023_afr_spacs_023(stub_iam):
         """
@@ -125,7 +125,7 @@ E         + issues_found
 tests/a8/fr/test_fr_spacs.py:532: AssertionError
 _______________________ test_tc_spacs_034_afr_spacs_034 ________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10972c220>
+stub_iam = <function stub_iam.<locals>._install at 0x10dcf2340>
 
     def test_tc_spacs_034_afr_spacs_034(stub_iam):
         """
@@ -148,9 +148,9 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/fr/test_fr_spacs.py:805: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:49:49 WARNING django.request Forbidden: /api/v1/spacs/applications/b61cb44f-d01e-4bf8-98ed-463df1776905/
+2026-11-10 13:16:14 WARNING django.request Forbidden: /api/v1/spacs/applications/c520b926-7adb-4ebb-83f7-10969fa60ac7/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/b61cb44f-d01e-4bf8-98ed-463df1776905/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/c520b926-7adb-4ebb-83f7-10969fa60ac7/
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.12.15-final-0 _______________
 
@@ -172,4 +172,4 @@ FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_015_afr_spacs_015 - assert...
 FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_021_afr_spacs_021 - assert...
 FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_023_afr_spacs_023 - Assert...
 FAILED tests/a8/fr/test_fr_spacs.py::test_tc_spacs_034_afr_spacs_034 - assert...
-5 failed, 13 passed, 34 skipped in 1.60s
+5 failed, 13 passed, 34 skipped in 1.71s

@@ -2,7 +2,7 @@ s.sF..F..ss..F.....sss..ssssssssssssssssssssssssssssssssss               [100%]
 =================================== FAILURES ===================================
 ___________________ test_tc_spacs_001_a3_uc_spacs_001_alt_a3 ___________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10e8f8540>
+stub_iam = <function stub_iam.<locals>._install at 0x10bf54040>
 
     def test_tc_spacs_001_a3_uc_spacs_001_alt_a3(stub_iam):
         """
@@ -25,7 +25,7 @@ E        +  where 200 = <Response status_code=200, "application/json">.status_co
 tests/a8/uc/test_uc_spacs.py:153: AssertionError
 ___________________ test_tc_spacs_002_a1_uc_spacs_002_alt_a1 ___________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10e4f5940>
+stub_iam = <function stub_iam.<locals>._install at 0x10b9918a0>
 
     def test_tc_spacs_002_a1_uc_spacs_002_alt_a1(stub_iam):
         """
@@ -52,12 +52,12 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/uc/test_uc_spacs.py:235: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:49:59 WARNING django.request Forbidden: /api/v1/spacs/applications/2d685fd3-59d8-42a8-8fea-da0d71c87ffe/return_for_correction/
+2026-11-10 13:17:30 WARNING django.request Forbidden: /api/v1/spacs/applications/11aa8488-2ea7-48d6-b89c-2d14c68d773d/return_for_correction/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/2d685fd3-59d8-42a8-8fea-da0d71c87ffe/return_for_correction/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/11aa8488-2ea7-48d6-b89c-2d14c68d773d/return_for_correction/
 __________________ test_tc_spacs_004_m_uc_spacs_004_main_flow __________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10e216980>
+stub_iam = <function stub_iam.<locals>._install at 0x10bfd8b80>
 
     def test_tc_spacs_004_m_uc_spacs_004_main_flow(stub_iam):
         """
@@ -79,9 +79,9 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/uc/test_uc_spacs.py:389: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:49:59 WARNING django.request Forbidden: /api/v1/spacs/applications/423fbabf-5e4e-49cb-b99f-e64c3f954a8a/
+2026-11-10 13:17:30 WARNING django.request Forbidden: /api/v1/spacs/applications/1be8d832-e6ca-427e-9eb5-9e339d3e91b3/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/423fbabf-5e4e-49cb-b99f-e64c3f954a8a/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/1be8d832-e6ca-427e-9eb5-9e339d3e91b3/
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.12.15-final-0 _______________
 
@@ -101,4 +101,4 @@ Coverage XML written to file a8_results/uc/coverage.xml
 FAILED tests/a8/uc/test_uc_spacs.py::test_tc_spacs_001_a3_uc_spacs_001_alt_a3
 FAILED tests/a8/uc/test_uc_spacs.py::test_tc_spacs_002_a1_uc_spacs_002_alt_a1
 FAILED tests/a8/uc/test_uc_spacs.py::test_tc_spacs_004_m_uc_spacs_004_main_flow
-3 failed, 14 passed, 41 skipped in 1.58s
+3 failed, 14 passed, 41 skipped in 1.52s

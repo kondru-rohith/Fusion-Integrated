@@ -2,7 +2,7 @@
 =================================== FAILURES ===================================
 ______________ test_tc_spacs_002a_br_spacs_002_duplicate_rejected ______________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10e5d1800>
+stub_iam = <function stub_iam.<locals>._install at 0x10aba8180>
 
     def test_tc_spacs_002a_br_spacs_002_duplicate_rejected(stub_iam):
         """
@@ -37,7 +37,7 @@ E        +  where 201 = <Response status_code=201, "application/json">.status_co
 tests/a8/br/test_br_spacs.py:155: AssertionError
 ______________ test_tc_spacs_004b_br_spacs_004_incomplete_blocked ______________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10e5d19e0>
+stub_iam = <function stub_iam.<locals>._install at 0x10aba8540>
 
     def test_tc_spacs_004b_br_spacs_004_incomplete_blocked(stub_iam):
         """
@@ -60,7 +60,7 @@ E        +  where 200 = <Response status_code=200, "application/json">.status_co
 tests/a8/br/test_br_spacs.py:226: AssertionError
 __________ test_tc_spacs_009a_br_spacs_009_withdrawal_before_decision __________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10df30220>
+stub_iam = <function stub_iam.<locals>._install at 0x10ac5da80>
 
     def test_tc_spacs_009a_br_spacs_009_withdrawal_before_decision(stub_iam):
         """
@@ -82,12 +82,12 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/br/test_br_spacs.py:395: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:50:21 WARNING django.request Forbidden: /api/v1/spacs/applications/d07c624c-f9e4-44ee-aadd-888c3a410118/
+2026-11-10 13:17:38 WARNING django.request Forbidden: /api/v1/spacs/applications/33d28fe0-028f-406f-aea0-dd3a4706dcca/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/d07c624c-f9e4-44ee-aadd-888c3a410118/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/33d28fe0-028f-406f-aea0-dd3a4706dcca/
 ______ test_tc_spacs_011_br_spacs_011_correction_invalidates_verification ______
 
-stub_iam = <function stub_iam.<locals>._install at 0x10df33060>
+stub_iam = <function stub_iam.<locals>._install at 0x10ac68680>
 
     def test_tc_spacs_011_br_spacs_011_correction_invalidates_verification(stub_iam):
         """
@@ -141,5 +141,4 @@ FAILED tests/a8/br/test_br_spacs.py::test_tc_spacs_002a_br_spacs_002_duplicate_r
 FAILED tests/a8/br/test_br_spacs.py::test_tc_spacs_004b_br_spacs_004_incomplete_blocked
 FAILED tests/a8/br/test_br_spacs.py::test_tc_spacs_009a_br_spacs_009_withdrawal_before_decision
 FAILED tests/a8/br/test_br_spacs.py::test_tc_spacs_011_br_spacs_011_correction_invalidates_verification
-4 failed, 13 passed, 17 skipped in 1.54s
-
+4 failed, 13 passed, 17 skipped in 1.55s

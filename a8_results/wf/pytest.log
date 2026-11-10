@@ -2,7 +2,7 @@
 =================================== FAILURES ===================================
 ________________________ test_tc_spacs_002_bw_spacs_02 _________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10a60d120>
+stub_iam = <function stub_iam.<locals>._install at 0x10dec0fe0>
 
     def test_tc_spacs_002_bw_spacs_02(stub_iam):
         """
@@ -29,12 +29,12 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/wf/test_wf_spacs.py:159: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:50:41 WARNING django.request Forbidden: /api/v1/spacs/applications/e5661b98-fa53-4999-831e-802d87895fd1/return_for_correction/
+2026-11-10 13:17:45 WARNING django.request Forbidden: /api/v1/spacs/applications/4ca87448-1f5b-4059-a711-b5f214903e94/return_for_correction/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/e5661b98-fa53-4999-831e-802d87895fd1/return_for_correction/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/4ca87448-1f5b-4059-a711-b5f214903e94/return_for_correction/
 ________________________ test_tc_spacs_005_bw_spacs_05 _________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10a60d300>
+stub_iam = <function stub_iam.<locals>._install at 0x10d8fa660>
 
     def test_tc_spacs_005_bw_spacs_05(stub_iam):
         """
@@ -56,12 +56,12 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/wf/test_wf_spacs.py:227: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:50:41 WARNING django.request Forbidden: /api/v1/spacs/applications/31146534-2ba5-494a-9db0-d951a8de44c1/
+2026-11-10 13:17:45 WARNING django.request Forbidden: /api/v1/spacs/applications/049a8668-2089-4e69-aff2-62ef800e9397/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/31146534-2ba5-494a-9db0-d951a8de44c1/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/049a8668-2089-4e69-aff2-62ef800e9397/
 ________________________ test_tc_spacs_006_bw_spacs_05 _________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10a6968e0>
+stub_iam = <function stub_iam.<locals>._install at 0x10d8faa20>
 
     def test_tc_spacs_006_bw_spacs_05(stub_iam):
         """
@@ -83,12 +83,12 @@ E        +  where 403 = <Response status_code=403, "application/json">.status_co
 
 tests/a8/wf/test_wf_spacs.py:246: AssertionError
 ----------------------------- Captured stderr call -----------------------------
-2026-11-10 12:50:41 WARNING django.request Forbidden: /api/v1/spacs/applications/8ad75f1b-bf40-443c-801d-09b83353d8b8/
+2026-11-10 13:17:45 WARNING django.request Forbidden: /api/v1/spacs/applications/129078b0-5bcc-40bf-be4e-a2741a8e0b46/
 ------------------------------ Captured log call -------------------------------
-WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/8ad75f1b-bf40-443c-801d-09b83353d8b8/
+WARNING  django.request:log.py:293 Forbidden: /api/v1/spacs/applications/129078b0-5bcc-40bf-be4e-a2741a8e0b46/
 ________________________ test_tc_spacs_018_ps_section_4 ________________________
 
-stub_iam = <function stub_iam.<locals>._install at 0x10a6959e0>
+stub_iam = <function stub_iam.<locals>._install at 0x10df8d6c0>
 
     def test_tc_spacs_018_ps_section_4(stub_iam):
         """
@@ -141,5 +141,4 @@ FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_002_bw_spacs_02 - assert 4...
 FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_005_bw_spacs_05 - assert 4...
 FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_006_bw_spacs_05 - assert 4...
 FAILED tests/a8/wf/test_wf_spacs.py::test_tc_spacs_018_ps_section_4 - assert ...
-4 failed, 7 passed, 11 skipped in 1.44s
-
+4 failed, 7 passed, 11 skipped in 1.46s
