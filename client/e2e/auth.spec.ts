@@ -30,7 +30,6 @@ test.describe("sign-in", () => {
       "Opportunities",
       "My Applications",
       "My Offers",
-      "My Profile",
     ]);
     await links.filter({ hasText: "Opportunities" }).click();
     await expect(page.getByRole("heading", { name: "Opportunities", level: 2 })).toBeVisible();
