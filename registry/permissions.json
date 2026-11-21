@@ -43,6 +43,13 @@
           "placement_cell.job_posting.view",
           "placement_cell.report.view"
         ],
+        "acadadmin": [
+          "placement_cell.academic_directory.view",
+          "placement_cell.application.review",
+          "placement_cell.application.view",
+          "placement_cell.job_posting.view",
+          "placement_cell.report.view"
+        ],
         "placement_chairman": [
           "placement_cell.academic_directory.view",
           "placement_cell.announcement.publish",
@@ -84,6 +91,7 @@
       },
       "module_grants": [
         "Dean Academic",
+        "acadadmin",
         "placement_chairman",
         "placement_coordinator",
         "placement_officer",
@@ -277,6 +285,180 @@
       "system_permissions": [
         "placement_cell.application.auto_withdraw",
         "placement_cell.offer.expire"
+      ]
+    },
+    "spacs": {
+      "grants": {
+        "Dean Academic": [
+          "spacs.application.approve",
+          "spacs.application.export",
+          "spacs.application.review",
+          "spacs.audit.view",
+          "spacs.award_candidate.review",
+          "spacs.award_cycle.manage",
+          "spacs.catalogue.manage",
+          "spacs.catalogue.view"
+        ],
+        "award_committee_member": [
+          "spacs.award_candidate.review",
+          "spacs.catalogue.view"
+        ],
+        "spacs_assistant": [
+          "spacs.application.export",
+          "spacs.application.review",
+          "spacs.catalogue.view"
+        ],
+        "spacs_auditor": [
+          "spacs.audit.view",
+          "spacs.catalogue.view"
+        ],
+        "spacs_convener": [
+          "spacs.application.approve",
+          "spacs.application.export",
+          "spacs.application.review",
+          "spacs.audit.view",
+          "spacs.award_candidate.review",
+          "spacs.award_cycle.manage",
+          "spacs.catalogue.manage",
+          "spacs.catalogue.view"
+        ],
+        "student": [
+          "spacs.application.create",
+          "spacs.application.delete",
+          "spacs.application.export",
+          "spacs.application.update",
+          "spacs.application.view_self",
+          "spacs.catalogue.view"
+        ]
+      },
+      "module_grants": [
+        "Dean Academic",
+        "award_committee_member",
+        "spacs_assistant",
+        "spacs_auditor",
+        "spacs_convener",
+        "student"
+      ],
+      "nav": {
+        "base_path": "/spacs",
+        "icon": "Award",
+        "items": [
+          {
+            "code": "spacs.catalogue",
+            "icon": "ClipboardText",
+            "label": "Opportunities",
+            "required_permission": "spacs.catalogue.view",
+            "sort_order": 10,
+            "to": "/spacs/catalogue"
+          },
+          {
+            "code": "spacs.mine",
+            "icon": "UserCheck",
+            "label": "My Applications",
+            "required_permission": "spacs.application.view_self",
+            "sort_order": 20,
+            "to": "/spacs/mine"
+          },
+          {
+            "code": "spacs.verification",
+            "icon": "Checks",
+            "label": "Verification Queue",
+            "required_permission": "spacs.application.review",
+            "sort_order": 30,
+            "to": "/spacs/verification-queue"
+          },
+          {
+            "code": "spacs.decisions",
+            "icon": "Signature",
+            "label": "Decision Approvals",
+            "required_permission": "spacs.application.approve",
+            "sort_order": 40,
+            "to": "/spacs/decision-queue"
+          },
+          {
+            "code": "spacs.catalogue_admin",
+            "icon": "Gear",
+            "label": "Scheme Catalogue",
+            "required_permission": "spacs.catalogue.manage",
+            "sort_order": 50,
+            "to": "/spacs/catalogue-admin"
+          },
+          {
+            "code": "spacs.awards",
+            "icon": "Medal",
+            "label": "Convocation Awards",
+            "required_permission": "spacs.award_candidate.review",
+            "sort_order": 60,
+            "to": "/spacs/awards"
+          },
+          {
+            "code": "spacs.audit",
+            "icon": "ShieldCheck",
+            "label": "Audit Trail",
+            "required_permission": "spacs.audit.view",
+            "sort_order": 70,
+            "to": "/spacs/audit"
+          }
+        ],
+        "label": "Awards & Scholarships",
+        "nav_section": "Academics",
+        "sort_order": 15,
+        "status": "active"
+      },
+      "permissions": [
+        {
+          "code": "spacs.catalogue.view",
+          "label": "Browse published scholarship and award schemes"
+        },
+        {
+          "code": "spacs.catalogue.manage",
+          "label": "Create, edit, publish and retire catalogue entries"
+        },
+        {
+          "code": "spacs.application.view_self",
+          "label": "View own scholarship applications"
+        },
+        {
+          "code": "spacs.application.create",
+          "label": "Submit a scholarship application or renewal"
+        },
+        {
+          "code": "spacs.application.update",
+          "label": "Modify an editable application draft or correction"
+        },
+        {
+          "code": "spacs.application.delete",
+          "label": "Withdraw an application"
+        },
+        {
+          "code": "spacs.application.export",
+          "label": "Export or print an application"
+        },
+        {
+          "code": "spacs.application.review",
+          "label": "Verify application evidence and request corrections"
+        },
+        {
+          "code": "spacs.application.approve",
+          "label": "Sanction or reject scholarship applications"
+        },
+        {
+          "code": "spacs.award_cycle.manage",
+          "label": "Open award cycles, prepare candidate pools, publish results"
+        },
+        {
+          "code": "spacs.award_candidate.review",
+          "label": "Evaluate and score award candidates in committee"
+        },
+        {
+          "code": "spacs.audit.view",
+          "label": "View protected SPACS audit trail"
+        }
+      ],
+      "scope_permissions": [],
+      "system_permissions": [
+        "spacs.renewal.remind",
+        "spacs.sla.escalate"
       ]
     }
   },

@@ -17,12 +17,12 @@ For the intended taxonomy of modules not yet built, see
 
 | Code | What it allows | Held by |
 |---|---|---|
-| `placement_cell.job_posting.view` | See job postings | `Dean Academic`, `placement_chairman`, `placement_coordinator`, `placement_officer`, `student` |
+| `placement_cell.job_posting.view` | See job postings | `Dean Academic`, `acadadmin`, `placement_chairman`, `placement_coordinator`, `placement_officer`, `student` |
 | `placement_cell.job_posting.manage` | Create and publish postings | `placement_officer` |
-| `placement_cell.application.view` | See all applications | `Dean Academic`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
+| `placement_cell.application.view` | See all applications | `Dean Academic`, `acadadmin`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
 | `placement_cell.application.view_self` | See one's own applications | `student` |
 | `placement_cell.application.create` | Apply to a posting | `student` |
-| `placement_cell.application.review` | Shortlist and reject applications | `placement_coordinator`, `placement_officer` |
+| `placement_cell.application.review` | Shortlist and reject applications | `acadadmin`, `placement_coordinator`, `placement_officer` |
 | `placement_cell.application.delete` | Withdraw an application | `student` |
 | `placement_cell.application.auto_withdraw` | System auto-withdrawal | _service only_ |
 | `placement_cell.interview.schedule` | Schedule interview rounds | `placement_officer` |
@@ -32,9 +32,26 @@ For the intended taxonomy of modules not yet built, see
 | `placement_cell.offer.expire` | System offer expiry | _service only_ |
 | `placement_cell.company.manage` | Register and approve companies | `placement_officer` |
 | `placement_cell.announcement.publish` | Publish announcements | `Dean Academic`, `placement_chairman`, `placement_officer` |
-| `placement_cell.report.view` | See operational reports | `Dean Academic`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
+| `placement_cell.report.view` | See operational reports | `Dean Academic`, `acadadmin`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
 | `placement_cell.registration.debar` | Record conduct incidents and impose placement sanctions | `placement_officer` |
 | `placement_cell.registration.manage` | Approve late registrations and re-registrations | `placement_officer` |
 | `placement_cell.registration.self` | Register yourself for a placement season | `student` |
 | `placement_cell.record.manage` | Record off-campus placements and chase offer letters | `placement_officer` |
-| `placement_cell.academic_directory.view` | Browse every student's declared CPI | `Dean Academic`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
+| `placement_cell.academic_directory.view` | Browse every student's declared CPI | `Dean Academic`, `acadadmin`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
+
+## `spacs`
+
+| Code | What it allows | Held by |
+|---|---|---|
+| `spacs.catalogue.view` | Browse published scholarship and award schemes | `Dean Academic`, `award_committee_member`, `spacs_assistant`, `spacs_auditor`, `spacs_convener`, `student` |
+| `spacs.catalogue.manage` | Create, edit, publish and retire catalogue entries | `Dean Academic`, `spacs_convener` |
+| `spacs.application.view_self` | View own scholarship applications | `student` |
+| `spacs.application.create` | Submit a scholarship application or renewal | `student` |
+| `spacs.application.update` | Modify an editable application draft or correction | `student` |
+| `spacs.application.delete` | Withdraw an application | `student` |
+| `spacs.application.export` | Export or print an application | `Dean Academic`, `spacs_assistant`, `spacs_convener`, `student` |
+| `spacs.application.review` | Verify application evidence and request corrections | `Dean Academic`, `spacs_assistant`, `spacs_convener` |
+| `spacs.application.approve` | Sanction or reject scholarship applications | `Dean Academic`, `spacs_convener` |
+| `spacs.award_cycle.manage` | Open award cycles, prepare candidate pools, publish results | `Dean Academic`, `spacs_convener` |
+| `spacs.award_candidate.review` | Evaluate and score award candidates in committee | `Dean Academic`, `award_committee_member`, `spacs_convener` |
+| `spacs.audit.view` | View protected SPACS audit trail | `Dean Academic`, `spacs_auditor`, `spacs_convener` |

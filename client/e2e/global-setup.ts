@@ -11,28 +11,63 @@ import { AUTH_DIR, LOGIN_RETRY_MS, LOGIN_TRIES, stateFile } from "./support/sess
 const HERE = fileURLToPath(new URL(".", import.meta.url));
 const IAM_DIR = resolve(process.env.E2E_IAM_DIR ?? resolve(HERE, "../../../Fusion_System_Administrator"));
 
+
 function grantRoles(): void {
   const python = resolve(IAM_DIR, "Backend/venv/bin/python");
+
   if (!existsSync(python)) {
-    console.warn(`e2e: no IAM at ${IAM_DIR}; set E2E_IAM_DIR to grant roles, checking them only`);
+    console.warn(
+      `e2e: no IAM at ${IAM_DIR}; set E2E_IAM_DIR to prepare test roles`
+    );
     return;
   }
-  // This repo's settings module and DB_* would override the IAM's own .env.
-  const env = Object.fromEntries(Object.entries(process.env)
-    .filter(([key]) => key !== "DJANGO_SETTINGS_MODULE" && !key.startsWith("DB_")));
-  for (const account of Object.values(ACCOUNTS) as Account[]) {
-    for (const designation of account.grants) {
-      try {
-        execFileSync(python, ["manage.py", "assign_role", "--user", account.username,
-          "--designation", designation],
-        { cwd: resolve(IAM_DIR, "Backend/backend"), env, stdio: "pipe" });
-      } catch (err) {
-        const stderr = (err as { stderr?: Buffer }).stderr?.toString().trim() ?? "";
-        throw new Error(`e2e: assign_role ${designation} on ${account.username} failed: ${stderr}`);
-      }
-    }
+
+  const cwd = resolve(IAM_DIR, "Backend/backend");
+
+  const env = Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([key]) => key !== "DJANGO_SETTINGS_MODULE" && !key.startsWith("DB_")
+    )
+  );
+
+  try {
+    // Populate the IAM role catalogue.
+    execFileSync(
+      python,
+      ["manage.py", "seed_iam_roles"],
+      { cwd, env, stdio: "inherit" }
+    );
+
+    // Synchronize ERP identities.
+    execFileSync(
+      python,
+      ["manage.py", "sync_identity", "--keep-missing"],
+      { cwd, env, stdio: "inherit" }
+    );
+
+    // Prepare the synthetic placement officer E2E account.
+    const fixture = [
+      "from iam.models import IamUser, IamUserDesignation, IamRole",
+      "user = IamUser.objects.get(username='stf00062', is_active=True)",
+      "role = IamRole.objects.get(code='placement_officer', is_active=True)",
+      "assert user.kind in role.kinds, 'Placement officer role is not allowed for this account kind'",
+      "IamUserDesignation.objects.update_or_create(",
+      "    erp_user_id=user.erp_user_id, designation=role.code",
+      ")",
+      "print('E2E placement officer fixture prepared:', user.username)",
+    ].join("\n");
+
+    execFileSync(
+      python,
+      ["manage.py", "shell", "-c", fixture],
+      { cwd, env, stdio: "inherit" }
+    );
+
+  } catch (err) {
+    throw new Error(`e2e: IAM setup failed: ${String(err)}`);
   }
 }
+
 
 async function rolesOf(api: APIRequestContext): Promise<string[] | null> {
   const me = await api.get("/api/v1/me");
