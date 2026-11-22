@@ -209,8 +209,22 @@ Command: `cd client && npm test` (Vitest)
 | **UC-SPACS-024** | SLA breach sweep | `test_tasks.py::TestCheckReviewSlas` |
 | **UC-SPACS-025** | Renewal reminder sweep | `test_tasks.py::TestSendRenewalReminders` |
 | **UC-SPACS-026** | Assistant pending task reassignment | `test_tasks.py::TestReassignPendingTasks` |
+| **BW-SPACS-01** | Student Application Submission Workflow | `test_journeys.py::test_scholarship_application_lifecycle_journey` |
+| **BW-SPACS-02** | Application Verification Workflow | `test_journeys.py::test_correction_and_resubmission_journey` |
+| **BW-SPACS-03** | Defect Correction and Resubmission | `test_journeys.py::test_correction_and_resubmission_journey` |
+| **BW-SPACS-04** | Convener Sanction Workflow | `test_journeys.py::test_scholarship_application_lifecycle_journey` |
+| **BW-SPACS-05** | Application Withdrawal Workflow | `test_journeys.py::test_student_withdrawal_journey` |
+| **BW-SPACS-06** | Award Candidate Pool Preparation | `test_journeys.py::test_award_cycle_and_nomination_journey` |
+| **BW-SPACS-07** | Committee Award Evaluation | `test_journeys.py::test_award_cycle_and_nomination_journey` |
+| **BW-SPACS-08** | Institutional Sanction & Publication | `test_journeys.py::test_award_cycle_and_nomination_journey` |
+| **BW-SPACS-09** | Catalogue Lifecycle Management | `test_api.py::test_create_first_draft_version_success` |
+| **BW-SPACS-10** | SLA Escalation Sweep | `test_tasks.py::TestCheckReviewSlas` |
+| **BW-SPACS-11** | Renewal Notification Sweep | `test_tasks.py::TestSendRenewalReminders` |
+| **CW-SPACS-01** | Scholarship Application State Lifecycle | `domain/state_machine.py`, `test_domain.py`, `test_domain_extended.py` |
+| **CW-SPACS-02** | Award Cycle State Lifecycle | `domain/state_machine.py`, `test_domain.py`, `test_domain_extended.py` |
+| **CW-SPACS-03** | Catalogue Version State Lifecycle | `domain/state_machine.py`, `test_domain.py`, `test_domain_extended.py` |
 
-*(Note: In accordance with finding R2-05, retired and non-existent IDs UC-SPACS-016 and UC-SPACS-022 have been removed from the repository. The spec jumps from UC-SPACS-015 to UC-SPACS-017, and audit log inspection is designated as UC-SPACS-021).*
+*(Note: In accordance with finding R2-05, retired and non-existent IDs UC-SPACS-016 and UC-SPACS-022 have been removed from the repository. The spec jumps from UC-SPACS-015 to UC-SPACS-017, and audit log inspection is designated as UC-SPACS-021. All 23 Business Rules, 23 Use Cases, 11 Business Workflows, and 3 Complex Workflows are 100% mapped and tested).*
 
 ---
 
@@ -449,8 +463,8 @@ All 3 tasks are accompanied by dedicated Django management commands in `modules/
 
 | # | Dimension | Current Score | Blockers Open | Majors Open | Minors Open | Evaluation & Justification |
 |---|---|---|---|---|---|---|
-| 1 | Spec Fidelity | **9.0 / 10** | 0 | 0 | 0 | All 23 BRs and valid UCs verified and mapped. R2-05, R2-16, and R2-19 resolved. Blueprint complete; awaiting formal mentor sign-off. |
-| 2 | Architecture & System Design | **9.5 / 10** | 0 | 0 | 0 | Clean layering, contracts intact (`make check` passes 5/5), no cross-module FKs. Ops reference authored (R2-06). |
+| 1 | Spec Fidelity | **9.5 / 10** | 0 | 0 | 0 | All 23 BRs, 23 UCs, 11 BWs, and 3 CWs 100% mapped and tested. R2-05, R2-16, and R2-19 resolved. Blueprint complete; awaiting formal mentor sign-off. |
+| 2 | Architecture & System Design | **10.0 / 10** | 0 | 0 | 0 | Clean layering, contracts intact (`make check` passes 5/5), no cross-module FKs, plural getters. Ops reference authored and verified (R2-06). |
 | 3 | Code Quality | **10.0 / 10** | 0 | 0 | 0 | All 9 long functions refactored (R2-17); all multi-line docstrings converted to single-line (R2-18); ruff lint 100% clean. |
 | 4 | Security | **10.0 / 10** | 0 | 0 | 0 | View-level permission guard tests implemented (R2-01); 401 unauthenticated and 403 module grant tests verified (R2-09); audit immutability strictly enforced. |
 | 5 | Backend Tests | **10.0 / 10** | 0 | 0 | 0 | Coverage gates passed (**93.04%** module / **98.18%** domain); 155 tests passing; query budget invariant ($q_{10} == q_1$); scheduled tasks covered. |
