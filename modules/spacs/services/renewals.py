@@ -10,9 +10,42 @@ from django.utils import timezone
 
 from core.api.exceptions import BadRequestError, ConflictError, NotFoundError
 from modules.spacs.domain import rules, state_machine
-from modules.spacs.models import ScholarshipApplication
+from modules.spacs.models import CatalogueVersion, ScholarshipApplication
 from modules.spacs.selectors import scoping
 from modules.spacs.services import audit, notifications
+
+
+def _validate_renewal_parent(
+    parent: ScholarshipApplication | None, now
+) -> CatalogueVersion:
+    if parent is None:
+        raise NotFoundError("Prior scholarship application not found.")
+    if parent.status not in (state_machine.APPROVED, state_machine.RENEWED):
+        raise ConflictError(f"Cannot renew scholarship in status {parent.status!r}.")
+    version = parent.catalogue_version
+    if not version.is_renewable:
+        raise ConflictError("This scholarship scheme is not configured for renewal.")
+    is_open, win_msg = rules.is_window_open(
+        version.renewal_window_start, version.renewal_window_end, now
+    )
+    if not is_open:
+        raise BadRequestError(win_msg)
+    return version
+
+
+def _notify_renewal_submitted(
+    renewal_app: ScholarshipApplication, parent: ScholarshipApplication, uid: int
+) -> None:
+    notifications.enqueue(
+        topic="renewal.submitted",
+        dedupe_key=f"renewal.submitted:{renewal_app.pk}",
+        subject=f"Renewal Application Submitted: {parent.catalogue_entry.title}",
+        body=(
+            f"Your renewal application {renewal_app.application_number} "
+            "has been submitted for fresh verification."
+        ),
+        recipient_user_id=uid,
+    )
 
 
 @transaction.atomic
@@ -32,22 +65,8 @@ def apply_renewal(
         .select_related("catalogue_entry", "catalogue_version")
         .first()
     )
-    if parent is None:
-        raise NotFoundError("Prior scholarship application not found.")
-
-    if parent.status not in (state_machine.APPROVED, state_machine.RENEWED):
-        raise ConflictError(f"Cannot renew scholarship in status {parent.status!r}.")
-
-    version = parent.catalogue_version
-    if not version.is_renewable:
-        raise ConflictError("This scholarship scheme is not configured for renewal.")
-
     now = timezone.now()
-    is_open, win_msg = rules.is_window_open(
-        version.renewal_window_start, version.renewal_window_end, now
-    )
-    if not is_open:
-        raise BadRequestError(win_msg)
+    version = _validate_renewal_parent(parent, now)
 
     short_uuid = uuid.uuid4().hex[:6].upper()
     renewal_number = f"SPACS-REN-{version.academic_year.replace('-', '')}-{short_uuid}"
@@ -70,14 +89,5 @@ def apply_renewal(
     audit.record_transition(
         renewal_app, "none", state_machine.RENEWAL_SUBMITTED, actor, "Student applied for renewal"
     )
-    notifications.enqueue(
-        topic="renewal.submitted",
-        dedupe_key=f"renewal.submitted:{renewal_app.pk}",
-        subject=f"Renewal Application Submitted: {parent.catalogue_entry.title}",
-        body=(
-            f"Your renewal application {renewal_app.application_number} "
-            "has been submitted for fresh verification."
-        ),
-        recipient_user_id=uid,
-    )
+    _notify_renewal_submitted(renewal_app, parent, uid)
     return renewal_app

@@ -8,7 +8,7 @@ from decimal import Decimal
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
-from core.api.exceptions import BadRequestError, ConflictError, NotFoundError
+from core.api.exceptions import BadRequestError, ConflictError, NotFoundError, PermissionDeniedError
 from modules.spacs.domain import eligibility, rules, state_machine
 from modules.spacs.models import ApplicationDocument, CatalogueVersion, ScholarshipApplication
 from modules.spacs.selectors import scoping
@@ -20,26 +20,17 @@ def _generate_app_number(academic_year: str) -> str:
     return f"SPACS-{academic_year.replace('-', '')}-{short_uuid}"
 
 
-@transaction.atomic
-def create_draft(
-    *,
-    catalogue_version_id: int,
-    cycle: str,
-    actor,
-    submission_data: dict | None = None,
-    annual_income: Decimal | None = None,
-) -> ScholarshipApplication:
-    """Create a persistent application draft (BR-SPACS-007)."""
+def _validate_student_applicant(actor) -> int:
     uid = scoping.own_user_id(actor)
     if uid is None:
         raise BadRequestError("Authenticated user required.")
-
     actor_kind = getattr(actor, "kind", None)
     if actor_kind and actor_kind != "student":
-        from core.api.exceptions import PermissionDeniedError
-
         raise PermissionDeniedError("Only students can apply for scholarships (BR-SPACS-007).")
+    return uid
 
+
+def _find_active_version(catalogue_version_id: int) -> CatalogueVersion:
     today = timezone.now().date()
     version = (
         CatalogueVersion.objects.filter(
@@ -54,6 +45,21 @@ def create_draft(
     )
     if version is None:
         raise NotFoundError("Active published scholarship scheme not found.")
+    return version
+
+
+@transaction.atomic
+def create_draft(
+    *,
+    catalogue_version_id: int,
+    cycle: str,
+    actor,
+    submission_data: dict | None = None,
+    annual_income: Decimal | None = None,
+) -> ScholarshipApplication:
+    """Create a persistent application draft (BR-SPACS-007)."""
+    uid = _validate_student_applicant(actor)
+    version = _find_active_version(catalogue_version_id)
 
     app_number = _generate_app_number(version.academic_year)
     sub_data = submission_data or {}
@@ -88,8 +94,6 @@ def update_application(
     actor,
 ) -> ScholarshipApplication:
     """Save changes to an editable application draft or correction."""
-    from core.api.exceptions import PermissionDeniedError
-
     actor_kind = getattr(actor, "kind", None)
     uid = scoping.own_user_id(actor)
     if actor_kind != "student" or uid is None:
@@ -110,8 +114,6 @@ def update_application(
         raise ConflictError(f"Application cannot be edited in state {app.status!r}.")
 
     if app.status == state_machine.CORRECTION_REQUIRED:
-        # Reset verification status on all previously-valid documents to pending
-        # so they will be re-evaluated in the upcoming verification pass.
         ApplicationDocument.objects.filter(
             application=app, is_active=True, verification_status="valid"
         ).update(verification_status="pending", verification_notes="")
@@ -132,32 +134,15 @@ def update_application(
     return app
 
 
-@transaction.atomic
-def submit_application(
-    *,
-    application_id: int,
-    actor,
-    student_profile: dict,
-) -> ScholarshipApplication:
-    """Validate completeness & eligibility and advance to Submitted (UC-001, BR-001, 002, 004)."""
-    app = scoping.visible_applications(actor).select_for_update().filter(pk=application_id).first()
-    if app is None:
-        raise NotFoundError("Application not found.")
-
-    if app.status != state_machine.DRAFT:
-        raise ConflictError(f"Cannot submit application in status {app.status!r}.")
-
-    version = app.catalogue_version
-    now = timezone.now()
-
-    # 1. Window check
+def _check_submission_window_and_eligibility(
+    version: CatalogueVersion, app: ScholarshipApplication, student_profile: dict, now
+) -> dict:
     is_open, win_msg = rules.is_window_open(
         version.application_window_start, version.application_window_end, now
     )
     if not is_open:
         raise BadRequestError(win_msg)
 
-    # 2. Eligibility pre-check (BR-SPACS-001)
     income = app.annual_income_declared or student_profile.get("annual_income")
     eval_student = {
         "cpi": (
@@ -173,53 +158,57 @@ def submit_application(
     elig_result = eligibility.evaluate_eligibility(version.eligibility_criteria, eval_student)
     if not elig_result.is_eligible:
         raise BadRequestError("Eligibility criteria not met: " + "; ".join(elig_result.reasons))
+    return eval_student
 
-    # 3. Completeness check (BR-SPACS-004)
-    # Ensure any explicitly referenced documents in submission_data are linked
+
+def _auto_link_required_documents(app: ScholarshipApplication, version: CatalogueVersion) -> None:
     doc_ids = (app.submission_data or {}).get("document_ids", [])
     if doc_ids:
         ApplicationDocument.objects.filter(
             pk__in=doc_ids, user_id=app.user_id, is_active=True, application__isnull=True
         ).update(application=app)
 
-    # Auto-link unattached/reusable active documents owned by student (BR-SPACS-003)
     req_docs = list(version.required_documents or [])
     attached_docs = list(ApplicationDocument.objects.filter(application=app, is_active=True))
     attached_norm_types = {rules.normalize_doc_type(d.doc_type) for d in attached_docs}
 
     for req_doc in req_docs:
         norm_req = rules.normalize_doc_type(req_doc)
-        if norm_req not in attached_norm_types:
-            candidates = (
-                ApplicationDocument.objects.filter(user_id=app.user_id, is_active=True)
-                .exclude(application=app)
-                .order_by("-created_at")
-            )
-            for c in candidates:
-                if rules.normalize_doc_type(c.doc_type) == norm_req:
-                    if c.application is None:
-                        c.application = app
-                        c.save(update_fields=["application"])
-                        attached_norm_types.add(norm_req)
-                        break
-                    if c.is_reusable:
-                        ApplicationDocument.objects.create(
-                            user_id=app.user_id,
-                            application=app,
-                            doc_type=c.doc_type,
-                            title=c.title,
-                            original_filename=c.original_filename,
-                            drive_url=c.drive_url,
-                            drive_file_id=c.drive_file_id,
-                            issued_date=c.issued_date,
-                            valid_until=c.valid_until,
-                            is_active=True,
-                            is_reusable=c.is_reusable,
-                            verification_status="pending",
-                        )
-                        attached_norm_types.add(norm_req)
-                        break
+        if norm_req in attached_norm_types:
+            continue
+        candidates = (
+            ApplicationDocument.objects.filter(user_id=app.user_id, is_active=True)
+            .exclude(application=app)
+            .order_by("-created_at")
+        )
+        for c in candidates:
+            if rules.normalize_doc_type(c.doc_type) == norm_req:
+                if c.application is None:
+                    c.application = app
+                    c.save(update_fields=["application"])
+                    attached_norm_types.add(norm_req)
+                    break
+                if c.is_reusable:
+                    ApplicationDocument.objects.create(
+                        user_id=app.user_id,
+                        application=app,
+                        doc_type=c.doc_type,
+                        title=c.title,
+                        original_filename=c.original_filename,
+                        drive_url=c.drive_url,
+                        drive_file_id=c.drive_file_id,
+                        issued_date=c.issued_date,
+                        valid_until=c.valid_until,
+                        is_active=True,
+                        is_reusable=c.is_reusable,
+                        verification_status="pending",
+                    )
+                    attached_norm_types.add(norm_req)
+                    break
 
+
+def _verify_submission_completeness(app: ScholarshipApplication, version: CatalogueVersion) -> None:
+    req_docs = list(version.required_documents or [])
     attached_doc_types = set(
         ApplicationDocument.objects.filter(application=app, is_active=True).values_list(
             "doc_type", flat=True
@@ -237,7 +226,28 @@ def submit_application(
             errs.append("Missing documents: " + ", ".join(comp_result.missing_documents))
         raise BadRequestError("Application is incomplete: " + "; ".join(errs))
 
-    # 4. State transition
+
+@transaction.atomic
+def submit_application(
+    *,
+    application_id: int,
+    actor,
+    student_profile: dict,
+) -> ScholarshipApplication:
+    """Validate completeness & eligibility and advance to Submitted (UC-001, BR-001, 002, 004)."""
+    app = scoping.visible_applications(actor).select_for_update().filter(pk=application_id).first()
+    if app is None:
+        raise NotFoundError("Application not found.")
+    if app.status != state_machine.DRAFT:
+        raise ConflictError(f"Cannot submit application in status {app.status!r}.")
+
+    version = app.catalogue_version
+    now = timezone.now()
+
+    eval_student = _check_submission_window_and_eligibility(version, app, student_profile, now)
+    _auto_link_required_documents(app, version)
+    _verify_submission_completeness(app, version)
+
     next_state = state_machine.resolve_application_transition(
         app.status, "submit", state_machine.STUDENT
     )
@@ -269,6 +279,23 @@ def submit_application(
     return app
 
 
+def _validate_resubmitting_student(app: ScholarshipApplication | None, actor) -> None:
+    actor_kind = getattr(actor, "kind", None)
+    uid = scoping.own_user_id(actor)
+    if actor_kind != "student" or uid is None:
+        raise PermissionDeniedError(
+            "Only the owning student can resubmit their application (BR-SPACS-010)."
+        )
+    if app is None:
+        raise NotFoundError("Application not found.")
+    if app.user_id != uid:
+        raise PermissionDeniedError(
+            "Only the owning student can resubmit their application (BR-SPACS-010)."
+        )
+    if app.status != state_machine.CORRECTION_REQUIRED:
+        raise ConflictError(f"Cannot resubmit application in status {app.status!r}.")
+
+
 @transaction.atomic
 def resubmit_application(
     *,
@@ -276,26 +303,8 @@ def resubmit_application(
     actor,
 ) -> ScholarshipApplication:
     """Resubmit corrected application (UC-003, BR-011)."""
-    from core.api.exceptions import PermissionDeniedError
-
-    actor_kind = getattr(actor, "kind", None)
-    uid = scoping.own_user_id(actor)
-    if actor_kind != "student" or uid is None:
-        raise PermissionDeniedError(
-            "Only the owning student can resubmit their application (BR-SPACS-010)."
-        )
-
     app = ScholarshipApplication.objects.select_for_update().filter(pk=application_id).first()
-    if app is None:
-        raise NotFoundError("Application not found.")
-
-    if app.user_id != uid:
-        raise PermissionDeniedError(
-            "Only the owning student can resubmit their application (BR-SPACS-010)."
-        )
-
-    if app.status != state_machine.CORRECTION_REQUIRED:
-        raise ConflictError(f"Cannot resubmit application in status {app.status!r}.")
+    _validate_resubmitting_student(app, actor)
 
     version = app.catalogue_version
     attached_doc_types = set(
@@ -347,8 +356,6 @@ def withdraw_application(
     reason: str = "",
 ) -> ScholarshipApplication:
     """Withdraw an application while the lifecycle permits (UC-004, BR-009, BR-010)."""
-    from core.api.exceptions import PermissionDeniedError
-
     actor_kind = getattr(actor, "kind", None)
     uid = scoping.own_user_id(actor)
     if actor_kind != "student" or uid is None:

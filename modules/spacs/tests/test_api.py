@@ -263,7 +263,7 @@ def test_convener_sanction_flow(stub_iam, published_scholarship):
 
 
 def test_award_cycle_and_evaluation_flow(stub_iam):
-    """Convener and committee flow for convocation awards (UC-SPACS-016..020)."""
+    """Convener and committee flow for convocation awards (UC-SPACS-017..020)."""
     today = timezone.now().date()
     entry = CatalogueEntry.objects.create(
         code="director-gold-medal",

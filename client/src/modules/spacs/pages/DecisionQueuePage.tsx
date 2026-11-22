@@ -111,6 +111,7 @@ export default function DecisionQueuePage() {
                     <ActionIcon
                       variant="light"
                       color="blue"
+                      aria-label="View Application Dossier"
                       onClick={() => setSelectedAppId(r.id)}
                     >
                       <FaEye />

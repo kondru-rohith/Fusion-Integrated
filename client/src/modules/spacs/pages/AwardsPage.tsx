@@ -390,6 +390,7 @@ export default function AwardsPage() {
                         <ActionIcon
                           variant="light"
                           color="blue"
+                          aria-label="Evaluate Candidate"
                           onClick={() => setEvaluateCandidate(cand)}
                         >
                           <FaEdit />

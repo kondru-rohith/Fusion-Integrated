@@ -1,7 +1,4 @@
-"""Convocation awards candidate pool, evaluation, and publishing.
-
-Covers CFR-SPACS-013..016, CW-SPACS-03.
-"""
+"""Convocation awards candidate pool, evaluation, and publishing (CW-SPACS-03)."""
 
 from __future__ import annotations
 
@@ -48,10 +45,7 @@ def prepare_candidate_pool(
     candidates_data: list[dict],
     actor,
 ) -> AwardCycle:
-    """Populate candidate pool from academic standings or nominations.
-
-    Specification: UC-SPACS-017, BR-SPACS-023.
-    """
+    """Populate candidate pool from academic standings or nominations (UC-SPACS-017)."""
     cycle = AwardCycle.objects.select_for_update().filter(pk=cycle_id).first()
     if cycle is None:
         raise NotFoundError("Award cycle not found.")
@@ -184,10 +178,7 @@ def record_institutional_approval(
     approval_ref: str,
     actor,
 ) -> AwardCycle:
-    """Record receipt of institutional approval when previously pending.
-
-    Specification: UC-SPACS-019, BW-SPACS-11.
-    """
+    """Record receipt of institutional approval when previously pending (BW-SPACS-11)."""
     cycle = AwardCycle.objects.select_for_update().filter(pk=cycle_id).first()
     if cycle is None:
         raise NotFoundError("Award cycle not found.")

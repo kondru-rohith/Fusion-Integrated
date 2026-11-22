@@ -44,6 +44,29 @@ def create_entry(
     return entry
 
 
+def _compute_version_dates(
+    valid_from: datetime.date | None, valid_to: datetime.date | None
+) -> tuple[datetime.date, datetime.date]:
+    today = timezone.now().date()
+    effective_from = valid_from or today
+    effective_to = valid_to or (effective_from + datetime.timedelta(days=365))
+    return effective_from, effective_to
+
+
+def _persist_version_record(
+    entry: CatalogueEntry, academic_year: str, policy_reference: str, kwargs: dict
+) -> CatalogueVersion:
+    latest = entry.versions.order_by("-version_number").first()
+    next_num = (latest.version_number + 1) if latest else 1
+    return CatalogueVersion.objects.create(
+        entry=entry,
+        version_number=next_num,
+        academic_year=academic_year.strip(),
+        policy_reference=(policy_reference or "").strip(),
+        **kwargs,
+    )
+
+
 @transaction.atomic
 def create_version(
     *,
@@ -69,39 +92,30 @@ def create_version(
     if entry is None:
         raise NotFoundError("Catalogue entry not found.")
 
-    today = timezone.now().date()
-    effective_valid_from = valid_from or today
-    effective_valid_to = valid_to or (effective_valid_from + datetime.timedelta(days=365))
-
-    latest = entry.versions.order_by("-version_number").first()
-    next_num = (latest.version_number + 1) if latest else 1
-
-    version = CatalogueVersion.objects.create(
-        entry=entry,
-        version_number=next_num,
-        academic_year=academic_year.strip(),
-        policy_reference=(policy_reference or "").strip(),
-        candidate_source=candidate_source,
-        valid_from=effective_valid_from,
-        valid_to=effective_valid_to,
-        application_window_start=application_window_start,
-        application_window_end=application_window_end,
-        renewal_window_start=renewal_window_start,
-        renewal_window_end=renewal_window_end,
-        is_renewable=is_renewable,
-        eligibility_criteria=eligibility_criteria or {},
-        required_documents=required_documents or [],
-        renewal_criteria=renewal_criteria or {},
-        committee_config=committee_config or {},
-        sla_threshold_days=sla_threshold_days,
-        status="draft",
-    )
+    effective_from, effective_to = _compute_version_dates(valid_from, valid_to)
+    kwargs = {
+        "candidate_source": candidate_source,
+        "valid_from": effective_from,
+        "valid_to": effective_to,
+        "application_window_start": application_window_start,
+        "application_window_end": application_window_end,
+        "renewal_window_start": renewal_window_start,
+        "renewal_window_end": renewal_window_end,
+        "is_renewable": is_renewable,
+        "eligibility_criteria": eligibility_criteria or {},
+        "required_documents": required_documents or [],
+        "renewal_criteria": renewal_criteria or {},
+        "committee_config": committee_config or {},
+        "sla_threshold_days": sla_threshold_days,
+        "status": "draft",
+    }
+    version = _persist_version_record(entry, academic_year, policy_reference, kwargs)
     audit.log_audit_event(
         "catalogue.version_created",
         actor,
         "CatalogueVersion",
         version.pk,
-        {"version": next_num, "entry": entry.code},
+        {"version": version.version_number, "entry": entry.code},
     )
     return version
 

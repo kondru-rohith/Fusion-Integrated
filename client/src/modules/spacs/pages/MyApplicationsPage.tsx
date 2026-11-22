@@ -126,6 +126,7 @@ export default function MyApplicationsPage() {
                     <ActionIcon
                       variant="light"
                       color="blue"
+                      aria-label="View Details & Timeline"
                       onClick={() => setSelectedAppId(r.id)}
                     >
                       <FaEye />
@@ -138,6 +139,7 @@ export default function MyApplicationsPage() {
                       <ActionIcon
                         variant="light"
                         color="teal"
+                        aria-label="Apply for Scholarship Renewal"
                         onClick={() => setRenewalApp(r)}
                       >
                         <FaRedo />
@@ -153,6 +155,7 @@ export default function MyApplicationsPage() {
                       <ActionIcon
                         variant="light"
                         color="red"
+                        aria-label="Withdraw Application"
                         onClick={() => handleWithdraw(r)}
                       >
                         <FaTrash />

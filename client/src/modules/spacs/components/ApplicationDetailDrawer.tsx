@@ -277,6 +277,7 @@ export function ApplicationDetailDrawer({
                               target="_blank"
                               variant="light"
                               size="sm"
+                              aria-label="Open document in Google Drive"
                             >
                               <FaExternalLinkAlt size={12} />
                             </ActionIcon>

@@ -1,12 +1,4 @@
-"""State machine for SPACS application, renewal, and award lifecycles.
-
-Implements declarative transition tables corresponding to:
-- CW-SPACS-01: Scholarship Application Lifecycle (BW-SPACS-01..05)
-- CW-SPACS-02: Scholarship Renewal Lifecycle (BW-SPACS-06, 07, 10)
-- CW-SPACS-03: Convocation Award Lifecycle (BW-SPACS-08, 09, 11)
-
-Pure Python — no database dependencies.
-"""
+"""State machine for SPACS application, renewal, and award lifecycles (CW-SPACS-01..03)."""
 
 from __future__ import annotations
 

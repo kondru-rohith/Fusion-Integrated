@@ -97,4 +97,40 @@ describe("MyApplicationsPage", () => {
     expect(screen.getByText("8.45")).toBeInTheDocument();
     expect(screen.getByText(/450000|4,50,000|450,000/)).toBeInTheDocument();
   });
+
+  it("renders error state when useMyApplications returns an error (R2-12)", () => {
+    hooks.useMyApplications.mockReturnValue({
+      data: null,
+      isPending: false,
+      error: new Error("Failed to load applications"),
+      refetch: vi.fn(),
+    });
+
+    render(
+      <MantineProvider>
+        <MyApplicationsPage />
+      </MantineProvider>,
+    );
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText(/Could not load this/i)).toBeInTheDocument();
+    expect(screen.queryByText("SPACS-2026-0001")).not.toBeInTheDocument();
+  });
+
+  it("renders empty state when student has zero applications (R2-12)", () => {
+    hooks.useMyApplications.mockReturnValue({
+      data: [],
+      isPending: false,
+      error: null,
+      refetch: vi.fn(),
+    });
+
+    render(
+      <MantineProvider>
+        <MyApplicationsPage />
+      </MantineProvider>,
+    );
+
+    expect(screen.getByText(/No applications submitted yet/i)).toBeInTheDocument();
+  });
 });

@@ -1,11 +1,4 @@
-"""Business rules for application completeness, document reuse, and windows.
-
-Pure Python implementation of:
-- BR-SPACS-003: Reuse of Previously Uploaded Documents
-- BR-SPACS-004: Application Completeness
-- BR-SPACS-009: Withdrawal Before Final Decision
-- BR-SPACS-010: Owner-Only Modification/Withdrawal
-"""
+"""Business rules for application completeness, document reuse, and windows."""
 
 from __future__ import annotations
 
@@ -68,15 +61,7 @@ def validate_document_reuse(
     target_doc_type: str,
     as_of_date: datetime.date,
 ) -> tuple[bool, str]:
-    """Validate if a prior document satisfies reuse rules (BR-SPACS-003).
-
-    `document` dictionary representation:
-      - doc_type: str
-      - is_active: bool
-      - is_reusable: bool
-      - valid_until: datetime.date | None
-      - verification_status: str ("pending", "valid", "invalid", "resubmission_needed")
-    """
+    """Validate if a prior document satisfies reuse rules (BR-SPACS-003)."""
     if not document.get("is_active", True):
         return False, "Document has been deactivated."
 

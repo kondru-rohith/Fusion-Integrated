@@ -1,4 +1,1 @@
-"""Domain logic for the SPACS module.
-
-Pure Python, zero dependencies on Django, DRF, or Celery (.importlinter).
-"""
+"""Domain logic for SPACS module: pure Python, zero dependencies on Django, DRF, or Celery."""

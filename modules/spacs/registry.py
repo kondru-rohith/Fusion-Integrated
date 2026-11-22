@@ -140,3 +140,10 @@ ROLE_GRANTS = {
     "spacs_auditor": _AUDITOR,
     "Dean Academic": [*_CONVENER, *_AUDITOR],
 }
+
+
+def readiness() -> list[str]:
+    from modules.spacs.apps import readiness as check_readiness
+
+    return check_readiness()
+

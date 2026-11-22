@@ -113,6 +113,7 @@ export default function VerificationQueuePage() {
                     <ActionIcon
                       variant="light"
                       color="blue"
+                      aria-label="View Full Details"
                       onClick={() => setSelectedAppId(r.id)}
                     >
                       <FaEye />

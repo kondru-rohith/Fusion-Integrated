@@ -136,7 +136,7 @@ export interface VerificationFinding {
 export interface ScholarshipDecision {
   id: number;
   application: number;
-  convener_id: number;
+  decider_id: number;
   decision: "approved" | "rejected" | "returned_for_correction";
   sanction_order_ref: string;
   rationale: string;

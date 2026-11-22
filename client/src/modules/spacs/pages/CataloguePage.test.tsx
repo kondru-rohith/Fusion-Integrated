@@ -83,4 +83,60 @@ describe("CataloguePage", () => {
     expect(screen.getByText("Merit-cum-Means Scholarship")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Apply Now/i })).not.toBeInTheDocument();
   });
+
+  it("renders error state when useCatalogue returns an error (R2-12)", () => {
+    hooks.useCatalogue.mockReturnValue({
+      data: null,
+      isPending: false,
+      error: new Error("Failed to load scholarship schemes"),
+      refetch: vi.fn(),
+    });
+
+    render(
+      <MantineProvider>
+        <CataloguePage />
+      </MantineProvider>,
+    );
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText(/Could not load this/i)).toBeInTheDocument();
+    expect(screen.queryByText("Merit-cum-Means Scholarship")).not.toBeInTheDocument();
+  });
+
+  it("renders loading state when data is pending (R2-12)", () => {
+    hooks.useCatalogue.mockReturnValue({
+      data: null,
+      isPending: true,
+      error: null,
+      refetch: vi.fn(),
+    });
+
+    render(
+      <MantineProvider>
+        <CataloguePage />
+      </MantineProvider>,
+    );
+
+    expect(screen.getByText(/Loading scheme opportunities.../i)).toBeInTheDocument();
+    expect(screen.queryByText("Merit-cum-Means Scholarship")).not.toBeInTheDocument();
+  });
+
+  it("renders empty state when no active scholarships are returned (R2-12)", () => {
+    hooks.useCatalogue.mockReturnValue({
+      data: [],
+      isPending: false,
+      error: null,
+      refetch: vi.fn(),
+    });
+
+    render(
+      <MantineProvider>
+        <CataloguePage />
+      </MantineProvider>,
+    );
+
+    expect(
+      screen.getByText(/No active scholarship opportunities found/i),
+    ).toBeInTheDocument();
+  });
 });

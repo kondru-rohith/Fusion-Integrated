@@ -113,6 +113,48 @@ def _claim(row: NotificationOutbox) -> bool:
     )
 
 
+def _deliver_single_row(row, users, now, daily_cap, max_attempts, report) -> None:
+    if not _backoff_ready(row, now):
+        report.deferred += 1
+        return
+
+    email = row.recipient_email
+    if not email and row.recipient_user_id in users:
+        email = users[row.recipient_user_id].email
+
+    if not email:
+        row.status = "failed"
+        row.last_error = "Recipient email could not be resolved."
+        row.save(update_fields=["status", "last_error", "updated_at"])
+        report.failed += 1
+        return
+
+    if _sent_today(row.recipient_user_id, now) >= daily_cap:
+        row.status = "suppressed"
+        row.last_error = "Daily notification cap reached."
+        row.save(update_fields=["status", "last_error", "updated_at"])
+        report.skipped_capped += 1
+        return
+
+    if not _claim(row):
+        return
+
+    try:
+        from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "spacs@iiitdmj.ac.in")
+        send_mail(row.subject, row.body, from_email, [email], fail_silently=False)
+        row.status = "sent"
+        row.sent_at = timezone.now()
+        row.save(update_fields=["status", "sent_at", "updated_at"])
+        report.sent += 1
+    except (OSError, RuntimeError, ValueError) as exc:
+        row.attempts += 1
+        row.last_error = str(exc)[:300]
+        row.status = "failed" if row.attempts >= max_attempts else "pending"
+        row.claimed_at = None
+        row.save(update_fields=["status", "attempts", "last_error", "claimed_at", "updated_at"])
+        report.failed += 1
+
+
 def deliver_pending(*, limit: int | None = None, now=None) -> DeliveryReport:
     """Drain pending notifications safely across concurrent workers."""
     now = now or timezone.now()
@@ -126,49 +168,10 @@ def deliver_pending(*, limit: int | None = None, now=None) -> DeliveryReport:
     if not queue:
         return report
 
-    # Bulk lookup recipients
     user_ids = {r.recipient_user_id for r in queue if r.recipient_user_id is not None}
     users = directory.get_users(list(user_ids)) if user_ids else {}
 
     for row in queue:
-        if not _backoff_ready(row, now):
-            report.deferred += 1
-            continue
-
-        email = row.recipient_email
-        if not email and row.recipient_user_id in users:
-            email = users[row.recipient_user_id].email
-
-        if not email:
-            row.status = "failed"
-            row.last_error = "Recipient email could not be resolved."
-            row.save(update_fields=["status", "last_error", "updated_at"])
-            report.failed += 1
-            continue
-
-        if _sent_today(row.recipient_user_id, now) >= daily_cap:
-            row.status = "suppressed"
-            row.last_error = "Daily notification cap reached."
-            row.save(update_fields=["status", "last_error", "updated_at"])
-            report.skipped_capped += 1
-            continue
-
-        if not _claim(row):
-            continue
-
-        try:
-            from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "spacs@iiitdmj.ac.in")
-            send_mail(row.subject, row.body, from_email, [email], fail_silently=False)
-            row.status = "sent"
-            row.sent_at = timezone.now()
-            row.save(update_fields=["status", "sent_at", "updated_at"])
-            report.sent += 1
-        except (OSError, RuntimeError, ValueError) as exc:
-            row.attempts += 1
-            row.last_error = str(exc)[:300]
-            row.status = "failed" if row.attempts >= max_attempts else "pending"
-            row.claimed_at = None
-            row.save(update_fields=["status", "attempts", "last_error", "claimed_at", "updated_at"])
-            report.failed += 1
+        _deliver_single_row(row, users, now, daily_cap, max_attempts, report)
 
     return report

@@ -1,7 +1,4 @@
-"""Machine-checkable eligibility evaluation for SPACS schemes (BR-SPACS-001).
-
-Pure Python — evaluates student attributes against scheme criteria without ORM calls.
-"""
+"""Machine-checkable eligibility evaluation for SPACS schemes (BR-SPACS-001)."""
 
 from __future__ import annotations
 
@@ -23,30 +20,8 @@ class EligibilityResult:
         return cls(is_eligible=False, reasons=tuple(reasons))
 
 
-def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
-    """Evaluate machine-checkable eligibility rules.
-
-    `criteria` schema:
-      - min_cpi: float | Decimal | str
-      - income_ceiling: float | Decimal | str
-      - allowed_programmes: list[str]
-      - allowed_disciplines: list[str]
-      - allowed_batches: list[int]
-      - allowed_categories: list[str]
-      - max_backlogs: int
-
-    `student` schema:
-      - cpi: float | Decimal | None
-      - annual_income: float | Decimal | None
-      - programme: str
-      - discipline: str
-      - batch_year: int | None
-      - category: str
-      - active_backlogs: int | None
-    """
+def _check_cpi_and_backlogs(criteria: dict, student: dict) -> list[str]:
     failures: list[str] = []
-
-    # 1. Minimum CPI check
     min_cpi = criteria.get("min_cpi")
     if min_cpi is not None:
         student_cpi = student.get("cpi")
@@ -59,7 +34,6 @@ def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
             except (ValueError, TypeError, ArithmeticError):
                 failures.append("Invalid CPI value.")
 
-    # 2. Maximum backlogs check
     max_backlogs = criteria.get("max_backlogs")
     if max_backlogs is not None:
         backlogs = student.get("active_backlogs", 0)
@@ -67,8 +41,11 @@ def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
             failures.append(
                 f"Active backlogs ({backlogs}) exceed maximum allowed ({max_backlogs})."
             )
+    return failures
 
-    # 3. Family Income Ceiling check
+
+def _check_income(criteria: dict, student: dict) -> list[str]:
+    failures: list[str] = []
     income_ceiling = criteria.get("income_ceiling")
     if income_ceiling is not None:
         student_income = student.get("annual_income")
@@ -84,8 +61,11 @@ def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
                     failures.append(msg)
             except (ValueError, TypeError, ArithmeticError):
                 failures.append("Invalid income value.")
+    return failures
 
-    # 4. Programme check
+
+def _check_cohort(criteria: dict, student: dict) -> list[str]:
+    failures: list[str] = []
     programmes = criteria.get("allowed_programmes")
     if programmes:
         student_prog = (student.get("programme") or "").strip().lower()
@@ -95,7 +75,6 @@ def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
                 f"Programme {student.get('programme')!r} is not eligible for this scheme."
             )
 
-    # 5. Discipline check
     disciplines = criteria.get("allowed_disciplines")
     if disciplines:
         student_disc = (student.get("discipline") or "").strip().lower()
@@ -105,14 +84,12 @@ def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
                 f"Discipline {student.get('discipline')!r} is not eligible for this scheme."
             )
 
-    # 6. Batch Year check
     batches = criteria.get("allowed_batches")
     if batches:
         student_batch = student.get("batch_year")
         if student_batch is None or int(student_batch) not in {int(b) for b in batches}:
             failures.append(f"Batch year {student_batch} is not eligible for this scheme.")
 
-    # 7. Category check (GEN/OBC/SC/ST/EWS)
     categories = criteria.get("allowed_categories")
     if categories:
         student_cat = (student.get("category") or "").strip().upper()
@@ -121,6 +98,15 @@ def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
             failures.append(
                 f"Category {student.get('category')!r} is not eligible for this scheme."
             )
+    return failures
+
+
+def evaluate_eligibility(criteria: dict, student: dict) -> EligibilityResult:
+    """Evaluate machine-checkable eligibility rules against scheme criteria and student data."""
+    failures: list[str] = []
+    failures.extend(_check_cpi_and_backlogs(criteria, student))
+    failures.extend(_check_income(criteria, student))
+    failures.extend(_check_cohort(criteria, student))
 
     if failures:
         return EligibilityResult.failed(failures)
