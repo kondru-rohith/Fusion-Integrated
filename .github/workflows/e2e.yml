@@ -50,11 +50,6 @@ jobs:
           users=$(psql -d fusionlab -tAc "select count(*) from auth_user")
           echo "restored $users accounts"
           test "$users" -gt 0
-          # The public dev dump predates the ERP's rename of online_cms_student_grades to
-          # examination_student_grades (Fusion #2069).  The IAM's sync_identity queries
-          # the new name, so we expose the old table under the new name as a view.
-          # This shim can be removed once fusion-dev.dump is re-cut from the renamed ERP.
-          psql -d fusionlab -c "CREATE VIEW examination_student_grades AS SELECT * FROM online_cms_student_grades;"
 
       - name: IAM
         working-directory: iam
