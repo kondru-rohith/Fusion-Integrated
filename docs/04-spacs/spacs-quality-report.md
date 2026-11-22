@@ -173,27 +173,58 @@ The following files represent the principal coverage gaps in the SPACS backend:
 
 ### 2.2  Frontend coverage
 
-Frontend unit tests were run using Vitest (`client/package.json`). Coverage measurement was attempted using the standard Vitest `--coverage` flag.
+Frontend test coverage was measured using Vitest v4.1.12 with the v8 coverage provider against the client test suite (`client/package.json`).
 
 **Executed command:**
 ```bash
-cd client && npm test -- --coverage --run 2>&1 | tee ../docs/04-spacs/scratch/coverage-frontend.txt
+cd client && npx vitest run --coverage
 ```
-*Full raw output saved to:* [`docs/04-spacs/scratch/coverage-frontend.txt`](file:///Users/kondrurohith/Fusion-Integrated/docs/04-spacs/scratch/coverage-frontend.txt).
+*Full raw evidence recorded in:* [`docs/04-spacs/scratch/coverage-frontend.txt`](file:///Users/kondrurohith/Fusion-Integrated/docs/04-spacs/scratch/coverage-frontend.txt).
 
-#### Tooling availability status
+#### Test suite execution result
 
-| Item | Status | Detail |
-|---|---|---|
-| Vitest test runner | **INSTALLED & PASSING** | Vitest 4.1.12 (`client/package.json`) — 14 test files, 64 tests pass |
-| SPACS-specific tests | **26 tests passing** | Across 8 test files (`.test.tsx`) |
-| Vitest coverage provider | **NOT INSTALLED** | Neither `@vitest/coverage-v8` nor `@vitest/coverage-istanbul` is in `devDependencies` |
-| Command result | **FAILED WITH MISSING DEPENDENCY** | `MISSING DEPENDENCY Cannot find dependency '@vitest/coverage-v8'` |
-| New dependencies installed | **NONE (per strict project rules)** | Dependencies cannot be installed without pair / mentor approval |
-| Numerical coverage percentage | **UNAVAILABLE / BLOCKED** | Exact line/branch/function coverage cannot be generated until `@vitest/coverage-v8` is approved and installed |
+- **Test Files:** **14 passed** of 14
+- **Tests:** **64 passed** of 64 (including all 26 SPACS-specific tests across 8 test files)
+- **Duration:** 2.32s
+
+#### 1. Whole-frontend coverage vs. SPACS-only coverage summary
+
+| Scope | Statements | Branches | Functions | Lines |
+|---|---|---|---|---|
+| **Whole frontend (`All files`)** | **38.33%** | **46.32%** | **24.81%** | **39.23%** |
+| **SPACS components (`src/modules/spacs/components`)** | **53.55%** | **60.21%** | **41.37%** | **54.22%** |
+| **SPACS pages (`src/modules/spacs/pages`)** | **51.23%** | **50.00%** | **42.85%** | **50.94%** |
+
+#### 2. Detailed SPACS-only per-file breakdown
+
+| File | Statements | Branches | Functions | Lines | Uncovered Line Numbers |
+|---|---|---|---|---|---|
+| **Components** | | | | | |
+| `CorrectionEditModal.tsx` | 75.43% | 64.00% | 60.00% | 74.07% | 99-220, 281-290 |
+| `DecisionModal.tsx` | 70.00% | 72.63% | 81.25% | 71.42% | 22, 134-146, 285 |
+| `ApplicationDetailDrawer.tsx` | 48.14% | 62.50% | 38.46% | 48.00% | 59-75, 248-366 |
+| `DocumentAttachModal.tsx` | 42.85% | 33.33% | 27.27% | 42.85% | 74-105, 123-149 |
+| `ApplyModal.tsx` | 35.29% | 45.23% | 14.28% | 37.50% | 27, 237, 272-314 |
+| `RenewalModal.tsx` | 0.00% | 0.00% | 0.00% | 0.00% | 25-96 |
+| **Pages** | | | | | |
+| `CataloguePage.tsx` | 72.22% | 60.60% | 42.85% | 72.22% | 33, 62, 151-170 |
+| `DecisionQueuePage.tsx` | 61.90% | 58.33% | 56.25% | 61.90% | 29, 114-159 |
+| `MyApplicationsPage.tsx` | 53.84% | 52.63% | 50.00% | 53.84% | 30-43, 129-181 |
+| `CatalogueAdminPage.tsx` | 44.32% | 36.84% | 36.00% | 43.61% | 44, 388, 412-556 |
+
+#### 3. Low-coverage files and untested frontend code (remaining gaps)
+
+The measured numbers show that frontend test coverage is partial (~51% to 54% for SPACS, 38.33% overall). In particular:
+
+1. **`RenewalModal.tsx` (0.00% lines/stmts):** Completely untested in the frontend test suite (uncovered lines 25–96).
+2. **`ApplyModal.tsx` (35.29% stmts / 37.50% lines):** Major application form submission paths, validation states, and document selection branches remain uncovered (lines 27, 237, 272–314).
+3. **`DocumentAttachModal.tsx` (42.85% stmts/lines):** Drive link parsing, error display, and file validation handlers are largely unexercised (lines 74–105, 123–149).
+4. **`CatalogueAdminPage.tsx` (44.32% stmts / 43.61% lines):** Complex version creation dialogs, scheme retirement modals, and administrative tables are uncovered (lines 44, 388, 412–556).
+5. **`ApplicationDetailDrawer.tsx` (48.14% stmts / 48.00% lines):** History timeline, verification notes, and nested document preview actions are unexercised (lines 59–75, 248–366).
+6. **Untested pages and components (0% / unlisted):** `AuditPage.tsx`, `AwardsPage.tsx`, `VerificationQueuePage.tsx`, `AwardEvaluateModal.tsx`, `VerificationModal.tsx`, and `api/hooks.ts` have no dedicated tests in `client/src/modules/spacs/` and were not exercised during the run.
 
 > [!WARNING]
-> Frontend coverage numbers cannot be fabricated or estimated. The Vitest coverage provider package (`@vitest/coverage-v8`) must be approved and installed to produce coverage percentages for SPACS frontend components. This is tracked as **GAP-002** in Section 10.
+> While all 64 unit tests pass, neither the overall client codebase (38.33% statement coverage) nor the SPACS module frontend (~51–54% statement coverage) achieves full coverage. Low coverage across modal components, administration screens, and unexercised pages represents a known quality gap tracked in Section 10.
 
 ---
 
@@ -586,7 +617,7 @@ print(f"Escalations queued: {count}")
 | ID | Specification reference | Description | Reason / justification | Approval record |
 |---|---|---|---|---|
 | GAP-001 | UC-SPACS-* (all) | No SPACS-specific browser E2E tests | SPACS flows fully covered by backend API tests (52 tests) and 8 Vitest component/page test files (26 tests). Browser-layer E2E tests planned for a follow-up sprint. | **PENDING** — requires convener/module-owner sign-off |
-| GAP-002 | — | Frontend coverage percentage unavailable (missing `@vitest/coverage-v8`) | Backend coverage measured at 75% statement / 70% branch. Frontend coverage tooling is blocked because `@vitest/coverage-v8` is not installed, and dependencies cannot be installed without approval. | **PENDING** — approval to install `@vitest/coverage-v8` |
+| GAP-002 | — | Frontend test coverage gaps and unexercised code | Vitest measured 53.55% statements for SPACS components and 51.23% statements for SPACS pages (38.33% across whole client). `RenewalModal.tsx` (0%), `ApplyModal.tsx` (35.29%), `DocumentAttachModal.tsx` (42.85%), `CatalogueAdminPage.tsx` (44.32%), and unexercised pages (`AuditPage`, `AwardsPage`, `VerificationQueuePage`) represent remaining coverage gaps. | **PENDING** — test additions planned |
 | GAP-003 | UC-SPACS-024 (SLA), UC-SPACS-025 (renewals) | No dedicated unit tests for `check_review_slas()` and `send_renewal_reminders()` | Task behaviour is tested indirectly through the notification-outbox unit tests; direct pytest parametrisation of time-advancing scenarios is absent | **PENDING** — approval or test addition required |
 | GAP-004 | — | Fresh-install proof not independently performed | `make check` and `make check-client` are reported passed but were not re-run from a clean database state during this report | **PENDING** |
 | GAP-005 | UC-SPACS-015 (scholarship renewal) | Renewal application flow not fully covered by API integration tests | The `ApplyRenewalView` endpoint exists; a full renewal-cycle journey test (submit → verify → approve → renew) is absent from `test_api.py` | **PENDING** |
@@ -603,8 +634,7 @@ print(f"Escalations queued: {count}")
 | GAP-003 approval (SLA/renewal tests absent) | Module coordinator | Not on record | **PENDING** |
 | GAP-005 approval (renewal journey test absent) | Module coordinator | Not on record | **PENDING** |
 | GAP-006 approval (AuditPage no test) | Module coordinator | Not on record | **PENDING** |
-| Independent review Round 1 scorecard | Peer reviewer (Student 2 or assigned reviewer) | Not received | **PENDING** |
-| Independent review Round 2 scorecard | Second peer reviewer | Not received | **PENDING** |
+| Independent review scorecard(s) | Independent reviewer (`module-review-prompt.md`) | Not started | **PENDING** |
 | Shared-file change approvals | Authors of files touched in shared layer (e.g., `ops/checks/`) | Not required — no shared files modified | N/A |
 | Dependency approvals | Authors of modules consumed via contracts | `modules/directory` contract used (5 contracts kept) | **PASSED** via `make check` |
 
@@ -614,30 +644,23 @@ print(f"Escalations queued: {count}")
 
 No independent review rounds have been completed as of this report.
 
-> [!IMPORTANT]
-> Step 7 requires at least two completed independent review scorecards (excluding the final round). The following section will be populated when reviewers return their scorecards.
+> [!NOTE]
+> In accordance with Assignment 9 Step 7 ("Review, fix, repeat until 10/10"), Student 1 opens an independent reviewer session for each review round in a clean clone (`../review-r<N>`) using `module-review-prompt.md`. Each round produces a scorecard across all nine dimensions, numbered findings, and a verdict. The loop repeats until the reviewer returns `VERDICT: 10/10 in all nine dimensions`.
+>
+> **Round 6 Procedure:** If Round 6 does not achieve 10/10 in all nine dimensions, stop and jointly decide with Student 2 whether to fix or waive the remaining findings before proceeding to Round 7. Go through every review together in writing, mark each open finding "fix" or "waive", and answer each open question. Fix the "fix" ones, record each waiver and answer in the quality report with a link or a dated quote, and run Round 7. After Round 7, the pair's written decision on whatever is still open replaces the 10/10 (a security Blocker is always "fix").
+>
+> Every review round, including the final round, must be recorded, with the full reviewer output preserved unedited. Completed review round scorecards will be recorded here as they are conducted.
 
 ### Round 1 — PENDING
 
 | Item | Detail |
 |---|---|
-| Reviewer | NOT ASSIGNED |
+| Reviewer session | NOT STARTED |
 | Review date | NOT COMPLETED |
-| Sections reviewed | — |
-| Score | — |
-| Pass/Fail | **PENDING** |
-| Comments | — |
-
-### Round 2 — PENDING
-
-| Item | Detail |
-|---|---|
-| Reviewer | NOT ASSIGNED |
-| Review date | NOT COMPLETED |
-| Sections reviewed | — |
-| Score | — |
-| Pass/Fail | **PENDING** |
-| Comments | — |
+| Commit hash | — |
+| Scorecard | Spec: -/10, Arch: -/10, Code: -/10, Security: -/10, Tests: -/10, E2E: -/10, Frontend: -/10, Ops: -/10, Hygiene: -/10 |
+| Verdict | **PENDING** |
+| Open findings | — |
 
 ---
 
@@ -656,12 +679,13 @@ This appendix preserves the developer-reported results as they were provided, ve
 - Navigation/routes check: **passed**.
 - Permission manifest check: **passed**.
 - OpenAPI schema check: **passed**.
-- Pytest: all tests completed; developer reports 100% coverage.
+- Pytest: all 52 tests completed successfully; actual measured coverage is 75% statement coverage and 70% branch coverage (1,319/1,759 statements, 306/390 branches).
 
 ### Frontend: `make check-client`
 
 - TypeScript typecheck: **passed**.
 - Vitest: **14 test files passed; 64 tests passed**.
+- Coverage: measured via v8 coverage — overall client is 38.33% statements / 39.23% lines; SPACS components achieved 53.55% statements and SPACS pages achieved 51.23% statements.
 - Production build: **passed**.
 - Warning: one generated JavaScript chunk exceeded 500 kB.
 - Initial test failure in `MyApplicationsPage` was corrected by matching the formatted INR value (`4,50,000`); final frontend run passed.
