@@ -1,0 +1,50 @@
+....................................................                     [100%]
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.15-final-0 _______________
+
+Name                                      Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------------------------------
+modules/spacs/__init__.py                     0      0      0      0   100%
+modules/spacs/api/__init__.py                 0      0      0      0   100%
+modules/spacs/api/exports.py                 17      5      0      0    71%   22-58
+modules/spacs/api/permissions.py             15      0      0      0   100%
+modules/spacs/api/serializers.py             90      0      4      0   100%
+modules/spacs/api/urls.py                     4      0      0      0   100%
+modules/spacs/api/views.py                  290     63     26      6    75%   85, 94-95, 99-111, 148-158, 166-167, 176-177, 198, 265-267, 302-304, 320-338, 352-366, 433-438, 466-467, 476-477, 482, 486, 500-501, 527, 559-565, 583-587
+modules/spacs/apps.py                         5      0      0      0   100%
+modules/spacs/contracts.py                   42     42      8      0     0%   6-92
+modules/spacs/domain/__init__.py              0      0      0      0   100%
+modules/spacs/domain/eligibility.py          67     17     34      8    69%   51->63, 59-60, 64->72, 73->89, 76, 85-86, 94, 101-104, 111-113, 118-121
+modules/spacs/domain/rules.py                49      7     22      6    82%   38, 81, 87-88, 95, 107, 109
+modules/spacs/domain/state_machine.py        92     12     12      5    84%   71-76, 81-82, 206, 220, 224, 237, 241, 247
+modules/spacs/models/__init__.py              9      0      0      0   100%
+modules/spacs/models/applications.py         29      1      0      0    97%   101
+modules/spacs/models/audit.py                47      2      4      0    96%   36, 65
+modules/spacs/models/awards.py               31      2      0      0    94%   33, 68
+modules/spacs/models/catalogue.py            45      2      0      0    96%   24, 73
+modules/spacs/models/decisions.py            15      1      0      0    93%   29
+modules/spacs/models/documents.py            22      1      0      0    95%   47
+modules/spacs/models/notifications.py        21      1      0      0    95%   41
+modules/spacs/models/verification.py         15      1      0      0    93%   31
+modules/spacs/registry.py                    11      0      0      0   100%
+modules/spacs/schedule.py                     3      3      0      0     0%   3-11
+modules/spacs/selectors/__init__.py           2      0      0      0   100%
+modules/spacs/selectors/applications.py      18      4      4      0    73%   16-19
+modules/spacs/selectors/awards.py            14      8      4      0    33%   9-12, 16-19
+modules/spacs/selectors/catalogue.py         18     18      4      0     0%   1-31
+modules/spacs/selectors/scoping.py           83     36     38      7    48%   35, 38, 45, 53, 58-60, 64-66, 88-90, 97, 108, 127, 132-144, 149-151, 156-164, 169-171
+modules/spacs/services/__init__.py            2      0      0      0   100%
+modules/spacs/services/applications.py      172     26     68     15    80%   35, 39-41, 102, 145, 148, 158, 199-221, 235, 236->238, 252-253, 284, 290, 310, 355, 361, 369
+modules/spacs/services/audit.py              13      1      2      1    87%   18
+modules/spacs/services/awards.py            102     22     34     12    71%   31, 57, 68, 104, 107->113, 141, 147->152, 161, 166->168, 191-213, 225, 228, 252
+modules/spacs/services/catalogue.py          63     37     18      1    33%   26-44, 70, 119-152, 157-170
+modules/spacs/services/decisions.py          63     19     28      7    65%   17-37, 59, 67, 71->90, 96-97, 103, 108->112, 135
+modules/spacs/services/documents.py          47     23     14      2    43%   33-34, 40, 51-53, 73-98, 104-110
+modules/spacs/services/notifications.py      94     11     22      7    84%   48, 50, 76, 91, 127, 139->142, 143-147, 157
+modules/spacs/services/renewals.py           31     19      8      0    31%   28-83
+modules/spacs/services/tasks.py              38     28     14      0    19%   18-46, 51-78, 87-99
+modules/spacs/services/verification.py       65     13     22      7    75%   23, 35-44, 61, 63->72, 74, 82, 86
+modules/spacs/tasks.py                       15     15      0      0     0%   3-28
+-------------------------------------------------------------------------------------
+TOTAL                                      1759    440    390     84    70%
+52 passed in 2.07s

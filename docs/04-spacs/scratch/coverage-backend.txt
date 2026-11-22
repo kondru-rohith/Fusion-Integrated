@@ -1,0 +1,50 @@
+....................................................                     [100%]
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.15-final-0 _______________
+
+Name                                      Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------
+modules/spacs/__init__.py                     0      0   100%
+modules/spacs/api/__init__.py                 0      0   100%
+modules/spacs/api/exports.py                 17      5    71%   22-58
+modules/spacs/api/permissions.py             15      0   100%
+modules/spacs/api/serializers.py             90      0   100%
+modules/spacs/api/urls.py                     4      0   100%
+modules/spacs/api/views.py                  290     63    78%   85, 94-95, 99-111, 148-158, 166-167, 176-177, 198, 265-267, 302-304, 320-338, 352-366, 433-438, 466-467, 476-477, 482, 486, 500-501, 527, 559-565, 583-587
+modules/spacs/apps.py                         5      0   100%
+modules/spacs/contracts.py                   42     42     0%   6-92
+modules/spacs/domain/__init__.py              0      0   100%
+modules/spacs/domain/eligibility.py          67     17    75%   59-60, 76, 85-86, 94, 101-104, 111-113, 118-121
+modules/spacs/domain/rules.py                49      7    86%   38, 81, 87-88, 95, 107, 109
+modules/spacs/domain/state_machine.py        92     12    87%   71-76, 81-82, 206, 220, 224, 237, 241, 247
+modules/spacs/models/__init__.py              9      0   100%
+modules/spacs/models/applications.py         29      1    97%   101
+modules/spacs/models/audit.py                47      2    96%   36, 65
+modules/spacs/models/awards.py               31      2    94%   33, 68
+modules/spacs/models/catalogue.py            45      2    96%   24, 73
+modules/spacs/models/decisions.py            15      1    93%   29
+modules/spacs/models/documents.py            22      1    95%   47
+modules/spacs/models/notifications.py        21      1    95%   41
+modules/spacs/models/verification.py         15      1    93%   31
+modules/spacs/registry.py                    11      0   100%
+modules/spacs/schedule.py                     3      3     0%   3-11
+modules/spacs/selectors/__init__.py           2      0   100%
+modules/spacs/selectors/applications.py      18      4    78%   16-19
+modules/spacs/selectors/awards.py            14      8    43%   9-12, 16-19
+modules/spacs/selectors/catalogue.py         18     18     0%   1-31
+modules/spacs/selectors/scoping.py           83     36    57%   35, 38, 45, 53, 58-60, 64-66, 88-90, 97, 108, 127, 132-144, 149-151, 156-164, 169-171
+modules/spacs/services/__init__.py            2      0   100%
+modules/spacs/services/applications.py      172     26    85%   35, 39-41, 102, 145, 148, 158, 199-221, 235, 252-253, 284, 290, 310, 355, 361, 369
+modules/spacs/services/audit.py              13      1    92%   18
+modules/spacs/services/awards.py            102     22    78%   31, 57, 68, 104, 141, 161, 191-213, 225, 228, 252
+modules/spacs/services/catalogue.py          63     37    41%   26-44, 70, 119-152, 157-170
+modules/spacs/services/decisions.py          63     19    70%   17-37, 59, 67, 96-97, 103, 135
+modules/spacs/services/documents.py          47     23    51%   33-34, 40, 51-53, 73-98, 104-110
+modules/spacs/services/notifications.py      94     11    88%   48, 50, 76, 91, 127, 143-147, 157
+modules/spacs/services/renewals.py           31     19    39%   28-83
+modules/spacs/services/tasks.py              38     28    26%   18-46, 51-78, 87-99
+modules/spacs/services/verification.py       65     13    80%   23, 35-44, 61, 74, 82, 86
+modules/spacs/tasks.py                       15     15     0%   3-28
+-----------------------------------------------------------------------
+TOTAL                                      1759    440    75%
+52 passed in 2.18s

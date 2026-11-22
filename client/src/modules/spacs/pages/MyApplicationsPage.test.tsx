@@ -95,6 +95,6 @@ describe("MyApplicationsPage", () => {
     expect(screen.getByText("SPACS-2026-0001")).toBeInTheDocument();
     expect(screen.getByText("Merit-cum-Means Scholarship")).toBeInTheDocument();
     expect(screen.getByText("8.45")).toBeInTheDocument();
-    expect(screen.getByText(/450/)).toBeInTheDocument();
+    expect(screen.getByText(/4,50,000/)).toBeInTheDocument();
   });
 });
