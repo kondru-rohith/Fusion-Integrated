@@ -4,7 +4,7 @@
 **Branch:** `module/spacs`  
 **Student:** Student 1  
 **Report date:** 23 November 2026  
-**Report version:** 3.0 (Final — All Nine Dimensions 10/10)  
+**Report version:** 3.0  
 
 ---
 
@@ -279,28 +279,57 @@ A genuine, independent fresh-install verification was executed on 23 November 20
 ### 7.1 Fresh Database Provisioning & Execution Steps
 
 ```bash
-# 1. Provision fresh database via psycopg
+
+# 1. Provision a fresh database
 python -c "
+import os
 import psycopg
-conn = psycopg.connect('dbname=postgres user=fusion_admin password=Rohit host=127.0.0.1 port=5432', autocommit=True)
-conn.cursor().execute('DROP DATABASE IF EXISTS fusion_fresh_test_db; CREATE DATABASE fusion_fresh_test_db;')
+
+conn = psycopg.connect(
+    dbname='postgres',
+    user=os.environ['DB_USER'],
+    password=os.environ['DB_PASSWORD'],
+    host='127.0.0.1',
+    port=5432,
+    autocommit=True
+)
+conn.cursor().execute(
+    'DROP DATABASE IF EXISTS fusion_fresh_test_db;'
+)
+conn.cursor().execute(
+    'CREATE DATABASE fusion_fresh_test_db;'
+)
+conn.close()
 "
 
-# 2. Execute full migration sequence from scratch
-DB_NAME=fusion_fresh_test_db DB_PASSWORD=Rohit python manage.py migrate
+# 2. Execute migrations using environment variables
+DB_NAME=fusion_fresh_test_db python manage.py migrate
 
-# 3. Verify schema deployment and table creation
+# 3. Verify SPACS tables
 python -c "
+import os
 import psycopg
-conn = psycopg.connect('dbname=fusion_fresh_test_db user=fusion_admin password=Rohit host=127.0.0.1 port=5432')
+
+conn = psycopg.connect(
+    dbname='fusion_fresh_test_db',
+    user=os.environ['DB_USER'],
+    password=os.environ['DB_PASSWORD'],
+    host='127.0.0.1',
+    port=5432
+)
 cur = conn.cursor()
-cur.execute(\"SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'spacs_%' ORDER BY table_name;\")
+cur.execute(
+    \"SELECT table_name FROM information_schema.tables \"
+    \"WHERE table_schema = 'public' \"
+    \"AND table_name LIKE 'spacs_%' ORDER BY table_name;\"
+)
 print([r[0] for r in cur.fetchall()])
+conn.close()
 "
 
-# 4. Run deployment check and permission manifest validation against fresh DB
-DB_NAME=fusion_fresh_test_db DB_PASSWORD=Rohit python manage.py check --deploy
-DB_NAME=fusion_fresh_test_db DB_PASSWORD=Rohit python manage.py permission_manifest --check
+# 4. Run deployment and permission checks
+DB_NAME=fusion_fresh_test_db python manage.py check --deploy
+DB_NAME=fusion_fresh_test_db python manage.py permission_manifest --check
 ```
 
 ### 7.2 Witnessed Terminal Execution Logs
