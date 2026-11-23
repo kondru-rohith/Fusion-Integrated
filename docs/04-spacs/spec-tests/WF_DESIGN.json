@@ -1,0 +1,58 @@
+You are designing specification-based test cases for the Awards and Scholarships (SPACS) module of Fusion ERP.
+
+**Source of truth:** Use ONLY the supplied:
+1. SPACS Problem Statement
+2. SPACS Workflow Specifications
+
+Do NOT inspect or use implementation code, repository files, existing tests, FR/UC/BR designs, or any other documents.
+
+### Objective
+
+Generate a comprehensive, non-redundant set of workflow-based test designs that covers the workflow requirements explicitly defined in the supplied specifications.
+
+### Coverage requirements
+
+1. Cover every distinct specified workflow in the workflow specification.
+2. Cover every explicitly defined workflow path, including the normal/success path.
+3. Cover every explicitly specified alternative path, decision outcome, rejection path, exception path, and important state transition.
+4. For workflows with decision branches, test each materially different specified outcome separately.
+5. For complex workflows or lifecycle workflows, cover each explicitly specified transition and invalid or blocked transition only where the specification defines it.
+6. Include authorization, notification, routing, or audit steps only where they are explicitly part of the workflow.
+7. Do not invent workflow steps, actors, states, thresholds, decisions, or business rules.
+8. Do not create duplicate tests for the same workflow obligation unless the expected outcomes are materially different.
+9. Do not omit a specified path merely to reduce the number of tests.
+10. Do not assume that an event-triggered service is a human-driven workflow unless the specification says so.
+
+### Test ID and source ID rules
+
+- Use sequential test IDs: `WF-SPACS-001`, `WF-SPACS-002`, `WF-SPACS-003`, and so on.
+- Each `source_id` must use the exact workflow ID from the supplied specification, such as `BW-SPACS-01` or `CW-SPACS-01`.
+- Where useful, identify the exact path or transition in the `purpose` field.
+- Do not invent or modify source IDs.
+
+### Required JSON structure
+
+For every test case, output exactly these seven fields:
+
+- `test_id`
+- `source_id`
+- `purpose`
+- `preconditions`
+- `action_or_input`
+- `expected_result`
+- `test_type`
+
+Use concise but sufficiently detailed descriptions that can later be converted into automated pytest/pytest-django tests.
+
+`test_type` should identify the case appropriately, such as `positive`, `negative`, `boundary`, `exception`, or `authorization`.
+
+### Output restrictions
+
+- Output ONLY a valid JSON array.
+- Do not include Markdown fences, explanations, headings, or comments.
+- Ensure all test IDs are unique and sequential.
+- Ensure every object contains exactly the seven required fields.
+- Ensure the JSON is syntactically valid.
+- Do not modify any project files or implementation code.
+
+Before finalizing, check that every workflow and every explicitly specified path/transition has been covered.
