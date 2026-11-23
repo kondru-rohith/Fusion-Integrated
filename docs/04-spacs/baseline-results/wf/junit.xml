@@ -1,0 +1,1577 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="12" skipped="0" tests="31" time="11.418" timestamp="2026-11-23T23:57:11.606965+05:30" hostname="Aasmitha"><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-001]" time="5.091" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-002]" time="0.024" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-003]" time="0.028" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-004]" time="0.025" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-005]" time="0.011"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB594A99D0&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 269031, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 269050, tzinfo=datetime.timezone.utc), Int4(8206), 'WF-APP-8206-correction_required-0', 5, 5, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB594A99D0&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab593de510&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 269031, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 269050, tzinfo=datetime.timezone.utc), Int4(8206), 'WF-APP-8206-correction_required-0', 5, 5, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-005', source_id = 'BW-SPACS-02 STT-2; CW-SPACS-01 STT-4'
+number = 5
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-005]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:177: in _run_case
+    app = _application(version, sm.CORRECTION_REQUIRED, user_id=student_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab593de510&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 269031, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 269050, tzinfo=datetime.timezone.utc), Int4(8206), 'WF-APP-8206-correction_required-0', 5, 5, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-006]" time="0.037" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-007]" time="0.019" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-008]" time="0.009"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB59B0E0F0&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 564104, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 564117, tzinfo=datetime.timezone.utc), Int4(8209), 'WF-APP-8209-under_convener_review-0', 8, 8, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB59B0E0F0&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594b9010&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 564104, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 564117, tzinfo=datetime.timezone.utc), Int4(8209), 'WF-APP-8209-under_convener_review-0', 8, 8, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-008', source_id = 'BW-SPACS-03 STT-2; CW-SPACS-01 STT-10'
+number = 8
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-008]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:187: in _run_case
+    app = _application(version, sm.UNDER_CONVENER_REVIEW, user_id=student_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594b9010&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 564104, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 564117, tzinfo=datetime.timezone.utc), Int4(8209), 'WF-APP-8209-under_convener_review-0', 8, 8, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-009]" time="0.010"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB59E45490&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 711537, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 711550, tzinfo=datetime.timezone.utc), Int4(8210), 'WF-APP-8210-verification_concern-0', 9, 9, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB59E45490&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594b8ad0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 711537, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 711550, tzinfo=datetime.timezone.utc), Int4(8210), 'WF-APP-8210-verification_concern-0', 9, 9, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-009', source_id = 'BW-SPACS-04 STT-1; CW-SPACS-01 STT-9'
+number = 9
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-009]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:203: in _run_case
+    app = _application(version, sm.VERIFICATION_CONCERN, user_id=student_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594b8ad0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 711537, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 711550, tzinfo=datetime.timezone.utc), Int4(8210), 'WF-APP-8210-verification_concern-0', 9, 9, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-010]" time="0.012"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB59E45F70&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 852883, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 852900, tzinfo=datetime.timezone.utc), Int4(8211), 'WF-APP-8211-under_convener_review-0', 10, 10, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB59E45F70&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594ba990&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 852883, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 852900, tzinfo=datetime.timezone.utc), Int4(8211), 'WF-APP-8211-under_convener_review-0', 10, 10, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-010', source_id = 'BW-SPACS-04 STT-2; CW-SPACS-01 STT-11'
+number = 10
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-010]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:187: in _run_case
+    app = _application(version, sm.UNDER_CONVENER_REVIEW, user_id=student_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594ba990&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 17, 852883, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 17, 852900, tzinfo=datetime.timezone.utc), Int4(8211), 'WF-APP-8211-under_convener_review-0', 10, 10, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-011]" time="0.019"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596A4D70&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 18, 183108, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 18, 183127, tzinfo=datetime.timezone.utc), Int4(8212), 'WF-APP-8212-under_convener_review-0', 11, 11, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596A4D70&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594ba390&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 18, 183108, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 18, 183127, tzinfo=datetime.timezone.utc), Int4(8212), 'WF-APP-8212-under_convener_review-0', 11, 11, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-011', source_id = 'CW-SPACS-01 STT-12', number = 11
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-011]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:187: in _run_case
+    app = _application(version, sm.UNDER_CONVENER_REVIEW, user_id=student_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594ba390&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 18, 183108, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 18, 183127, tzinfo=datetime.timezone.utc), Int4(8212), 'WF-APP-8212-under_convener_review-0', 11, 11, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-012]" time="0.055" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-013]" time="0.061" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-014]" time="0.023"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596A6570&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 18, 748506, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 18, 748535, tzinfo=datetime.timezone.utc), Int4(8215), 'WF-APP-8215-correction_required-0', 14, 14, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596A6570&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594b8350&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 18, 748506, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 18, 748535, tzinfo=datetime.timezone.utc), Int4(8215), 'WF-APP-8215-correction_required-0', 14, 14, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-014', source_id = 'BW-SPACS-05 STT-3; CW-SPACS-01 STT-15'
+number = 14
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-014]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:146: in _run_case
+    app = _application(version, states[number], user_id=student_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab594b8350&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 18, 748506, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 18, 748535, tzinfo=datetime.timezone.utc), Int4(8215), 'WF-APP-8215-correction_required-0', 14, 14, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-015]" time="0.030" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-016]" time="0.044" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-017]" time="0.048" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-018]" time="0.018"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BA270&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 19, 298569, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 19, 298604, tzinfo=datetime.timezone.utc), Int4(8219), 'WF-APP-8219-renewal_under_verification-1', 18, 18, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BA270&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59658ad0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 19, 298569, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 19, 298604, tzinfo=datetime.timezone.utc), Int4(8219), 'WF-APP-8219-renewal_under_verification-1', 18, 18, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-018', source_id = 'CW-SPACS-02 STT-3', number = 18
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-018]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:222: in _run_case
+    app = _application(
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59658ad0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 19, 298569, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 19, 298604, tzinfo=datetime.timezone.utc), Int4(8219), 'WF-APP-8219-renewal_under_verification-1', 18, 18, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-019]" time="0.018"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BAA50&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 19, 681724, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 19, 681737, tzinfo=datetime.timezone.utc), Int4(8220), 'WF-APP-8220-correction_required-1', 19, 19, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BAA50&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab596587d0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 19, 681724, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 19, 681737, tzinfo=datetime.timezone.utc), Int4(8220), 'WF-APP-8220-correction_required-1', 19, 19, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-019', source_id = 'CW-SPACS-02 STT-4', number = 19
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-019]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:222: in _run_case
+    app = _application(
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab596587d0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 19, 681724, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 19, 681737, tzinfo=datetime.timezone.utc), Int4(8220), 'WF-APP-8220-correction_required-1', 19, 19, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-020]" time="0.028"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BB950&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 20, 137438, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 20, 137465, tzinfo=datetime.timezone.utc), Int4(8221), 'WF-APP-8221-renewal_under_verification-1', 20, 20, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BB950&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59659550&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 20, 137438, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 20, 137465, tzinfo=datetime.timezone.utc), Int4(8221), 'WF-APP-8221-renewal_under_verification-1', 20, 20, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-020', source_id = 'CW-SPACS-02 STT-5', number = 20
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-020]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:222: in _run_case
+    app = _application(
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59659550&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 20, 137438, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 20, 137465, tzinfo=datetime.timezone.utc), Int4(8221), 'WF-APP-8221-renewal_under_verification-1', 20, 20, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-021]" time="0.024"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596B0AD0&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 20, 587708, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 20, 587756, tzinfo=datetime.timezone.utc), Int4(8222), 'WF-APP-8222-renewal_under_verification-1', 21, 21, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596B0AD0&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59659790&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 20, 587708, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 20, 587756, tzinfo=datetime.timezone.utc), Int4(8222), 'WF-APP-8222-renewal_under_verification-1', 21, 21, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-021', source_id = 'BW-SPACS-06 STT-3; CW-SPACS-02 STT-6'
+number = 21
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-021]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:222: in _run_case
+    app = _application(
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59659790&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 20, 587708, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 20, 587756, tzinfo=datetime.timezone.utc), Int4(8222), 'WF-APP-8222-renewal_under_verification-1', 21, 21, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-022]" time="0.019" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-023]" time="0.027"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596B06B0&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 21, 73812, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 21, 73853, tzinfo=datetime.timezone.utc), Int4(8224), 'WF-APP-8224-renewal_under_decision-1', 22, 22, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB596B06B0&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab596596d0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 21, 73812, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 21, 73853, tzinfo=datetime.timezone.utc), Int4(8224), 'WF-APP-8224-renewal_under_decision-1', 22, 22, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-023', source_id = 'BW-SPACS-07 STT-2; CW-SPACS-02 STT-8'
+number = 23
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-023]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:251: in _run_case
+    app = _application(version, sm.RENEWAL_UNDER_DECISION, user_id=student_id, renewal=True)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab596596d0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 21, 73812, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 21, 73853, tzinfo=datetime.timezone.utc), Int4(8224), 'WF-APP-8224-renewal_under_decision-1', 22, 22, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-024]" time="0.026"><failure message="django.db.utils.DataError: value too long for type character varying(32)">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BADB0&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 21, 489676, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 21, 489707, tzinfo=datetime.timezone.utc), Int4(8225), 'WF-APP-8225-renewal_under_decision-1', 23, 23, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002AB597BADB0&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59659550&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 21, 489676, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 21, 489707, tzinfo=datetime.timezone.utc), Int4(8225), 'WF-APP-8225-renewal_under_decision-1', 23, 23, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.StringDataRightTruncation: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: StringDataRightTruncation
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'WF-SPACS-024', source_id = 'BW-SPACS-10 STT-2; CW-SPACS-02 STT-9'
+number = 24
+request = &lt;FixtureRequest for &lt;Function test_wf_design_case[WF-SPACS-024]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_wf_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("WF-SPACS-")
+        assert source_id
+        if number in _BLOCKER_ONLY:
+            assert test_id in WF_IMPLEMENTATION_BLOCKERS
+            return
+&gt;       _run_case(number, request.getfixturevalue("workflow_version"))
+
+modules\spacs\tests\spec\wf\test_wf_workflows.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\wf\test_wf_workflows.py:251: in _run_case
+    app = _application(version, sm.RENEWAL_UNDER_DECISION, user_id=student_id, renewal=True)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+modules\spacs\tests\spec\wf\test_wf_workflows.py:88: in _application
+    return ScholarshipApplication.objects.create(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INERROR] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2ab59659550&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 27, 21, 489676, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 27, 21, 489707, tzinfo=datetime.timezone.utc), Int4(8225), 'WF-APP-8225-renewal_under_decision-1', 23, 23, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.DataError: value too long for type character varying(32)
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: DataError</failure></testcase><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-025]" time="0.086" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-026]" time="0.033" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-027]" time="0.013" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-028]" time="0.047" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-029]" time="0.036" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-030]" time="0.033" /><testcase classname="modules.spacs.tests.spec.wf.test_wf_workflows" name="test_wf_design_case[WF-SPACS-031]" time="0.090" /></testsuite></testsuites>

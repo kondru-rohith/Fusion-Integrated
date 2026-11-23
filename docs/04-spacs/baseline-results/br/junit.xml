@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="33" time="6.875" timestamp="2026-11-24T00:00:14.700861+05:30" hostname="Aasmitha"><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-001]" time="4.216" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-002]" time="0.042" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-003]" time="0.006" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-004]" time="0.018"><failure message="django.db.transaction.TransactionManagementError: An error occurred in the current transaction. You can't execute queries until the end of the 'atomic' block.">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000002935B7BEC90&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 30, 19, 500419, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 30, 19, 500432, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 3, 3, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000002935B7BEC90&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INTRANS] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2935b22bdd0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 30, 19, 500419, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 30, 19, 500432, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 3, 3, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "spacs_unique_active_application_per_cycle"
+E           DETAIL:  Key (user_id, catalogue_entry_id, cycle, is_renewal)=(101, 3, 2026-27, f) already exists.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: UniqueViolation
+
+The above exception was the direct cause of the following exception:
+
+catalogue_version = &lt;CatalogueVersion: BR-TRACE-SCHEME v1 (2026-27)&gt;
+
+    def test_prevent_duplicate_active_applications(catalogue_version):
+        """Students cannot submit duplicate active applications for same cycle (BR-SPACS-002)."""
+        ScholarshipApplication.objects.create(
+            user_id=101,
+            catalogue_entry=catalogue_version.entry,
+            catalogue_version=catalogue_version,
+            cycle="2026-27",
+            application_number="SPACS-2026-00001",
+            status="submitted",
+        )
+    
+        with pytest.raises(IntegrityError):
+&gt;           ScholarshipApplication.objects.create(
+                user_id=101,
+                catalogue_entry=catalogue_version.entry,
+                catalogue_version=catalogue_version,
+                cycle="2026-27",
+                application_number="SPACS-2026-00002",
+                status="submitted",
+            )
+
+modules\spacs\tests\test_models.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INTRANS] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x2935b22bdd0&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 30, 19, 500419, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 30, 19, 500432, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 3, 3, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.IntegrityError: duplicate key value violates unique constraint "spacs_unique_active_application_per_cycle"
+E           DETAIL:  Key (user_id, catalogue_entry_id, cycle, is_renewal)=(101, 3, 2026-27, f) already exists.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: IntegrityError
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'BR-SPACS-004', source_id = 'BR-SPACS-002', number = 4
+request = &lt;FixtureRequest for &lt;Function test_br_design_case[BR-SPACS-004]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_br_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("BR-SPACS-")
+        assert source_id
+        scenarios = _SCENARIOS[number]
+        if not scenarios:
+            assert test_id in BR_IMPLEMENTATION_BLOCKERS
+            return
+        for module_name, function_name in scenarios:
+            if module_name == "br":
+                globals()[function_name](request)
+            else:
+&gt;               _call_existing(module_name, function_name, request)
+
+modules\spacs\tests\spec\br\test_br_remaining_cases.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\br\test_br_remaining_cases.py:98: in _call_existing
+    transaction.savepoint_rollback(savepoint)
+.venv\Lib\site-packages\django\db\transaction.py:62: in savepoint_rollback
+    get_connection(using).savepoint_rollback(sid)
+.venv\Lib\site-packages\django\utils\asyncio.py:26: in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\base\base.py:413: in savepoint_rollback
+    self._savepoint_rollback(sid)
+.venv\Lib\site-packages\django\db\backends\base\base.py:371: in _savepoint_rollback
+    cursor.execute(self.ops.savepoint_rollback_sql(sid))
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:99: in _execute
+    self.db.validate_no_broken_transaction()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;
+
+    def validate_no_broken_transaction(self):
+        if self.needs_rollback:
+&gt;           raise TransactionManagementError(
+                "An error occurred in the current transaction. You can't "
+                "execute queries until the end of the 'atomic' block."
+            ) from self.rollback_exc
+E           django.db.transaction.TransactionManagementError: An error occurred in the current transaction. You can't execute queries until the end of the 'atomic' block.
+
+.venv\Lib\site-packages\django\db\backends\base\base.py:521: TransactionManagementError</failure></testcase><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-005]" time="0.005" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-006]" time="0.017" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-007]" time="0.015" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-008]" time="0.039" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-009]" time="0.312" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-010]" time="0.074" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-011]" time="0.043" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-012]" time="0.073" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-013]" time="0.049" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-014]" time="0.052" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-015]" time="0.019" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-016]" time="0.037" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-017]" time="0.011" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-018]" time="0.056" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-019]" time="0.118" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-020]" time="0.026" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-021]" time="0.029" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-022]" time="0.023" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-023]" time="0.012" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-025]" time="0.010" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-026]" time="0.042" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-027]" time="0.017" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-028]" time="0.050" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-029]" time="0.094" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-030]" time="0.034" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-031]" time="0.053" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-032]" time="0.015" /><testcase classname="modules.spacs.tests.spec.br.test_br_remaining_cases" name="test_br_design_case[BR-SPACS-033]" time="0.006"><failure message="KeyError: '_direct_configured_candidate_source_case'">test_id = 'BR-SPACS-033', source_id = 'BR-SPACS-023', number = 33
+request = &lt;FixtureRequest for &lt;Function test_br_design_case[BR-SPACS-033]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_br_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("BR-SPACS-")
+        assert source_id
+        scenarios = _SCENARIOS[number]
+        if not scenarios:
+            assert test_id in BR_IMPLEMENTATION_BLOCKERS
+            return
+        for module_name, function_name in scenarios:
+            if module_name == "br":
+&gt;               globals()[function_name](request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+E               KeyError: '_direct_configured_candidate_source_case'
+
+modules\spacs\tests\spec\br\test_br_remaining_cases.py:492: KeyError</failure></testcase><testcase classname="modules.spacs.tests.spec.br.test_policy_publication" name="test_br_spacs_024_policy_version_requires_approval_reference" time="0.066" /></testsuite></testsuites>
