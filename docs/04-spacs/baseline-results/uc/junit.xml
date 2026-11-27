@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="1" skipped="0" tests="58" time="11.594" timestamp="2026-11-23T23:59:02.827636+05:30" hostname="Aasmitha"><testcase classname="modules.spacs.tests.spec.uc.test_catalogue_browsing" name="test_uc_spacs_030_published_catalogue_browsing_excludes_unpublished" time="5.745"><error message="failed on setup with &quot;file C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\uc\test_catalogue_browsing.py, line 15&#10;  def test_uc_spacs_030_published_catalogue_browsing_excludes_unpublished(&#10;E       fixture 'published_scholarship' not found&#10;[+4 more lines; full report in element text]">file C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\uc\test_catalogue_browsing.py, line 15
+  def test_uc_spacs_030_published_catalogue_browsing_excludes_unpublished(
+E       fixture 'published_scholarship' not found
+&gt;       available fixtures: _clear_throttle_state, _dj_autoclear_mailbox, _django_clear_site_cache, _django_db_helper, _django_db_marker, _django_isolate_apps, _django_set_urlconf, _django_setup_unittest, _fail_for_invalid_template_variable, _live_server_helper, _session_faker, _template_string_if_invalid_marker, admin_client, admin_user, async_client, async_rf, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, client, cov, db, django_assert_max_num_queries, django_assert_num_queries, django_capture_on_commit_callbacks, django_db_blocker, django_db_createdb, django_db_keepdb, django_db_modify_db_settings, django_db_modify_db_settings_parallel_suffix, django_db_modify_db_settings_tox_suffix, django_db_modify_db_settings_xdist_suffix, django_db_reset_sequences, django_db_serialized_rollback, django_db_setup, django_db_use_migrations, django_isolated_apps, django_mail_dnsname, django_mail_patch_dns, django_test_environment, django_user_model, django_username_field, doctest_namespace, faker, live_server, mailoutbox, monkeypatch, no_cover, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rf, settings, stub_iam, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, transactional_db, user_ref
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\uc\test_catalogue_browsing.py:15</error></testcase><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-001]" time="0.443" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-002]" time="0.059" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-003]" time="0.136" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-004]" time="0.085"><failure message="django.db.transaction.TransactionManagementError: An error occurred in the current transaction. You can't execute queries until the end of the 'atomic' block.">self = &lt;django.db.backends.utils.CursorWrapper object at 0x000001A162568590&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 29, 9, 594678, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 29, 9, 594692, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 4, 4, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x000001A162568590&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INTRANS] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x1a1625d6b10&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 29, 9, 594678, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 29, 9, 594692, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 4, 4, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "spacs_unique_active_application_per_cycle"
+E           DETAIL:  Key (user_id, catalogue_entry_id, cycle, is_renewal)=(101, 4, 2026-27, f) already exists.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: UniqueViolation
+
+The above exception was the direct cause of the following exception:
+
+catalogue_version = &lt;CatalogueVersion: UC-TRACE-SCHEME v1 (2026-27)&gt;
+
+    def test_prevent_duplicate_active_applications(catalogue_version):
+        """Students cannot submit duplicate active applications for same cycle (BR-SPACS-002)."""
+        ScholarshipApplication.objects.create(
+            user_id=101,
+            catalogue_entry=catalogue_version.entry,
+            catalogue_version=catalogue_version,
+            cycle="2026-27",
+            application_number="SPACS-2026-00001",
+            status="submitted",
+        )
+    
+        with pytest.raises(IntegrityError):
+&gt;           ScholarshipApplication.objects.create(
+                user_id=101,
+                catalogue_entry=catalogue_version.entry,
+                catalogue_version=catalogue_version,
+                cycle="2026-27",
+                application_number="SPACS-2026-00002",
+                status="submitted",
+            )
+
+modules\spacs\tests\test_models.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INTRANS] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x1a1625d6b10&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 29, 9, 594678, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 29, 9, 594692, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 4, 4, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.IntegrityError: duplicate key value violates unique constraint "spacs_unique_active_application_per_cycle"
+E           DETAIL:  Key (user_id, catalogue_entry_id, cycle, is_renewal)=(101, 4, 2026-27, f) already exists.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: IntegrityError
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'UC-SPACS-004', source_id = 'UC-SPACS-001', number = 4
+request = &lt;FixtureRequest for &lt;Function test_uc_design_case[UC-SPACS-004]&gt;&gt;
+
+    @pytest.mark.parametrize("test_id,source_id,number", _CASES, ids=[row[0] for row in _CASES])
+    def test_uc_design_case(test_id, source_id, number, request):
+        assert test_id.startswith("UC-SPACS-")
+        assert source_id
+        if not _SCENARIOS[number]:
+            assert test_id in UC_IMPLEMENTATION_BLOCKERS
+            return
+        for module_name, function_name in _SCENARIOS[number]:
+            if module_name == "uc":
+                globals()[function_name](request)
+            else:
+&gt;               _call_existing(module_name, function_name, request)
+
+modules\spacs\tests\spec\uc\test_uc_remaining_cases.py:501: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\uc\test_uc_remaining_cases.py:114: in _call_existing
+    transaction.savepoint_rollback(savepoint)
+.venv\Lib\site-packages\django\db\transaction.py:62: in savepoint_rollback
+    get_connection(using).savepoint_rollback(sid)
+.venv\Lib\site-packages\django\utils\asyncio.py:26: in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\base\base.py:413: in savepoint_rollback
+    self._savepoint_rollback(sid)
+.venv\Lib\site-packages\django\db\backends\base\base.py:371: in _savepoint_rollback
+    cursor.execute(self.ops.savepoint_rollback_sql(sid))
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:99: in _execute
+    self.db.validate_no_broken_transaction()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;
+
+    def validate_no_broken_transaction(self):
+        if self.needs_rollback:
+&gt;           raise TransactionManagementError(
+                "An error occurred in the current transaction. You can't "
+                "execute queries until the end of the 'atomic' block."
+            ) from self.rollback_exc
+E           django.db.transaction.TransactionManagementError: An error occurred in the current transaction. You can't execute queries until the end of the 'atomic' block.
+
+.venv\Lib\site-packages\django\db\backends\base\base.py:521: TransactionManagementError</failure></testcase><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-005]" time="0.058" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-006]" time="0.109" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-007]" time="0.074" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-008]" time="0.115" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-009]" time="0.101" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-010]" time="0.143" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-011]" time="0.263" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-012]" time="0.093" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-013]" time="0.102" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-014]" time="0.090" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-015]" time="0.018" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-016]" time="0.010" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-017]" time="0.115" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-018]" time="0.031" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-019]" time="0.025" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-020]" time="0.023" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-021]" time="0.224" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-022]" time="0.018" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-023]" time="0.021" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-024]" time="0.017" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-025]" time="0.023" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-026]" time="0.022" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-027]" time="0.023" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-028]" time="0.025" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-029]" time="0.023" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-031]" time="0.042" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-032]" time="0.026" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-033]" time="0.060" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-034]" time="0.166" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-035]" time="0.249" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-036]" time="0.185" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-037]" time="0.176" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-038]" time="0.194" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-039]" time="0.089" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-040]" time="0.077" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-041]" time="0.101" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-042]" time="0.057" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-043]" time="0.052" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-044]" time="0.012" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-045]" time="0.043" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-046]" time="0.046" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-047]" time="0.019" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-048]" time="0.015" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-049]" time="0.018" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-050]" time="0.005" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-051]" time="0.018" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-052]" time="0.017" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-053]" time="0.018" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-054]" time="0.005" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-055]" time="0.014" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-056]" time="0.009" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-057]" time="0.016" /><testcase classname="modules.spacs.tests.spec.uc.test_uc_remaining_cases" name="test_uc_design_case[UC-SPACS-058]" time="0.068" /></testsuite></testsuites>

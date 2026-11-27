@@ -1,0 +1,524 @@
+[
+{
+"test_id": "UC-SPACS-001",
+"source_id": "UC-SPACS-001",
+"purpose": "Verify that an authenticated student can successfully create and submit a new scholarship application for a published scheme with an open application window.",
+"preconditions": "Student is authenticated, the target scholarship scheme is published, the application window is open, and the student meets scheme eligibility without an existing conflicting duplicate application.",
+"action_or_input": "Student selects Apply on the published scholarship, enters all required application data, uploads required supporting documents or selects valid reusable documents, chooses Submit, and confirms submission.",
+"expected_result": "The system validates eligibility, duplicate-application rules, completeness, and machine-checkable document conditions; assigns a unique application ID and timestamp; stores the applicable policy version; sets application state to Submitted; routes the verification task to the SPACS Assistant; and sends submission notifications.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-002",
+"source_id": "UC-SPACS-001",
+"purpose": "Verify that a student can save an incomplete or unsubmitted scholarship application as a draft.",
+"preconditions": "Student is authenticated, the scholarship scheme is published, and the application window is open.",
+"action_or_input": "Student starts an application, enters partial or complete data/documents, and selects Save Draft before submitting.",
+"expected_result": "The application is saved and its state remains Draft without creating a Submitted application or routing a verification task.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-003",
+"source_id": "UC-SPACS-001",
+"purpose": "Verify that a student can upload a replacement document when a previously uploaded reusable document is unavailable or invalid for the selected scheme.",
+"preconditions": "Student is authenticated, the scholarship scheme is published with an open application window, and an existing reusable document is invalid or unacceptable for the scheme.",
+"action_or_input": "Student attempts to use an unavailable or invalid reusable document, uploads a valid replacement document instead, completes required fields, and confirms submission.",
+"expected_result": "The replacement document passes machine-checkable document validation, the application is set to Submitted, and the verification task is routed to the SPACS Assistant.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-004",
+"source_id": "UC-SPACS-001",
+"purpose": "Verify that application submission is blocked when eligibility, duplicate-application, completeness, or machine-checkable document validation fails.",
+"preconditions": "Student is authenticated, the scholarship scheme is published, and the application window is open.",
+"action_or_input": "Student submits an application that violates scheme eligibility, triggers the duplicate-application rule, misses required fields, or has invalid/missing machine-checkable documents.",
+"expected_result": "Submission is blocked, specific validation deficiencies are displayed to the student, and no Submitted application state is created.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-005",
+"source_id": "UC-SPACS-001",
+"purpose": "Verify that recoverable draft input is preserved when a recoverable timeout or system error occurs during application creation/submission.",
+"preconditions": "Student is authenticated and has entered application data in an active application session for an open published scholarship.",
+"action_or_input": "A recoverable timeout or system error occurs before submission completes.",
+"expected_result": "No Submitted state is created, and the student's recoverable draft input is retained.",
+"test_type": "exception"
+},
+{
+"test_id": "UC-SPACS-006",
+"source_id": "UC-SPACS-002",
+"purpose": "Verify that an authorized SPACS Assistant can review an assigned scholarship application, mark it Verified, and route it to the SPACS Convener for decision.",
+"preconditions": "SPACS Assistant is authenticated and authorized, a Submitted or Resubmitted scholarship application is assigned for verification, and no final decision has been made.",
+"action_or_input": "SPACS Assistant opens the assigned application, reviews the displayed policy/criteria version, status history, completeness, eligibility evidence, and documents, records verification findings, and marks the application Verified.",
+"expected_result": "Verification findings are recorded, the application state is updated to Verified, and the system routes the application to the SPACS Convener for final decision.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-007",
+"source_id": "UC-SPACS-002",
+"purpose": "Verify that a SPACS Assistant can request corrections or additional information when an assigned application is incomplete or requires clarification.",
+"preconditions": "SPACS Assistant is authenticated and authorized, a Submitted or Resubmitted application is assigned for verification, and no final decision exists.",
+"action_or_input": "SPACS Assistant reviews the application, records the correction reason and required information, and submits a correction request.",
+"expected_result": "The application state changes to Correction Required, the correction reason/details are recorded, and the student is notified.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-008",
+"source_id": "UC-SPACS-002",
+"purpose": "Verify that a SPACS Assistant can record a verification concern (such as suspected ineligibility or invalid evidence) and route it according to configured workflow without making a final rejection.",
+"preconditions": "SPACS Assistant is authenticated and authorized, a Submitted or Resubmitted application is assigned for verification, and no final decision exists.",
+"action_or_input": "SPACS Assistant identifies a verification concern, records the concern findings, and routes it to the SPACS Convener or requests correction as configured by the workflow.",
+"expected_result": "The verification concern is explicitly recorded and routed to the Convener (or set for correction per configured workflow) without recording a final rejection decision.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-009",
+"source_id": "UC-SPACS-002",
+"purpose": "Verify that access is denied when an unauthorized user or unassigned Assistant attempts to open or verify a scholarship application.",
+"preconditions": "A user lacks the authorized SPACS Assistant role or is not assigned to the target application.",
+"action_or_input": "The unauthorized or unassigned user attempts to open and record verification findings for the scholarship application.",
+"expected_result": "Access is denied, and no verification outcome or application state change occurs.",
+"test_type": "authorization"
+},
+{
+"test_id": "UC-SPACS-010",
+"source_id": "UC-SPACS-003",
+"purpose": "Verify that a student can modify and resubmit an owned application in an editable state (such as Draft, eligible Submitted, or Correction Required) and have it routed for fresh verification.",
+"preconditions": "Student is authenticated, owns the application, and the application is in an editable lifecycle state (e.g., Draft, eligible Submitted, or Correction Required).",
+"action_or_input": "Student opens the editable application, reviews any correction request, updates application data/documents, and selects Resubmit.",
+"expected_result": "The system revalidates the updated content, clears/invalidates any affected prior verification or routing, updates the application, and routes it back to verification.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-011",
+"source_id": "UC-SPACS-003",
+"purpose": "Verify that resubmission is blocked when modified application content fails validation, while saving as draft remains available where permitted.",
+"preconditions": "Student is authenticated, owns the application, and the application is in an editable state where draft saving is permitted.",
+"action_or_input": "Student enters invalid or incomplete modifications into the application and attempts to resubmit, then saves as draft.",
+"expected_result": "Resubmission is blocked due to validation failure, and the changes are saved as a draft where permitted without routing to verification.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-012",
+"source_id": "UC-SPACS-003",
+"purpose": "Verify that canceling an edit operation leaves previously persisted application data unchanged.",
+"preconditions": "Student is authenticated, owns an application in an editable state, and has opened it for editing.",
+"action_or_input": "Student modifies fields/documents in the editor and selects Cancel without saving or resubmitting.",
+"expected_result": "Persisted application data and current application state remain unchanged.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-013",
+"source_id": "UC-SPACS-003",
+"purpose": "Verify that the system rejects an update if the application state becomes non-editable concurrently while the student is editing.",
+"preconditions": "Student owns an application that was editable when opened, and the application transitions to a non-editable state before the student saves or resubmits.",
+"action_or_input": "Student attempts to save or resubmit modifications after the application has concurrently transitioned to a non-editable state.",
+"expected_result": "The system rejects the update, prevents unauthorized state or content changes, and refreshes the application's current state.",
+"test_type": "exception"
+},
+{
+"test_id": "UC-SPACS-014",
+"source_id": "UC-SPACS-004",
+"purpose": "Verify that a student can withdraw an owned pending scholarship application when the current lifecycle state permits withdrawal.",
+"preconditions": "Student is authenticated, owns the application, the application is in a lifecycle state configured as withdrawable, and no final decision has been recorded.",
+"action_or_input": "Student opens the application, selects Withdraw, provides a withdrawal reason if required by the scheme, and confirms withdrawal.",
+"expected_result": "The system records the withdrawal and reason, changes the application state to Withdrawn, closes pending processing tasks, audit-logs the action, and sends notifications.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-015",
+"source_id": "UC-SPACS-004",
+"purpose": "Verify that withdrawal is blocked with an explanation when the application is in a lifecycle state where withdrawal is not permitted.",
+"preconditions": "Student is authenticated, owns the application, and the application is in a state configured as non-withdrawable (or already finally decided).",
+"action_or_input": "Student attempts to withdraw the application.",
+"expected_result": "The system blocks the withdrawal request, explains the state restriction, and leaves the application in its prior state.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-016",
+"source_id": "UC-SPACS-004",
+"purpose": "Verify that withdrawal is rejected if the application's lifecycle state changes to non-withdrawable during confirmation.",
+"preconditions": "Student owns a withdrawable application and initiates withdrawal, but the application state changes to non-withdrawable before confirmation completes.",
+"action_or_input": "Student confirms the withdrawal after the concurrent state transition.",
+"expected_result": "The system rechecks the lifecycle state, rejects the withdrawal, and keeps the application in its current non-withdrawable state.",
+"test_type": "exception"
+},
+{
+"test_id": "UC-SPACS-017",
+"source_id": "UC-SPACS-006",
+"purpose": "Verify that an authorized SPACS Convener can make and record a final Approve or Reject decision on a routed scholarship application.",
+"preconditions": "SPACS Convener is authenticated and authorized for the scheme, a Verified application or verification concern is routed and assigned for decision, and policy context is available.",
+"action_or_input": "SPACS Convener opens the decision task, reviews the application, documents, verification findings, and applicable policy version, selects Approve or Reject, and enters required reason/details.",
+"expected_result": "The system records the Convener's identity, timestamp, decision outcome, rationale/details, and policy version; updates the application state accordingly; and notifies the student.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-018",
+"source_id": "UC-SPACS-006",
+"purpose": "Verify that a SPACS Convener can return a routed scholarship application for correction instead of issuing an immediate Approve or Reject decision.",
+"preconditions": "SPACS Convener is authenticated and authorized for the scheme, and an application is routed for decision.",
+"action_or_input": "SPACS Convener opens the decision task, selects return for correction, and records the required correction details.",
+"expected_result": "The application state changes to Correction Required, the correction details and actor/timestamp are recorded, and the student is notified.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-019",
+"source_id": "UC-SPACS-006",
+"purpose": "Verify that the system blocks a scholarship decision when the decision role is not authorized for the target scheme.",
+"preconditions": "A user attempts to decide on a scholarship application for a scheme where their role lacks decision authority.",
+"action_or_input": "The unauthorized user attempts to record an Approve, Reject, or return-for-correction decision on the application.",
+"expected_result": "The system blocks the decision, and no final decision or state update is recorded.",
+"test_type": "authorization"
+},
+{
+"test_id": "UC-SPACS-020",
+"source_id": "UC-SPACS-007",
+"purpose": "Verify that an authenticated student can export (download/print) their own scholarship application.",
+"preconditions": "Student is authenticated and owns the target scholarship application.",
+"action_or_input": "Student opens their own application and selects Download/Print.",
+"expected_result": "The system generates and provides the export for the student's application record.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-021",
+"source_id": "UC-SPACS-007",
+"purpose": "Verify that authorized SPACS staff can export (download/print) an application permitted by access policy.",
+"preconditions": "Staff user is authenticated and holds a role permitted by access policy to export the target application.",
+"action_or_input": "Authorized staff user opens the permitted application and selects Download/Print.",
+"expected_result": "The system generates and provides the export for the authorized application record.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-022",
+"source_id": "UC-SPACS-007",
+"purpose": "Verify that exporting an application is denied when the user fails the authorization/access check.",
+"preconditions": "Authenticated user does not own the target application and lacks staff access permission for it.",
+"action_or_input": "User attempts to access and select Download/Print for the unauthorized application.",
+"expected_result": "The access check fails, export is denied, and no application export is generated.",
+"test_type": "authorization"
+},
+{
+"test_id": "UC-SPACS-023",
+"source_id": "UC-SPACS-008",
+"purpose": "Verify that an authenticated student can view the current state and relevant historical status of their own applications and renewals.",
+"preconditions": "Student is authenticated and has at least one owned application or renewal record.",
+"action_or_input": "Student opens My Applications and selects an owned application or renewal.",
+"expected_result": "The system retrieves and displays the current state and relevant status history for the selected record.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-024",
+"source_id": "UC-SPACS-008",
+"purpose": "Verify that a student is denied access when attempting to view the status of an application or renewal not owned by them.",
+"preconditions": "Student is authenticated and attempts to access a record belonging to another student.",
+"action_or_input": "Student attempts to view the status/history of an unowned application or renewal record.",
+"expected_result": "Access is denied, and no unauthorized status information is disclosed.",
+"test_type": "authorization"
+},
+{
+"test_id": "UC-SPACS-025",
+"source_id": "UC-SPACS-010",
+"purpose": "Verify that an authorized SPACS Convener can create and save a new draft scholarship or award catalogue entry with valid metadata.",
+"preconditions": "User is authenticated as an authorized SPACS Convener.",
+"action_or_input": "SPACS Convener selects New Catalogue Entry, enters valid opportunity metadata, criteria references, evidence requirements, candidate/application method, and dates, and saves as Draft.",
+"expected_result": "The system validates the required catalogue metadata and saves the new catalogue entry in Draft status.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-026",
+"source_id": "UC-SPACS-010",
+"purpose": "Verify that the system prevents saving or publishing a new catalogue entry when required metadata is missing or invalid.",
+"preconditions": "User is authenticated as an authorized SPACS Convener.",
+"action_or_input": "SPACS Convener enters incomplete or invalid metadata when creating a new catalogue entry and attempts to save/publish.",
+"expected_result": "Validation fails, the system prevents saving/publishing an invalid entry, and no invalid published entry is created.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-027",
+"source_id": "UC-SPACS-011",
+"purpose": "Verify that an authorized SPACS Convener can create or modify a draft/future catalogue version with effective dates while preserving prior published versions and change history.",
+"preconditions": "User is authenticated as an authorized SPACS Convener, and an editable draft or future catalogue version exists (or is created from an existing entry).",
+"action_or_input": "SPACS Convener opens the editable catalogue entry/version, modifies permitted fields and effective dates, and saves the updated draft/future version.",
+"expected_result": "The system saves the updated draft/future version, preserves prior published versions intact, and records the change history.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-028",
+"source_id": "UC-SPACS-011",
+"purpose": "Verify that attempting to modify a historical/published catalogue version in place is prevented and requires creating a new version.",
+"preconditions": "User is authenticated as an authorized SPACS Convener, and a historical or active published catalogue version exists.",
+"action_or_input": "SPACS Convener attempts to edit a historical catalogue version in place without creating a new version.",
+"expected_result": "The system blocks in-place modification, requires creating a new version, and leaves the historical version unchanged.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-029",
+"source_id": "UC-SPACS-012",
+"purpose": "Verify that an authorized SPACS Convener can retire or deactivate a catalogue entry prospectively while preserving historical records.",
+"preconditions": "User is authenticated as an authorized SPACS Convener, and an active or published catalogue entry exists.",
+"action_or_input": "SPACS Convener opens the catalogue entry, selects Retire/Deactivate, enters retirement/deactivation details and effective date, and confirms.",
+"expected_result": "The system retires/deactivates the catalogue entry prospectively, prevents new processing after the effective retirement date, and preserves all historical applications and cycles.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-030",
+"source_id": "UC-SPACS-014",
+"purpose": "Verify that any authenticated user can browse currently published scholarship and award catalogue entries and inspect their details without seeing unpublished entries as active.",
+"preconditions": "User is authenticated, and the catalogue contains published entries (as well as unpublished draft/retired entries).",
+"action_or_input": "Authenticated user opens the Awards & Scholarships catalogue, filters entries, and selects a published entry.",
+"expected_result": "The system lists only currently published entries (without exposing unpublished entries as active) and displays the selected entry's description, eligibility criteria, required evidence, dates, application/candidate method, and renewal rules where applicable.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-031",
+"source_id": "UC-SPACS-015",
+"purpose": "Verify that an eligible student can submit a scholarship renewal application during an open renewal window and trigger a new verification cycle.",
+"preconditions": "Student is authenticated, holds an awarded scholarship whose policy permits renewal, satisfies renewal eligibility, and the renewal window is open.",
+"action_or_input": "Student selects Renew for the eligible scholarship, reviews prefilled permissible prior data, provides required refreshed information and evidence, and submits the renewal application.",
+"expected_result": "The system validates renewal-specific criteria and completeness, creates a new renewal application cycle in Submitted state, and routes the renewal to the SPACS Assistant for fresh verification without auto-approving it.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-032",
+"source_id": "UC-SPACS-015",
+"purpose": "Verify that starting or submitting a renewal application is blocked when the scholarship is not renewal-eligible or the renewal window is closed.",
+"preconditions": "Student is authenticated, and either the scholarship is not renewable, the student fails renewal eligibility, or the renewal window is closed.",
+"action_or_input": "Student attempts to start or submit a renewal application for the scholarship.",
+"expected_result": "The system blocks starting or submitting the renewal application, and no renewal application cycle is created.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-033",
+"source_id": "UC-SPACS-015",
+"purpose": "Verify that a student can save an in-progress scholarship renewal application as a draft.",
+"preconditions": "Student is authenticated, owns a renewable scholarship, and the renewal window is open.",
+"action_or_input": "Student initiates a renewal application, enters partial or complete data/documents, and selects Save Draft.",
+"expected_result": "The renewal application is saved in Draft state without submitting it or routing it for verification.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-034",
+"source_id": "UC-SPACS-017",
+"purpose": "Verify that a SPACS Convener can prepare and finalize an award candidate pool using the configured candidate-source method and eligibility rules.",
+"preconditions": "SPACS Convener is authenticated and authorized, the award scheme is published, the award cycle is open, and the policy version and candidate-source method are configured.",
+"action_or_input": "SPACS Convener opens the active award cycle, initiates candidate preparation, reviews the system-filtered candidates, and finalizes the candidate pool.",
+"expected_result": "The system retrieves candidates via the configured method, applies machine-checkable eligibility rules, marks the candidate pool Prepared, and makes it available to the assigned Award Evaluation Committee.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-035",
+"source_id": "UC-SPACS-017",
+"purpose": "Verify that the system identifies incomplete candidate records for resolution when authoritative data is missing during award candidate pool preparation.",
+"preconditions": "SPACS Convener is authenticated and authorized, an active award cycle is open, and authoritative academic/student data is missing for one or more potential candidates.",
+"action_or_input": "SPACS Convener initiates candidate pool preparation for the active award cycle.",
+"expected_result": "The system identifies and flags the incomplete candidate records for resolution and does not open a committee evaluation task for an unfinalized pool.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-036",
+"source_id": "UC-SPACS-018",
+"purpose": "Verify that an authorized Award Evaluation Committee member can review prepared candidates and record evaluations, shortlist, and required recommendations or decisions.",
+"preconditions": "User is authenticated as an authorized member of the scheme's Award Evaluation Committee, the candidate pool is Prepared, and the criteria version is fixed for the cycle.",
+"action_or_input": "Committee member opens the candidate pool and policy criteria, reviews candidate evidence, and records evaluations, shortlist selections, and required recommendation/decision data.",
+"expected_result": "The system stores the committee actors, timestamps, evaluation history, shortlist, and recommendation/decision outcome.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-037",
+"source_id": "UC-SPACS-018",
+"purpose": "Verify that an Award Evaluation Committee member can record a pending evidence/additional information request when additional candidate evidence is needed.",
+"preconditions": "User is authenticated as an authorized Award Evaluation Committee member and the candidate pool is Prepared.",
+"action_or_input": "Committee member reviews a candidate record, determines additional evidence is required, and records a pending evidence request according to the scheme process.",
+"expected_result": "The system records the pending evidence request and actor/timestamp in the evaluation history.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-038",
+"source_id": "UC-SPACS-018",
+"purpose": "Verify that an unauthorized user or member of a different committee is denied access to evaluate or shortlist award candidates.",
+"preconditions": "User is not an authorized member of the Award Evaluation Committee configured for the target award scheme.",
+"action_or_input": "Unauthorized user attempts to open the candidate pool or record evaluations/shortlists for the award cycle.",
+"expected_result": "Access is denied, and no evaluation or shortlist changes are recorded.",
+"test_type": "authorization"
+},
+{
+"test_id": "UC-SPACS-039",
+"source_id": "UC-SPACS-019",
+"purpose": "Verify that an authorized SPACS Convener can record the final approved or rejected award outcome along with the required Institutional Approving Authority reference.",
+"preconditions": "SPACS Convener is authenticated and authorized, the award cycle is awaiting finalization with committee recommendations/decisions available, and required institutional approval evidence is obtained.",
+"action_or_input": "SPACS Convener opens the award finalization record, enters the final approval/rejection outcome and the required authority/approval reference, and saves.",
+"expected_result": "The system records the final outcome and approval provenance, locks/preserves the finalization history, and sets the award cycle state to Ready for Publication when approved.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-040",
+"source_id": "UC-SPACS-019",
+"purpose": "Verify that when required Institutional Approving Authority approval is missing, the award cycle remains Awaiting Approval and publication is blocked.",
+"preconditions": "SPACS Convener is authenticated and authorized, the award cycle is awaiting finalization, and the policy requires institutional approval evidence that has not yet been provided.",
+"action_or_input": "SPACS Convener attempts to finalize the award outcome as ready for publication without providing the required approval reference/evidence.",
+"expected_result": "The system keeps the award cycle in Awaiting Approval state and blocks publication.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-041",
+"source_id": "UC-SPACS-020",
+"purpose": "Verify that an authorized SPACS Convener can publish approved award results and trigger configured notifications.",
+"preconditions": "SPACS Convener is authenticated and authorized, the final approval outcome is recorded, and the award cycle is in Ready for Publication state.",
+"action_or_input": "SPACS Convener opens the Ready for Publication award cycle, reviews the final approved awardees/results, and confirms Publish Results.",
+"expected_result": "The system sets the award results to Published, records the publication timestamp and version, creates an auditable record, and sends configured notifications to intended audiences.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-042",
+"source_id": "UC-SPACS-020",
+"purpose": "Verify that publishing award results is blocked if the required final approval has not been recorded.",
+"preconditions": "SPACS Convener is authenticated, and the award cycle does not have the required final approval recorded (not Ready for Publication).",
+"action_or_input": "SPACS Convener attempts to publish the award results.",
+"expected_result": "Publication is blocked, and no premature publication occurs.",
+"test_type": "exception"
+},
+{
+"test_id": "UC-SPACS-043",
+"source_id": "UC-SPACS-021",
+"purpose": "Verify that an authorized SPACS Audit Viewer can filter and inspect audit trail records in read-only mode.",
+"preconditions": "User is authenticated and has audit-view permission, and protected audit entries exist in SPACS.",
+"action_or_input": "Authorized SPACS Audit Viewer opens the Audit Trail, filters records by record, actor, action, date, or lifecycle, and views event details.",
+"expected_result": "The system returns the matching protected audit entries accessible to the user and displays them read-only without allowing modification.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-044",
+"source_id": "UC-SPACS-021",
+"purpose": "Verify that an unauthorized user is denied access to the SPACS Audit Trail.",
+"preconditions": "User is authenticated without SPACS audit-view permission.",
+"action_or_input": "Unauthorized user attempts to open or query the SPACS Audit Trail.",
+"expected_result": "Access is denied, and no audit records are disclosed or modified.",
+"test_type": "authorization"
+},
+{
+"test_id": "UC-SPACS-045",
+"source_id": "UC-SPACS-023",
+"purpose": "Verify that an authorized SPACS Convener can publish/activate a complete draft/future catalogue version that has a valid policy approval reference.",
+"preconditions": "SPACS Convener is authenticated and authorized, and a draft/future catalogue version is complete with mandatory metadata, effective dates, and required policy approval reference.",
+"action_or_input": "SPACS Convener selects Publish/Activate on the draft/future catalogue version and confirms publication.",
+"expected_result": "The system validates mandatory metadata, effective dates, and policy approval reference; sets the catalogue version to Published/Active for its effective period; and audit-logs the publication.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-046",
+"source_id": "UC-SPACS-023",
+"purpose": "Verify that publishing/activating a catalogue version is blocked when the policy approval reference or required metadata is missing.",
+"preconditions": "SPACS Convener is authenticated and authorized, and a draft catalogue version is missing a policy approval reference or required metadata.",
+"action_or_input": "SPACS Convener attempts to Publish/Activate the incomplete draft catalogue version.",
+"expected_result": "Publication is blocked, and the catalogue version remains an unpublished draft.",
+"test_type": "validation"
+},
+{
+"test_id": "UC-SPACS-047",
+"source_id": "UC-SPACS-024",
+"purpose": "Verify that the system issues and audit-logs configured SLA reminder or escalation notifications when a pending verification or decision task reaches its configured SLA threshold.",
+"preconditions": "A verification or decision task remains pending, and an applicable SLA threshold and recipient configuration exist.",
+"action_or_input": "The configured SLA reminder or escalation threshold time is reached for the pending task.",
+"expected_result": "The system identifies the overdue pending task, sends the configured e-mail and/or in-dashboard reminder/escalation notification to the configured recipients, audit-logs the notification event, and leaves the underlying application/task business state unchanged.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-048",
+"source_id": "UC-SPACS-024",
+"purpose": "Verify that no SLA reminder or escalation notification is sent if the pending task is completed before SLA processing.",
+"preconditions": "A task previously approached an SLA threshold, but the assigned actor completed the task before the reminder/escalation service processed it.",
+"action_or_input": "The SLA reminder/escalation trigger runs after the task has already been completed.",
+"expected_result": "No reminder or escalation notification is sent.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-049",
+"source_id": "UC-SPACS-024",
+"purpose": "Verify that when a later SLA threshold is reached after an earlier reminder was already sent, only the configured next-stage notification is issued.",
+"preconditions": "An earlier SLA reminder stage has already been issued for a still-pending task, and a subsequent SLA stage threshold is configured.",
+"action_or_input": "The configured later SLA threshold is reached while the task remains pending.",
+"expected_result": "The system issues and logs only the configured next-stage notification without duplicating earlier-stage reminders or altering task state.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-050",
+"source_id": "UC-SPACS-024",
+"purpose": "Verify that an SLA notification delivery failure is recorded and handled by the notification mechanism without changing the underlying verification or decision task state.",
+"preconditions": "A pending task reaches a configured SLA threshold, and the notification delivery channel encounters a failure.",
+"action_or_input": "The SLA reminder/escalation service triggers notification delivery and delivery fails.",
+"expected_result": "The delivery failure is recorded and queued/handled according to the configured notification retry mechanism, while the underlying scholarship application and task business state remain unchanged.",
+"test_type": "exception"
+},
+{
+"test_id": "UC-SPACS-051",
+"source_id": "UC-SPACS-025",
+"purpose": "Verify that the system sends and records a configured renewal reminder notification to an eligible student when the renewal reminder trigger date/time is reached.",
+"preconditions": "An awarded scholarship remains renewal-eligible under the active policy, the renewal window is active, the student is an intended recipient, and a renewal reminder is configured for the cycle.",
+"action_or_input": "The configured renewal-reminder date/time is reached before the renewal deadline.",
+"expected_result": "The system rechecks active renewal eligibility/window, sends the configured e-mail and/or in-dashboard reminder to the eligible student, records the notification event in the audit log, and does not create or approve a renewal application.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-052",
+"source_id": "UC-SPACS-025",
+"purpose": "Verify that no renewal reminder is sent if the award is no longer renewal-eligible or the reminder is no longer applicable at trigger time.",
+"preconditions": "A renewal reminder schedule existed, but the award has become ineligible for renewal or the renewal window/applicability no longer applies when the trigger occurs.",
+"action_or_input": "The configured renewal-reminder date/time is reached.",
+"expected_result": "Upon rechecking eligibility and applicability, the system sends no renewal reminder notification.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-053",
+"source_id": "UC-SPACS-025",
+"purpose": "Verify that when multiple renewal reminder stages are configured, the system sends only the reminder stage due at the current trigger.",
+"preconditions": "Multiple renewal reminder stages are configured for a renewable scholarship cycle, and the student remains renewal-eligible.",
+"action_or_input": "A specific configured renewal-reminder stage trigger date/time is reached.",
+"expected_result": "The system sends and records only the reminder stage due at that trigger.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-054",
+"source_id": "UC-SPACS-025",
+"purpose": "Verify that a renewal reminder notification delivery failure is recorded and handled without creating or approving a renewal application.",
+"preconditions": "A renewal-eligible award reaches a configured renewal-reminder trigger, and notification delivery fails.",
+"action_or_input": "The renewal reminder service attempts to deliver the notification and encounters a delivery failure.",
+"expected_result": "The failed delivery is recorded and handled by the notification mechanism, and no renewal application or renewal approval is created.",
+"test_type": "exception"
+},
+{
+"test_id": "UC-SPACS-055",
+"source_id": "UC-SPACS-026",
+"purpose": "Verify that when a SPACS role assignment changes, uncompleted role-based tasks are reassigned to the new valid role holder while preserving completed actor/audit history.",
+"preconditions": "Uncompleted SPACS tasks assigned by role exist, and a role assignment change to a valid new role holder is received from the authoritative role/identity configuration.",
+"action_or_input": "The authoritative role/identity configuration emits a SPACS role assignment change event.",
+"expected_result": "The system resolves the current authorized role holder, routes the uncompleted role-based tasks to the new holder, records the routing change, and leaves all previously completed actor and audit history unchanged.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-056",
+"source_id": "UC-SPACS-026",
+"purpose": "Verify that no task routing change occurs when a SPACS role assignment changes and no pending tasks exist for that role.",
+"preconditions": "No uncompleted role-based tasks exist for the changed SPACS role.",
+"action_or_input": "The authoritative role/identity configuration emits a SPACS role assignment change event.",
+"expected_result": "No task routing change is performed, and existing completed history remains intact.",
+"test_type": "functional"
+},
+{
+"test_id": "UC-SPACS-057",
+"source_id": "UC-SPACS-026",
+"purpose": "Verify that when multiple pending role-based tasks exist for a changed role, all eligible pending tasks are consistently reassigned to the current role holder.",
+"preconditions": "Multiple uncompleted role-based tasks exist for the SPACS role, and a valid new role holder is configured.",
+"action_or_input": "The authoritative role/identity configuration emits a SPACS role assignment change event.",
+"expected_result": "All eligible uncompleted role-based tasks are reassigned to the current role holder, the routing changes are logged, and completed history remains unchanged.",
+"test_type": "workflow"
+},
+{
+"test_id": "UC-SPACS-058",
+"source_id": "UC-SPACS-026",
+"purpose": "Verify that if no valid current role holder can be resolved upon a role change, pending tasks remain uncompleted, completed history is unchanged, and the routing issue is surfaced.",
+"preconditions": "Uncompleted role-based SPACS tasks exist, and a role assignment change leaves no valid current holder for that role.",
+"action_or_input": "The authoritative role/identity configuration emits a role change event with no valid current role holder.",
+"expected_result": "Pending tasks remain uncompleted without invalid assignment, completed actor/audit history remains unchanged, and the routing problem is surfaced according to configured administration.",
+"test_type": "exception"
+}
+]

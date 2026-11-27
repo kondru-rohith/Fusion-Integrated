@@ -1,0 +1,1 @@
+"""FR strategy specification tests."""

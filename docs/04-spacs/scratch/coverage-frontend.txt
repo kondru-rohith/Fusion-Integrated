@@ -1,0 +1,79 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/kondrurohith/Fusion-Integrated/client[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [32m✓[39m src/modules/placement/api/hooks.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 233[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/pages/MyApplicationsPage.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 95[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/pages/DecisionQueuePage.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/pages/CataloguePage.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 106[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/components/ApplyModal.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 135[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/components/CorrectionEditModal.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 333[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/pages/CatalogueAdminPage.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 431[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/components/DecisionModal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 415[2mms[22m[39m
+ [32m✓[39m src/modules/spacs/components/ApplicationDetailDrawer.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 358[2mms[22m[39m
+ [32m✓[39m src/lib/download.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/placement/pages/CompaniesPage.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 78[2mms[22m[39m
+ [32m✓[39m src/auth/RequireAuth.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/auth/RequirePermission.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m src/app/LoginPage.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m14 passed[39m[22m[90m (14)[39m
+[2m      Tests [22m [1m[32m64 passed[39m[22m[90m (64)[39m
+[2m   Start at [22m 20:51:35
+[2m   Duration [22m 2.32s[2m (transform 653ms, setup 1.44s, import 7.30s, tests 2.35s, environment 4.41s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   38.33 |    46.32 |   24.81 |   39.23 |
+ app               |    4.16 |       50 |      20 |    4.54 |
+  LoginPage.tsx    |    4.16 |       50 |      20 |    4.54 | 24-63
+ assets            |       0 |        0 |       0 |       0 |
+  IIITJ_logo.webp  |       0 |        0 |       0 |       0 |
+  iiitdmj_logo.png |       0 |        0 |       0 |       0 |
+ auth              |     100 |      100 |     100 |     100 |
+  RequireAuth.tsx  |     100 |      100 |     100 |     100 |
+  ...ermission.tsx |     100 |      100 |     100 |     100 |
+ lib               |   69.56 |    37.03 |   38.46 |   70.73 |
+  download.ts      |   93.75 |    83.33 |     100 |   92.85 | 16
+  http.ts          |   56.66 |     23.8 |      20 |   59.25 | ...33-36,47,68-72
+ .../placement/api |    5.06 |        0 |    1.55 |    5.09 |
+  hooks.ts         |    5.06 |        0 |    1.55 |    5.09 | 22-316,367-637
+ ...lacement/pages |   41.37 |    61.11 |   24.32 |   46.15 |
+  ...aniesPage.tsx |   41.37 |    61.11 |   24.32 |   46.15 | ...16,231,238-263
+ ...acs/components |   53.55 |    60.21 |   41.37 |   54.22 |
+  ...ailDrawer.tsx |   48.14 |     62.5 |   38.46 |      48 | 59-75,248-366
+  ApplyModal.tsx   |   35.29 |    45.23 |   14.28 |    37.5 | ...27,237,272-314
+  ...EditModal.tsx |   75.43 |       64 |      60 |   74.07 | ...99-220,281-290
+  ...sionModal.tsx |      70 |    72.63 |   81.25 |   71.42 | ...22,134-146,285
+  ...tachModal.tsx |   42.85 |    33.33 |   27.27 |   42.85 | ...74-105,123-149
+  RenewalModal.tsx |       0 |        0 |       0 |       0 | 25-96
+ ...es/spacs/pages |   51.23 |       50 |   42.85 |   50.94 |
+  ...AdminPage.tsx |   44.32 |    36.84 |      36 |   43.61 | ...44,388,412-556
+  ...loguePage.tsx |   72.22 |     60.6 |   42.85 |   72.22 | 33,62,151-170
+  ...QueuePage.tsx |    61.9 |    58.33 |   56.25 |    61.9 | 29,114-159
+  ...tionsPage.tsx |   53.84 |    52.63 |      50 |   53.84 | 30-43,129-181
+ pages/Login       |   18.75 |        0 |       0 |   18.75 |
+  AuthScreen.tsx   |       0 |        0 |       0 |       0 | 38-94
+  auth.css         |       0 |        0 |       0 |       0 |
+  constants.ts     |     100 |      100 |     100 |     100 |
+ ...gin/components |    4.76 |        0 |       0 |    5.55 |
+  ...ackground.tsx |       0 |        0 |       0 |       0 | 15
+  BrandFooter.tsx  |       0 |      100 |       0 |       0 | 5
+  BrandHeader.tsx  |       0 |        0 |       0 |       0 | 18
+  LoginForm.tsx    |    5.88 |        0 |       0 |    7.14 | 9,53-171
+  WelcomePanel.tsx |       0 |        0 |       0 |       0 | 12-116
+ pages/Login/hooks |       0 |        0 |       0 |       0 |
+  useClock.ts      |       0 |      100 |       0 |       0 | 5-17
+  ...sePosition.ts |       0 |        0 |       0 |       0 | 8-23
+ ui/components     |   41.02 |    49.18 |   57.14 |   47.05 |
+  DataTable.tsx    |   34.37 |     37.2 |   44.44 |   40.74 | ...8,61,66-81,120
+  ErrorState.tsx   |       0 |        0 |       0 |       0 | 7-8
+  FormModal.tsx    |     100 |    83.33 |     100 |     100 | 51-61
+  NotPermitted.tsx |     100 |      100 |     100 |     100 |
+  PageHeader.tsx   |     100 |      100 |     100 |     100 |
+  StatusBadge.tsx  |     100 |      100 |     100 |     100 |
+ ui/theme          |     100 |      100 |     100 |     100 |
+  theme.ts         |     100 |      100 |     100 |     100 |
+-------------------|---------|----------|---------|---------|-------------------

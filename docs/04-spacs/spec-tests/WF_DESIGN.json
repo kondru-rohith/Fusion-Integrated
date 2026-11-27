@@ -1,0 +1,282 @@
+
+[
+  {
+    "test_id": "WF-SPACS-001",
+    "source_id": "BW-SPACS-01 STT-1",
+    "purpose": "Verify successful submission of a new scholarship application.",
+    "preconditions": "A student has a draft application for an open scholarship and the submission passes eligibility, duplicate-application, and completeness checks.",
+    "action_or_input": "The student submits the application.",
+    "expected_result": "The application transitions from Not Started / Draft to Submitted.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-002",
+    "source_id": "BW-SPACS-01 STT-2",
+    "purpose": "Verify that a submitted application enters verification.",
+    "preconditions": "A scholarship application is in Submitted state and an assigned SPACS Assistant is available.",
+    "action_or_input": "The SPACS Assistant opens the assigned verification task.",
+    "expected_result": "The application transitions from Submitted to Under Verification.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-003",
+    "source_id": "BW-SPACS-01 STT-3",
+    "purpose": "Verify successful completion of scholarship verification.",
+    "preconditions": "A scholarship application is in Under Verification state and the verification requirements are satisfied.",
+    "action_or_input": "The SPACS Assistant completes verification.",
+    "expected_result": "The application transitions from Under Verification to Verified / Routed for Decision.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-004",
+    "source_id": "BW-SPACS-02 STT-1; CW-SPACS-01 STT-3",
+    "purpose": "Verify that an application requiring correction enters Correction Required.",
+    "preconditions": "A scholarship application is in Under Verification state and the SPACS Assistant determines that correction or additional information is required.",
+    "action_or_input": "The SPACS Assistant records the correction requirement.",
+    "expected_result": "The application transitions from Under Verification to Correction Required.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-005",
+    "source_id": "BW-SPACS-02 STT-2; CW-SPACS-01 STT-4",
+    "purpose": "Verify successful correction and resubmission of an application.",
+    "preconditions": "A scholarship application is in Correction Required state and the student can correct and resubmit it.",
+    "action_or_input": "The student corrects the application and resubmits it with completeness checks satisfied.",
+    "expected_result": "The application transitions from Correction Required to Resubmitted.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-006",
+    "source_id": "BW-SPACS-02 STT-3; CW-SPACS-01 STT-5",
+    "purpose": "Verify successful reverification after application resubmission.",
+    "preconditions": "A corrected scholarship application is in Resubmitted state and the SPACS Assistant determines that reverification requirements are satisfied.",
+    "action_or_input": "The SPACS Assistant completes reverification.",
+    "expected_result": "The application transitions from Resubmitted to Verified / Routed for Decision.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-007",
+    "source_id": "BW-SPACS-03 STT-1; CW-SPACS-01 STT-8",
+    "purpose": "Verify that a verified application enters Convener review.",
+    "preconditions": "A scholarship application is in Verified / Routed for Decision state.",
+    "action_or_input": "The SPACS Convener opens the decision task.",
+    "expected_result": "The application transitions from Verified / Routed for Decision to Under Convener Review.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-008",
+    "source_id": "BW-SPACS-03 STT-2; CW-SPACS-01 STT-10",
+    "purpose": "Verify the scholarship approval decision path.",
+    "preconditions": "A scholarship application is in Under Convener Review state and the SPACS Convener selects approval.",
+    "action_or_input": "The SPACS Convener records an Approve decision.",
+    "expected_result": "The application transitions from Under Convener Review to Approved.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-009",
+    "source_id": "BW-SPACS-04 STT-1; CW-SPACS-01 STT-9",
+    "purpose": "Verify that an application with a verification concern can enter Convener review.",
+    "preconditions": "A scholarship application is in Verification Concern / Routed state.",
+    "action_or_input": "The SPACS Convener opens the decision task.",
+    "expected_result": "The application transitions from Verification Concern / Routed to Under Convener Review.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-010",
+    "source_id": "BW-SPACS-04 STT-2; CW-SPACS-01 STT-11",
+    "purpose": "Verify the scholarship rejection decision path.",
+    "preconditions": "A scholarship application is in Under Convener Review state and the SPACS Convener selects rejection.",
+    "action_or_input": "The SPACS Convener records a Reject decision.",
+    "expected_result": "The application transitions from Under Convener Review to Rejected.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-011",
+    "source_id": "CW-SPACS-01 STT-12",
+    "purpose": "Verify that the Convener can return an application for correction during review.",
+    "preconditions": "A scholarship application is in Under Convener Review state and the SPACS Convener determines that correction is required.",
+    "action_or_input": "The SPACS Convener records the return-for-correction outcome.",
+    "expected_result": "The application transitions from Under Convener Review to Correction Required.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-012",
+    "source_id": "BW-SPACS-05 STT-1; CW-SPACS-01 STT-13",
+    "purpose": "Verify withdrawal of a Submitted application when withdrawal is permitted.",
+    "preconditions": "A scholarship application is in Submitted state, is configured as withdrawable, and has no final decision.",
+    "action_or_input": "The student requests withdrawal.",
+    "expected_result": "The application transitions from Submitted to Withdrawn.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-013",
+    "source_id": "BW-SPACS-05 STT-2; CW-SPACS-01 STT-14",
+    "purpose": "Verify withdrawal of an application Under Verification when policy permits it.",
+    "preconditions": "A scholarship application is in Under Verification state and is withdrawable and not locked by policy.",
+    "action_or_input": "The student requests withdrawal.",
+    "expected_result": "The application transitions from Under Verification to Withdrawn.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-014",
+    "source_id": "BW-SPACS-05 STT-3; CW-SPACS-01 STT-15",
+    "purpose": "Verify withdrawal of an application in Correction Required state.",
+    "preconditions": "A scholarship application is in Correction Required state and is configured as withdrawable.",
+    "action_or_input": "The student requests withdrawal.",
+    "expected_result": "The application transitions from Correction Required to Withdrawn.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-015",
+    "source_id": "BW-SPACS-05 STT-4; CW-SPACS-01 STT-16",
+    "purpose": "Verify withdrawal of a verified application before Convener review begins when the scheme permits withdrawal.",
+    "preconditions": "A scholarship application is in Verified / Routed for Decision state, Convener review has not begun, and the scheme marks the state as withdrawable.",
+    "action_or_input": "The student requests withdrawal.",
+    "expected_result": "The application transitions from Verified / Routed for Decision to Withdrawn.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-016",
+    "source_id": "BW-SPACS-06 STT-1; CW-SPACS-02 STT-1",
+    "purpose": "Verify successful submission of a scholarship renewal.",
+    "preconditions": "A student has an Awarded / Renewal Eligible scholarship, the renewal window is open, and the renewal submission validates.",
+    "action_or_input": "The student submits the renewal application.",
+    "expected_result": "The renewal transitions from Awarded / Renewal Eligible to Renewal Submitted.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-017",
+    "source_id": "BW-SPACS-06 STT-2; CW-SPACS-02 STT-2",
+    "purpose": "Verify that a submitted renewal enters verification.",
+    "preconditions": "A renewal is in Renewal Submitted state.",
+    "action_or_input": "The SPACS Assistant opens the renewal verification task.",
+    "expected_result": "The renewal transitions from Renewal Submitted to Renewal Under Verification.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-018",
+    "source_id": "CW-SPACS-02 STT-3",
+    "purpose": "Verify that a renewal requiring correction enters Correction Required.",
+    "preconditions": "A renewal is in Renewal Under Verification state and the SPACS Assistant determines that correction is required.",
+    "action_or_input": "The SPACS Assistant records the correction requirement.",
+    "expected_result": "The renewal transitions from Renewal Under Verification to Correction Required.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-019",
+    "source_id": "CW-SPACS-02 STT-4",
+    "purpose": "Verify correction and resubmission of a renewal.",
+    "preconditions": "A renewal is in Correction Required state and the student can correct and resubmit it.",
+    "action_or_input": "The student corrects and resubmits the renewal with completeness checks satisfied.",
+    "expected_result": "The renewal transitions from Correction Required to Renewal Resubmitted.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-020",
+    "source_id": "CW-SPACS-02 STT-5",
+    "purpose": "Verify successful reverification of a resubmitted renewal.",
+    "preconditions": "A renewal is in Renewal Resubmitted state and the SPACS Assistant determines that reverification requirements are satisfied.",
+    "action_or_input": "The SPACS Assistant completes reverification.",
+    "expected_result": "The renewal transitions from Renewal Resubmitted to Renewal Verified / Routed.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-021",
+    "source_id": "BW-SPACS-06 STT-3; CW-SPACS-02 STT-6",
+    "purpose": "Verify successful renewal verification without a correction traversal.",
+    "preconditions": "A renewal is in Renewal Under Verification state and the verification requirements are satisfied without correction.",
+    "action_or_input": "The SPACS Assistant completes verification.",
+    "expected_result": "The renewal transitions from Renewal Under Verification to Renewal Verified / Routed.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-022",
+    "source_id": "BW-SPACS-07 STT-1; BW-SPACS-10 STT-1; CW-SPACS-02 STT-7",
+    "purpose": "Verify that a verified renewal enters the Convener decision stage.",
+    "preconditions": "A renewal is in Renewal Verified / Routed state.",
+    "action_or_input": "The SPACS Convener opens the renewal decision task.",
+    "expected_result": "The renewal transitions from Renewal Verified / Routed to Renewal Under Decision.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-023",
+    "source_id": "BW-SPACS-07 STT-2; CW-SPACS-02 STT-8",
+    "purpose": "Verify the renewal approval path.",
+    "preconditions": "A renewal is in Renewal Under Decision state and the SPACS Convener selects approval.",
+    "action_or_input": "The SPACS Convener records an Approve decision.",
+    "expected_result": "The renewal transitions from Renewal Under Decision to Renewed / Approved.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-024",
+    "source_id": "BW-SPACS-10 STT-2; CW-SPACS-02 STT-9",
+    "purpose": "Verify the renewal rejection path.",
+    "preconditions": "A renewal is in Renewal Under Decision state and the SPACS Convener selects rejection.",
+    "action_or_input": "The SPACS Convener records a Reject decision.",
+    "expected_result": "The renewal transitions from Renewal Under Decision to Renewal Rejected.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-025",
+    "source_id": "BW-SPACS-08 STT-1; CW-SPACS-03 STT-1",
+    "purpose": "Verify preparation of the award candidate pool.",
+    "preconditions": "An award cycle is in Award Cycle Open state and its configured candidate-source method is available.",
+    "action_or_input": "The SPACS Convener initiates candidate-pool preparation using the configured candidate-source method.",
+    "expected_result": "The award cycle transitions from Award Cycle Open to Candidate Pool Prepared.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-026",
+    "source_id": "BW-SPACS-08 STT-2; CW-SPACS-03 STT-2",
+    "purpose": "Verify the start of committee award evaluation.",
+    "preconditions": "The award cycle is in Candidate Pool Prepared state.",
+    "action_or_input": "An authorized Award Evaluation Committee member begins evaluation.",
+    "expected_result": "The award cycle transitions from Candidate Pool Prepared to Under Committee Evaluation.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-027",
+    "source_id": "BW-SPACS-08 STT-3; CW-SPACS-03 STT-3",
+    "purpose": "Verify recording of the committee award result.",
+    "preconditions": "The award cycle is in Under Committee Evaluation state and the required shortlist, recommendation, or decision is recorded.",
+    "action_or_input": "The Award Evaluation Committee records the required committee result.",
+    "expected_result": "The award cycle transitions from Under Committee Evaluation to Committee Result Recorded.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-028",
+    "source_id": "BW-SPACS-09 STT-1; CW-SPACS-03 STT-4",
+    "purpose": "Verify award finalization when required institutional approval evidence is already available.",
+    "preconditions": "The award cycle is in Committee Result Recorded state and the required institutional approval evidence is available.",
+    "action_or_input": "The SPACS Convener records the final award outcome with the available approval evidence.",
+    "expected_result": "The award cycle transitions from Committee Result Recorded to Ready for Publication.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-029",
+    "source_id": "BW-SPACS-11 STT-1; CW-SPACS-03 STT-5",
+    "purpose": "Verify that award finalization waits when required institutional approval is pending.",
+    "preconditions": "The award cycle is in Committee Result Recorded state and the required institutional approval evidence is not yet available.",
+    "action_or_input": "The SPACS Convener records the finalization status while approval remains pending.",
+    "expected_result": "The award cycle transitions from Committee Result Recorded to Awaiting Institutional Approval.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-030",
+    "source_id": "BW-SPACS-11 STT-2; CW-SPACS-03 STT-6",
+    "purpose": "Verify that an award cycle becomes ready for publication after pending approval is recorded.",
+    "preconditions": "The award cycle is in Awaiting Institutional Approval state and the required institutional approval evidence has subsequently been received.",
+    "action_or_input": "The SPACS Convener records the approval evidence.",
+    "expected_result": "The award cycle transitions from Awaiting Institutional Approval to Ready for Publication.",
+    "test_type": "Functional"
+  },
+  {
+    "test_id": "WF-SPACS-031",
+    "source_id": "BW-SPACS-09 STT-2; BW-SPACS-11 STT-3; CW-SPACS-03 STT-7",
+    "purpose": "Verify publication of an approved award outcome.",
+    "preconditions": "The award cycle is in Ready for Publication state and a final approved outcome exists.",
+    "action_or_input": "The SPACS Convener confirms publication of the award results.",
+    "expected_result": "The award cycle transitions from Ready for Publication to Published.",
+    "test_type": "Functional"
+  }
+]

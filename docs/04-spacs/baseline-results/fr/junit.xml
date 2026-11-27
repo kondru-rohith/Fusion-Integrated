@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="2" failures="8" skipped="0" tests="70" time="17.807" timestamp="2026-11-23T23:51:50.813455+05:30" hostname="Aasmitha"><testcase classname="modules.spacs.tests.spec.fr.test_catalogue_visibility" name="test_fr_spacs_001_authenticated_catalogue_exposes_published_entries_only" time="3.765"><error message="failed on setup with &quot;file C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\fr\test_catalogue_visibility.py, line 55&#10;  def test_fr_spacs_001_authenticated_catalogue_exposes_published_entries_only(&#10;E       fixture 'published_scholarship' not found&#10;[+4 more lines; full report in element text]">file C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\fr\test_catalogue_visibility.py, line 55
+  def test_fr_spacs_001_authenticated_catalogue_exposes_published_entries_only(
+E       fixture 'published_scholarship' not found
+&gt;       available fixtures: _clear_throttle_state, _dj_autoclear_mailbox, _django_clear_site_cache, _django_db_helper, _django_db_marker, _django_isolate_apps, _django_set_urlconf, _django_setup_unittest, _fail_for_invalid_template_variable, _live_server_helper, _session_faker, _template_string_if_invalid_marker, admin_client, admin_user, async_client, async_rf, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, client, cov, db, django_assert_max_num_queries, django_assert_num_queries, django_capture_on_commit_callbacks, django_db_blocker, django_db_createdb, django_db_keepdb, django_db_modify_db_settings, django_db_modify_db_settings_parallel_suffix, django_db_modify_db_settings_tox_suffix, django_db_modify_db_settings_xdist_suffix, django_db_reset_sequences, django_db_serialized_rollback, django_db_setup, django_db_use_migrations, django_isolated_apps, django_mail_dnsname, django_mail_patch_dns, django_test_environment, django_user_model, django_username_field, doctest_namespace, faker, live_server, mailoutbox, monkeypatch, no_cover, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rf, settings, stub_iam, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, transactional_db, user_ref
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\fr\test_catalogue_visibility.py:55</error></testcase><testcase classname="modules.spacs.tests.spec.fr.test_catalogue_visibility" name="test_fr_spacs_019_authenticated_catalogue_excludes_unpublished_and_retired" time="0.006"><error message="failed on setup with &quot;file C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\fr\test_catalogue_visibility.py, line 86&#10;  def test_fr_spacs_019_authenticated_catalogue_excludes_unpublished_and_retired(&#10;E       fixture 'published_scholarship' not found&#10;[+4 more lines; full report in element text]">file C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\fr\test_catalogue_visibility.py, line 86
+  def test_fr_spacs_019_authenticated_catalogue_excludes_unpublished_and_retired(
+E       fixture 'published_scholarship' not found
+&gt;       available fixtures: _clear_throttle_state, _dj_autoclear_mailbox, _django_clear_site_cache, _django_db_helper, _django_db_marker, _django_isolate_apps, _django_set_urlconf, _django_setup_unittest, _fail_for_invalid_template_variable, _live_server_helper, _session_faker, _template_string_if_invalid_marker, admin_client, admin_user, async_client, async_rf, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, client, cov, db, django_assert_max_num_queries, django_assert_num_queries, django_capture_on_commit_callbacks, django_db_blocker, django_db_createdb, django_db_keepdb, django_db_modify_db_settings, django_db_modify_db_settings_parallel_suffix, django_db_modify_db_settings_tox_suffix, django_db_modify_db_settings_xdist_suffix, django_db_reset_sequences, django_db_serialized_rollback, django_db_setup, django_db_use_migrations, django_isolated_apps, django_mail_dnsname, django_mail_patch_dns, django_test_environment, django_user_model, django_username_field, doctest_namespace, faker, live_server, mailoutbox, monkeypatch, no_cover, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rf, settings, stub_iam, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, transactional_db, user_ref
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\aasmi\a9-workspace\Fusion-Integrated\modules\spacs\tests\spec\fr\test_catalogue_visibility.py:86</error></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-002]" time="1.595" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-003]" time="0.572"><failure message="django.db.transaction.TransactionManagementError: An error occurred in the current transaction. You can't execute queries until the end of the 'atomic' block.">self = &lt;django.db.backends.utils.CursorWrapper object at 0x00000222584E07D0&gt;
+sql = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 21, 57, 144952, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 21, 57, 144967, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 2, 2, ...)
+ignored_wrapper_args = (False, {'connection': &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;, 'cursor': &lt;django.db.backends.utils.CursorWrapper object at 0x00000222584E07D0&gt;})
+
+    def _execute(self, sql, params, *ignored_wrapper_args):
+        # Raise a warning during app initialization (stored_app_configs is only
+        # ever set during testing).
+        if not apps.ready and not apps.stored_app_configs:
+            warnings.warn(self.APPS_NOT_READY_WARNING_MSG, category=RuntimeWarning)
+        self.db.validate_no_broken_transaction()
+        with self.db.wrap_database_errors:
+            if params is None:
+                # params default might be backend specific.
+                return self.cursor.execute(sql)
+            else:
+&gt;               return self.cursor.execute(sql, params)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv\Lib\site-packages\django\db\backends\utils.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INTRANS] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x222584b5490&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 21, 57, 144952, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 21, 57, 144967, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 2, 2, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "spacs_unique_active_application_per_cycle"
+E           DETAIL:  Key (user_id, catalogue_entry_id, cycle, is_renewal)=(101, 2, 2026-27, f) already exists.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: UniqueViolation
+
+The above exception was the direct cause of the following exception:
+
+catalogue_version = &lt;CatalogueVersion: FR-TRACE-SCHEME v1 (2026-27)&gt;
+
+    def test_prevent_duplicate_active_applications(catalogue_version):
+        """Students cannot submit duplicate active applications for same cycle (BR-SPACS-002)."""
+        ScholarshipApplication.objects.create(
+            user_id=101,
+            catalogue_entry=catalogue_version.entry,
+            catalogue_version=catalogue_version,
+            cycle="2026-27",
+            application_number="SPACS-2026-00001",
+            status="submitted",
+        )
+    
+        with pytest.raises(IntegrityError):
+&gt;           ScholarshipApplication.objects.create(
+                user_id=101,
+                catalogue_entry=catalogue_version.entry,
+                catalogue_version=catalogue_version,
+                cycle="2026-27",
+                application_number="SPACS-2026-00002",
+                status="submitted",
+            )
+
+modules\spacs\tests\test_models.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:665: in create
+    obj.save(force_insert=True, using=self.db)
+.venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+.venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+.venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+.venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+.venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+.venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;django.db.backends.postgresql.base.Cursor [closed] [INTRANS] (host=127.0.0.1 port=5433 user=fusion_admin database=test_fusion_integrated) at 0x222584b5490&gt;
+query = 'INSERT INTO "spacs_scholarship_application" ("created_at", "updated_at", "user_id", "application_number", "catalogue_...%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING "spacs_scholarship_application"."id"'
+params = (datetime.datetime(2026, 11, 23, 18, 21, 57, 144952, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 11, 23, 18, 21, 57, 144967, tzinfo=datetime.timezone.utc), Int4(101), 'SPACS-2026-00002', 2, 2, ...)
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           django.db.utils.IntegrityError: duplicate key value violates unique constraint "spacs_unique_active_application_per_cycle"
+E           DETAIL:  Key (user_id, catalogue_entry_id, cycle, is_renewal)=(101, 2, 2026-27, f) already exists.
+
+.venv\Lib\site-packages\psycopg\cursor.py:117: IntegrityError
+
+The above exception was the direct cause of the following exception:
+
+test_id = 'FR-SPACS-003', source_id = 'CFR-SPACS-003', kind = 'existing'
+scenario = 'test_api:test_staff_assistant_cannot_submit_student_applications|test_api:test_submit_eligible_cpi|test_api:test_submit_ineligible_cpi|test_models:test_prevent_duplicate_active_applications'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-003]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+            globals()[scenario](request)
+            return
+        for helper in scenario.split("|"):
+            module_name, function_name = helper.split(":", maxsplit=1)
+            if module_name == "fr":
+                globals()[function_name](request)
+            else:
+&gt;               _call_existing(module_name, function_name, request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:596: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:105: in _call_existing
+    transaction.savepoint_rollback(savepoint)
+.venv\Lib\site-packages\django\db\transaction.py:62: in savepoint_rollback
+    get_connection(using).savepoint_rollback(sid)
+.venv\Lib\site-packages\django\utils\asyncio.py:26: in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\base\base.py:413: in savepoint_rollback
+    self._savepoint_rollback(sid)
+.venv\Lib\site-packages\django\db\backends\base\base.py:371: in _savepoint_rollback
+    cursor.execute(self.ops.savepoint_rollback_sql(sid))
+.venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+.venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\django\db\backends\utils.py:99: in _execute
+    self.db.validate_no_broken_transaction()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;DatabaseWrapper vendor='postgresql' alias='default'&gt;
+
+    def validate_no_broken_transaction(self):
+        if self.needs_rollback:
+&gt;           raise TransactionManagementError(
+                "An error occurred in the current transaction. You can't "
+                "execute queries until the end of the 'atomic' block."
+            ) from self.rollback_exc
+E           django.db.transaction.TransactionManagementError: An error occurred in the current transaction. You can't execute queries until the end of the 'atomic' block.
+
+.venv\Lib\site-packages\django\db\backends\base\base.py:521: TransactionManagementError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-004]" time="0.629" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-005]" time="0.121" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-006]" time="0.330" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-007]" time="0.076" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-008]" time="0.118" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-009]" time="0.291" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-010]" time="0.193" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-011]" time="0.080" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-012]" time="0.201" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-013]" time="0.215" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-014]" time="0.230"><failure message="core.api.exceptions.ConflictError: Cycle is not awaiting institutional approval (status: 'awaiting_approval').">test_id = 'FR-SPACS-014', source_id = 'CFR-SPACS-014', kind = 'existing'
+scenario = 'test_api:test_award_cycle_and_evaluation_flow|fr:_direct_award_publish_gate_case'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-014]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+            globals()[scenario](request)
+            return
+        for helper in scenario.split("|"):
+            module_name, function_name = helper.split(":", maxsplit=1)
+            if module_name == "fr":
+&gt;               globals()[function_name](request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:594: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:518: in _direct_award_publish_gate_case
+    record_institutional_approval(
+C:\Python313\Lib\contextlib.py:85: in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cycle_id = 3, approval_ref = 'APPROVAL/FR/01'
+actor = Principal(user_id=8846, username='u8846', display_name='User 8846', kind='staff', active_role='student', roles=('spacs..., 'spacs.application.export'}), modules=('spacs',), navigation=(), email='', is_authenticated=True, is_anonymous=False)
+
+    @transaction.atomic
+    def record_institutional_approval(
+        *,
+        cycle_id: int,
+        approval_ref: str,
+        actor,
+    ) -&gt; AwardCycle:
+        """Record receipt of institutional approval when previously pending (BW-SPACS-11)."""
+        cycle = AwardCycle.objects.select_for_update().filter(pk=cycle_id).first()
+        if cycle is None:
+            raise NotFoundError("Award cycle not found.")
+    
+        if cycle.status != state_machine.AWAITING_INSTITUTIONAL_APPROVAL:
+&gt;           raise ConflictError(
+                f"Cycle is not awaiting institutional approval (status: {cycle.status!r})."
+            )
+E           core.api.exceptions.ConflictError: Cycle is not awaiting institutional approval (status: 'awaiting_approval').
+
+modules\spacs\services\awards.py:187: ConflictError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-015]" time="0.108" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-016]" time="0.044" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-017]" time="0.168" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-018]" time="0.030" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-020]" time="0.041"><failure message="assert 'Description for the active FR scheme.' in '{&quot;id&quot;: 21, &quot;entry&quot;: 21, &quot;entry_code&quot;: &quot;FR-TRACE-SCHEME&quot;, &quot;entry_title&quot;: &quot;FR Trace Scheme&quot;, &quot;entry_kind&quot;: &quot;scholarship..., &quot;status&quot;: &quot;published&quot;, &quot;published_at&quot;: null, &quot;published_by&quot;: null, &quot;created_at&quot;: &quot;2026-11-23T23:52:01.835542+05:30&quot;}'&#10; +  where 'Description for the active FR scheme.' = &lt;CatalogueEntry: FR Trace Scheme (FR-TRACE-SCHEME)&gt;.description&#10;[+1 more line; full report in element text]">test_id = 'FR-SPACS-020', source_id = 'AFR-SPACS-002', kind = 'direct'
+scenario = '_direct_catalogue_details_case'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-020]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+&gt;           globals()[scenario](request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:589: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-020]&gt;&gt;
+
+    def _direct_catalogue_details_case(request):
+        from conftest import make_session
+        from rest_framework.test import APIClient
+    
+        version = request.getfixturevalue("catalogue_version")
+        iam = request.getfixturevalue("stub_iam")
+        iam(
+            make_session(
+                user_id=8820,
+                kind="student",
+                modules=("spacs",),
+                permissions=("spacs.catalogue.view",),
+                roles=("student",),
+            )
+        )
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="Token fr-catalogue-details")
+        response = client.get("/api/v1/spacs/catalogue/")
+        assert response.status_code == 200
+        data = next(row for row in response.json() if row["id"] == version.pk)
+        serialized = json.dumps(data)
+&gt;       assert version.entry.description in serialized
+E       assert 'Description for the active FR scheme.' in '{"id": 21, "entry": 21, "entry_code": "FR-TRACE-SCHEME", "entry_title": "FR Trace Scheme", "entry_kind": "scholarship..., "status": "published", "published_at": null, "published_by": null, "created_at": "2026-11-23T23:52:01.835542+05:30"}'
+E        +  where 'Description for the active FR scheme.' = &lt;CatalogueEntry: FR Trace Scheme (FR-TRACE-SCHEME)&gt;.description
+E        +    where &lt;CatalogueEntry: FR Trace Scheme (FR-TRACE-SCHEME)&gt; = &lt;CatalogueVersion: FR-TRACE-SCHEME v1 (2026-27)&gt;.entry
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:441: AssertionError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-021]" time="0.055" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-022]" time="0.164" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-023]" time="0.168" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-024]" time="0.070"><failure message="AssertionError: assert 'mcm-scholarship' in ['FR-TRACE-SCHEME']">test_id = 'FR-SPACS-024', source_id = 'AFR-SPACS-006', kind = 'existing'
+scenario = 'test_api:test_opportunities_excludes_draft_and_expired_schemes|test_coverage_boost:test_catalogue_and_version_api_views'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-024]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+            globals()[scenario](request)
+            return
+        for helper in scenario.split("|"):
+            module_name, function_name = helper.split(":", maxsplit=1)
+            if module_name == "fr":
+                globals()[function_name](request)
+            else:
+&gt;               _call_existing(module_name, function_name, request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:596: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:103: in _call_existing
+    function(**arguments)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+stub_iam = &lt;function stub_iam.&lt;locals&gt;._install at 0x0000022258655800&gt;
+published_scholarship = &lt;CatalogueVersion: FR-TRACE-SCHEME v1 (2026-27)&gt;
+
+    def test_opportunities_excludes_draft_and_expired_schemes(stub_iam, published_scholarship):
+        """Student-facing Opportunities returns only published, active, currently valid schemes."""
+        today = timezone.now().date()
+        draft_entry = CatalogueEntry.objects.create(
+            code="test-merit-2026",
+            title="Test Merit Draft Scheme",
+            kind="scholarship",
+            status="active",
+        )
+        CatalogueVersion.objects.create(
+            entry=draft_entry,
+            version_number=1,
+            academic_year="2026-27",
+            policy_reference="",
+            valid_from=today,
+            valid_to=today + timezone.timedelta(days=365),
+            status="draft",
+        )
+    
+        # 1. Student hits Opportunities: sees only published scholarship, NOT the draft
+        student_client = _client(
+            stub_iam, permissions=("spacs.catalogue.view",), uid=1001, kind="student"
+        )
+        res_student = student_client.get("/api/v1/spacs/catalogue/")
+        assert res_student.status_code == 200
+        student_codes = [v["entry_code"] for v in res_student.json()]
+&gt;       assert "mcm-scholarship" in student_codes
+E       AssertionError: assert 'mcm-scholarship' in ['FR-TRACE-SCHEME']
+
+modules\spacs\tests\test_api.py:427: AssertionError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-025]" time="0.029" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-026]" time="0.127" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-027]" time="0.111" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-028]" time="0.040"><failure message="assert False">test_id = 'FR-SPACS-028', source_id = 'AFR-SPACS-010', kind = 'direct'
+scenario = '_direct_duplicate_permission_case'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-028]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+&gt;           globals()[scenario](request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:589: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-028]&gt;&gt;
+
+    def _direct_duplicate_permission_case(request):
+        from django.db import IntegrityError
+        from modules.spacs.models import ScholarshipApplication
+    
+        version = request.getfixturevalue("catalogue_version")
+        version.entry.allow_multiple_applications = True
+        version.entry.save(update_fields=["allow_multiple_applications", "updated_at"])
+        ScholarshipApplication.objects.create(
+            user_id=8828,
+            application_number="SPACS-FR-DUP-PERMITTED-01",
+            catalogue_entry=version.entry,
+            catalogue_version=version,
+            academic_year=version.academic_year,
+            cycle="FR-DUP-CYCLE",
+            status="submitted",
+        )
+        duplicate_created = True
+        try:
+            with transaction.atomic():
+                ScholarshipApplication.objects.create(
+                    user_id=8828,
+                    application_number="SPACS-FR-DUP-PERMITTED-02",
+                    catalogue_entry=version.entry,
+                    catalogue_version=version,
+                    academic_year=version.academic_year,
+                    cycle="FR-DUP-CYCLE",
+                    status="submitted",
+                )
+        except IntegrityError:
+            duplicate_created = False
+&gt;       assert duplicate_created
+E       assert False
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:480: AssertionError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-029]" time="0.124" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-030]" time="0.116" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-031]" time="0.032" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-032]" time="0.147" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-033]" time="0.276" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-034]" time="0.102" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-035]" time="0.112" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-036]" time="0.130"><failure message="AssertionError: assert False&#10; +  where False = exists()&#10; +    where exists = &lt;QuerySet []&gt;.exists&#10; +      where &lt;QuerySet []&gt; = exclude(recipient_user_id=8836)&#10; +        where exclude = &lt;QuerySet [&lt;NotificationOutbox: application.submitted to u8836 (pending)&gt;]&gt;.exclude&#10; +          where &lt;QuerySet [&lt;NotificationOutbox: application.submitted to u8836 (pending)&gt;]&gt; = filter(topic='application.submitted')&#10;[+2 more lines; full report in element text]">test_id = 'FR-SPACS-036', source_id = 'AFR-SPACS-018', kind = 'direct'
+scenario = '_direct_submission_role_notification_case'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-036]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+&gt;           globals()[scenario](request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:589: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-036]&gt;&gt;
+
+    def _direct_submission_role_notification_case(request):
+        """Assert the designed student and Assistant-role notification recipients."""
+        from conftest import make_session
+        from fusion_auth.client import UserRef
+        from modules.spacs.models import (
+            ApplicationDocument,
+            NotificationOutbox,
+            ScholarshipApplication,
+        )
+        from modules.spacs.registry import ROLE_GRANTS
+        from rest_framework.test import APIClient
+    
+        version = request.getfixturevalue("catalogue_version")
+        user = UserRef(
+            user_id=8836,
+            username="fr8836",
+            display_name="FR submission student",
+            kind="student",
+            programme="B.Tech",
+        )
+        iam = request.getfixturevalue("stub_iam")
+        fake = iam(
+            make_session(
+                user_id=8836,
+                kind="student",
+                modules=("spacs",),
+                permissions=ROLE_GRANTS["student"],
+                roles=("student",),
+            ),
+            users={8836: user},
+        )
+        fake.standings = {8836: {"cpi": 8.0, "active_backlogs": 0}}
+        app = ScholarshipApplication.objects.create(
+            user_id=8836,
+            application_number="SPACS-FR-NOTIFY-001",
+            catalogue_entry=version.entry,
+            catalogue_version=version,
+            academic_year=version.academic_year,
+            cycle=version.academic_year,
+            status="draft",
+            submission_data={},
+            annual_income_declared=400000,
+        )
+        ApplicationDocument.objects.create(
+            user_id=8836,
+            application=app,
+            doc_type="income_certificate",
+            title="Income Certificate",
+            drive_url="https://drive.google.com/file/fr-notify",
+            drive_file_id="fr-notify",
+            is_active=True,
+        )
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="Token fr-notify")
+        response = client.post(f"/api/v1/spacs/applications/{app.pk}/submit/", format="json")
+        assert response.status_code == 200, response.json()
+        assert NotificationOutbox.objects.filter(
+            topic="application.submitted", recipient_user_id=8836
+        ).exists()
+&gt;       assert NotificationOutbox.objects.filter(topic="application.submitted").exclude(
+            recipient_user_id=8836
+        ).exists()
+E       AssertionError: assert False
+E        +  where False = exists()
+E        +    where exists = &lt;QuerySet []&gt;.exists
+E        +      where &lt;QuerySet []&gt; = exclude(recipient_user_id=8836)
+E        +        where exclude = &lt;QuerySet [&lt;NotificationOutbox: application.submitted to u8836 (pending)&gt;]&gt;.exclude
+E        +          where &lt;QuerySet [&lt;NotificationOutbox: application.submitted to u8836 (pending)&gt;]&gt; = filter(topic='application.submitted')
+E        +            where filter = &lt;django.db.models.manager.Manager object at 0x0000022256571A50&gt;.filter
+E        +              where &lt;django.db.models.manager.Manager object at 0x0000022256571A50&gt; = &lt;class 'modules.spacs.models.notifications.NotificationOutbox'&gt;.objects
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:415: AssertionError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-037]" time="0.113" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-038]" time="0.063"><failure message="AssertionError: No existing scenario test_api.test_user_without_p_app_review_receives_403_on_verification_finding">test_id = 'FR-SPACS-038', source_id = 'AFR-SPACS-020', kind = 'existing'
+scenario = 'test_api:test_unauthorized_users_cannot_make_decisions_or_resolve_concerns|test_api:test_user_without_p_app_review_receives_403_on_verification_finding'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-038]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+            globals()[scenario](request)
+            return
+        for helper in scenario.split("|"):
+            module_name, function_name = helper.split(":", maxsplit=1)
+            if module_name == "fr":
+                globals()[function_name](request)
+            else:
+&gt;               _call_existing(module_name, function_name, request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:596: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+module_name = 'test_api'
+function_name = 'test_user_without_p_app_review_receives_403_on_verification_finding'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-038]&gt;&gt;
+
+    def _call_existing(module_name: str, function_name: str, request) -&gt; None:
+        module = importlib.import_module(f"modules.spacs.tests.{module_name}")
+        function = getattr(module, function_name, None)
+        if function is None:
+            for candidate in vars(module).values():
+                if inspect.isclass(candidate) and hasattr(candidate, function_name):
+                    function = getattr(candidate(), function_name)
+                    break
+        if function is None:
+&gt;           raise AssertionError(f"No existing scenario {module_name}.{function_name}")
+E           AssertionError: No existing scenario test_api.test_user_without_p_app_review_receives_403_on_verification_finding
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:94: AssertionError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-039]" time="0.096" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-040]" time="0.277" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-041]" time="0.298" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-042]" time="0.097" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-043]" time="0.121" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-044]" time="0.046" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-045]" time="0.095" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-046]" time="0.162" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-047]" time="0.052" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-048]" time="0.163" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-049]" time="0.110" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-050]" time="0.196" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-051]" time="0.106" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-052]" time="0.054" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-053]" time="0.058" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-054]" time="0.068" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-055]" time="0.109" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-056]" time="0.104" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-057]" time="0.140" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-058]" time="0.089" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-059]" time="0.041" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-060]" time="0.214" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-061]" time="0.178" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-062]" time="0.190" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-063]" time="0.192" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-064]" time="0.025"><failure message="core.api.exceptions.ConflictError: Cycle is not awaiting institutional approval (status: 'awaiting_approval').">test_id = 'FR-SPACS-064', source_id = 'AFR-SPACS-046', kind = 'direct'
+scenario = '_direct_award_publish_gate_case'
+request = &lt;FixtureRequest for &lt;Function test_fr_design_case[FR-SPACS-064]&gt;&gt;
+
+    @pytest.mark.parametrize(
+        ("test_id", "source_id", "kind", "scenario"),
+        _CASES,
+        ids=[case[0] for case in _CASES],
+    )
+    def test_fr_design_case(test_id, source_id, kind, scenario, request):
+        assert test_id.startswith("FR-SPACS-")
+        assert source_id
+        if kind == "direct":
+&gt;           globals()[scenario](request)
+
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:589: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+modules\spacs\tests\spec\fr\test_fr_remaining_cases.py:518: in _direct_award_publish_gate_case
+    record_institutional_approval(
+C:\Python313\Lib\contextlib.py:85: in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cycle_id = 8, approval_ref = 'APPROVAL/FR/01'
+actor = Principal(user_id=8846, username='u8846', display_name='User 8846', kind='staff', active_role='student', roles=('spacs..., 'spacs.application.export'}), modules=('spacs',), navigation=(), email='', is_authenticated=True, is_anonymous=False)
+
+    @transaction.atomic
+    def record_institutional_approval(
+        *,
+        cycle_id: int,
+        approval_ref: str,
+        actor,
+    ) -&gt; AwardCycle:
+        """Record receipt of institutional approval when previously pending (BW-SPACS-11)."""
+        cycle = AwardCycle.objects.select_for_update().filter(pk=cycle_id).first()
+        if cycle is None:
+            raise NotFoundError("Award cycle not found.")
+    
+        if cycle.status != state_machine.AWAITING_INSTITUTIONAL_APPROVAL:
+&gt;           raise ConflictError(
+                f"Cycle is not awaiting institutional approval (status: {cycle.status!r})."
+            )
+E           core.api.exceptions.ConflictError: Cycle is not awaiting institutional approval (status: 'awaiting_approval').
+
+modules\spacs\services\awards.py:187: ConflictError</failure></testcase><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-065]" time="0.094" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-066]" time="0.016" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-067]" time="0.034" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-068]" time="0.009" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-069]" time="0.020" /><testcase classname="modules.spacs.tests.spec.fr.test_fr_remaining_cases" name="test_fr_design_case[FR-SPACS-070]" time="0.073" /></testsuite></testsuites>

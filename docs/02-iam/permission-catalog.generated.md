@@ -38,3 +38,20 @@ For the intended taxonomy of modules not yet built, see
 | `placement_cell.registration.self` | Register yourself for a placement season | `student` |
 | `placement_cell.record.manage` | Record off-campus placements and chase offer letters | `placement_officer` |
 | `placement_cell.academic_directory.view` | Browse every student's declared CPI | `Dean Academic`, `placement_chairman`, `placement_coordinator`, `placement_officer` |
+
+## `spacs`
+
+| Code | What it allows | Held by |
+|---|---|---|
+| `spacs.catalogue.view` | Browse published scholarship and award schemes | `Dean Academic`, `award_committee_member`, `spacs_assistant`, `spacs_auditor`, `spacs_convener`, `student` |
+| `spacs.catalogue.manage` | Create, edit, publish and retire catalogue entries | `Dean Academic`, `spacs_convener` |
+| `spacs.application.view_self` | View own scholarship applications | `student` |
+| `spacs.application.create` | Submit a scholarship application or renewal | `student` |
+| `spacs.application.update` | Modify an editable application draft or correction | `student` |
+| `spacs.application.delete` | Withdraw an application | `student` |
+| `spacs.application.export` | Export or print an application | `Dean Academic`, `spacs_assistant`, `spacs_convener`, `student` |
+| `spacs.application.review` | Verify application evidence and request corrections | `Dean Academic`, `spacs_assistant`, `spacs_convener` |
+| `spacs.application.approve` | Sanction or reject scholarship applications | `Dean Academic`, `spacs_convener` |
+| `spacs.award_cycle.manage` | Open award cycles, prepare candidate pools, publish results | `Dean Academic`, `spacs_convener` |
+| `spacs.award_candidate.review` | Evaluate and score award candidates in committee | `Dean Academic`, `award_committee_member`, `spacs_convener` |
+| `spacs.audit.view` | View protected SPACS audit trail | `Dean Academic`, `spacs_auditor`, `spacs_convener` |
